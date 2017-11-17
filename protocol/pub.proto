@@ -1,0 +1,64 @@
+syntax = "proto3";
+package pb;
+
+// 排位赛
+
+//当前赛季
+message DanSeason
+{
+    uint32 start     = 1;//开始时间(时间截)
+    uint32 end       = 2;//结束时间(时间截)
+    uint32 remaining = 3;//剩余时间(秒)
+}
+
+//排行榜
+message DanRanking
+{
+    uint32 rank     = 1;//排名
+    string userid   = 2;//玩家ID
+    string photo    = 3;//玩家头像
+    string nickname = 4;//玩家昵称
+    uint32 dan      = 5;//玩家段位
+    uint32 stars    = 6;//玩家星级
+    uint32 points   = 7;//玩家积分
+}
+
+//任务列表
+message DanTaskList
+{
+    string id      = 1;//序列
+    string name    = 2;//任务名称
+    uint32 diamond = 3;//钻石奖励
+    uint32 coin    = 4;//金币奖励
+    uint32 status  = 5;//状态0未达成,1可领取,2已领取
+}
+
+//排位赛段位列表
+message DanList
+{
+    string id     = 1;//序列
+    string name   = 2;//段位名称
+    uint32 dan    = 3;//段位ID
+    repeated DanInfo level = 4;//段位信息
+    uint32 number = 5;//预计局数
+}
+
+//段位对应星级积分
+message DanInfo
+{
+    uint32 stars  = 1;//星级
+    uint32 points = 2;//积分
+}
+
+//个人战绩
+message DanCombat
+{
+    uint32 number    = 1;//总局数
+    uint32 wins      = 2;//胜利局数
+    uint32 topDan    = 3;//最高段位
+    uint32 topRank   = 4;//最高排名
+    uint32 curDan    = 5;//当前段位
+    uint32 curStars  = 6;//当前星级
+    uint32 curPoints = 7;//当前积分
+    uint32 curRank   = 8;//当前排名
+}

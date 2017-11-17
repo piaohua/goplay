@@ -1,0 +1,67 @@
+syntax = "proto3";
+package pb;
+
+// 新邮件通知
+message SMailNotice
+{
+    uint32 code = 1 ;//协议号
+}
+
+// 新邮件列表
+message CMailList
+{
+    uint32 code  = 1;//协议号
+    string maxid = 2;//邮件缓存中的最大邮件ID
+}
+
+message SMailList
+{
+    uint32 code   = 1 ;//协议号
+    repeated MailList list = 2;  // 邮件
+}
+
+// 删除邮件
+message CDeleteMail
+{
+    uint32 code = 1;//协议号
+    string id   = 2;//邮件ID
+}
+
+message SDeleteMail
+{
+    uint32 code  = 1; // 协议号
+    string id    = 2; // 邮件ID
+    uint32 error = 3; // 错误码
+}
+
+// 收取附件
+message CGetMailItem
+{
+    uint32 code = 1; //协议号
+    string id   = 2; //邮件ID
+}
+
+message SGetMailItem
+{
+    uint32 code  = 1; // 协议号
+    string id    = 2; // 邮件ID
+    uint32 error = 3; // 错误码
+}
+
+// 附件
+message Items
+{
+    uint32 rtype     = 1;//类型
+    uint32 number    = 2;//数量
+}
+
+message MailList
+{
+    string id         = 1;  // 邮件ID
+    string from       = 2;  // 发件人
+    string content    = 3;  // 邮件内容
+    repeated Items  attachment = 4;  // 邮件附件
+    uint32 status     = 5;  // 状态0未读,1已读,2已领取
+    uint32 etime      = 6;  // 过期时间
+    uint32 ctime      = 7;  // 邮件时间
+}

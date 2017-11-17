@@ -1,0 +1,63 @@
+syntax = "proto3";
+package pb;
+
+//注册日志
+message LogRegist {
+    string Userid   = 1; //玩家ID
+    string Nickname = 2; //昵称
+    string Ip       = 3; //注册地址
+    uint32 Atype    = 4; //类型
+}
+
+//登录日志
+message LogLogin {
+    string Userid   = 1; //玩家ID
+    string Ip       = 2; //登录地址
+    int32  Event    = 3; //事件
+    uint32 Atype    = 4; //类型
+}
+
+//登出日志
+message LogLogout {
+    string Userid   = 1; //玩家ID
+    int32  Event    = 2; //事件
+}
+
+//钻石日志
+message LogDiamond {
+    string Userid = 1; //玩家ID
+    int32  Type   = 2; //类型
+    int32  Num    = 3; //数量
+    uint32 Rest   = 4; //剩余数量
+}
+
+//金币日志
+message LogCoin {
+    string Userid = 1; //玩家ID
+    int32  Type   = 2; //类型
+    int32  Num    = 3; //数量
+    uint32 Rest   = 4; //剩余数量
+}
+
+//绑定日志
+message LogBuildAgency {
+    string Userid = 1; //玩家ID
+    string Agent  = 2; //绑定ID
+}
+
+//在线日志
+message LogOnline {
+    int32 Num = 1; //数量
+}
+
+//做牌日志
+message LogSetHand {
+    string   Rid             = 1; //房间ID
+    int32    Round           = 2; //局数
+    string   Userid          = 3; //玩家
+    string   Nickname        = 4; //昵称
+    repeated uint32 SetHands = 5; //设置手牌
+    repeated uint32 Hands    = 6; //手牌
+    int32    Niu             = 7; //牌力
+    int32    Score           = 8; //得分
+}

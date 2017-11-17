@@ -1,0 +1,40 @@
+syntax = "proto3";
+package pb;
+
+// 全民刮奖
+message CLotteryInfo
+{
+    uint32  code   = 1 ;//协议号
+}
+
+message SLotteryInfo
+{
+    uint32   code      = 1 ;//协议号
+    repeated Lottery  list      = 2 ;//数量
+    uint32   single    = 3 ;//一注需要消耗的钻石(目前定义的是一注5钻石，如果我购买10注那就是花费50钻石)
+    uint32   maxnumber = 4 ;//一次最多购买多少注
+    uint32   error     = 5 ;//错误码
+}
+
+// 刮奖机会
+message Lottery
+{
+    uint32  niu     = 1 ;//1有牛,2牛牛,3五花牛,4五小牛,5四炸
+    uint32  number  = 2 ;//中奖金额
+}
+
+// 刮奖
+message CLottery
+{
+    uint32  code   = 1 ;//协议号
+    uint32  times  = 2 ;//购买的注数
+}
+
+message SLottery
+{
+    uint32  code   = 1 ;//协议号
+    repeated uint32  cards  = 2 ;//牌面
+    uint32  niu    = 3 ;//牛(掩码)
+    uint32  number = 4 ;//中奖金额
+    uint32  error  = 5 ;//错误码
+}

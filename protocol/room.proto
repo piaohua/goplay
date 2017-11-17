@@ -1,0 +1,90 @@
+syntax = "proto3";
+package pb;
+
+// 离开房间
+message CLeave
+{
+    uint32 code = 1;//协议号
+}
+
+message SLeave
+{
+    uint32 code   = 1; //协议号
+    uint32 seat   = 2; //玩家选择的座位号
+    string userid = 3; //玩家id
+    uint32 error  = 4; //错误码
+}
+
+// 踢人
+message CKick
+{
+    uint32 code = 1;//协议号
+    uint32 seat = 2;//被踢的玩家座位
+}
+
+message SKick
+{
+    uint32 code   = 1; //协议号
+    uint32 seat   = 2; //被踢的玩家座位
+    string userid = 3; //被踢的玩家id
+    uint32 result = 4; //0失败,1房主T人,2房间被解散
+    uint32 error  = 5; //错误码
+}
+
+//1.准备游戏(准备完成开始游戏时状态切为发牌)
+message CReady
+{
+    uint32 code  = 1;//协议号
+    bool   ready = 2;//true准备,false取消
+}
+
+message SReady
+{
+    uint32 code = 1; //协议号
+    uint32 seat = 2; //准备游戏的玩家座位
+    bool   ready= 3; //true准备,false取消
+    uint32 error= 4; //错误码
+}
+
+// 私人局,发起投票申请解散房间
+message CLaunchVote
+{
+    uint32 code = 1;//协议号
+}
+
+message SLaunchVote
+{
+    uint32 code = 1;//协议号
+    uint32 seat = 2;//发起人玩家座位号
+    uint32 error= 3;
+}
+
+// 私人局,发起投票,投票解散房间,如果投票成功，服务器主动推送SKick协议，并且reason字段值为1
+message CVote
+{
+    uint32 code = 1;//协议号
+    uint32 vote = 2;//0同意,1不同意
+}
+
+message SVote
+{
+    uint32 code = 1;//协议号
+    uint32 vote = 2;//0同意,1不同意
+    uint32 seat = 3;//投票玩家座位号
+    uint32 error= 4;
+}
+
+// 投票解散房间事件结果,服务器主动推送
+message SVoteResult
+{
+    uint32 code = 1;//协议号
+    uint32 vote = 2;//0半数通过马上解散房间,1半数以上不通过终止解散房间
+}
+
+//发牌
+message SPubDraw
+{
+	uint32 code  = 1 ;//协议号
+	uint32 state = 2;  //房间状态
+	uint32 card  = 3;  //公共牌1张
+}

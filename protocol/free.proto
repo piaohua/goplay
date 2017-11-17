@@ -1,0 +1,136 @@
+syntax = "proto3";
+package pb;
+import "vo.proto";
+
+// 进入房间
+message CEnterFreeRoom
+{
+    uint32 code = 1;//协议号
+}
+
+message SEnterFreeRoom
+{
+    uint32    code     = 1;//协议号
+    FreeRoom  roominfo = 2;//房间的详细资料
+    repeated FreeUser  userinfo = 3;//已在房间的玩家基础信息
+    repeated RoomBets  betsinfo = 5;//下注倍数
+    uint32    error    = 6;//错误码
+}
+
+// 其他玩家进入房间
+message SFreeCamein
+{
+    uint32   code     = 1;//协议号
+    FreeUser userinfo = 2;//玩家的信息
+}
+
+//3.选择上庄，下庄
+message CFreeDealer
+{
+    uint32 code     = 1;//协议号
+    uint32 state    = 2;//0下庄 1上庄 2补庄
+    uint32 coin     = 3;//上庄金额
+}
+
+message SFreeDealer
+{
+    uint32 code     = 1;//协议号
+    uint32 state    = 2;//0下庄 1上庄 2补庄
+    string dealer   = 3;//庄家
+    string userid   = 4;//申请上庄玩家
+    string nickname = 5;//昵称
+    uint32 coin     = 6;//上/下庄金额
+    uint32 error    = 7;//错误码
+}
+
+//3.上庄列表
+message CDealerList
+{
+    uint32 code     = 1;//协议号
+}
+
+message SDealerList
+{
+    uint32 code     = 1;//协议号
+    repeated DealerList list = 2;//上庄
+    uint32 error    = 3;//错误码
+}
+
+//4.玩家入坐,站起
+message CFreeSit
+{
+    uint32 code = 1;//协议号
+    bool  state = 2;//true坐下,false站起
+    uint32 seat = 3;//位置,8个位置(1~8)
+}
+
+message SFreeSit
+{
+    uint32 code     = 1;//协议号
+    bool   state    = 2;//true坐下,false站起
+    uint32 seat     = 3;//位置
+    string userid   = 4;//
+    string nickname = 5;//
+    string photo    = 6;//
+    uint32 coin     = 7;//
+    uint32 error    = 8;//错误码
+}
+
+//4.玩家下注
+message CFreeBet
+{
+    uint32 code = 1;//协议号
+    uint32 seat = 2;//位置,1庄家，2天，3地，4玄，5黄
+    uint32 value= 3;//提交相应的值
+}
+
+message SFreeBet
+{
+    uint32 code  = 1;//协议号
+    uint32 seat  = 2;//位置,下注者位置(1-8)
+    uint32 beseat= 3;//下注的位置2天，3地，4玄，5黄
+    uint32 value = 4;//下注数量
+    string userid= 5;//下注玩家id
+    uint32 coin  = 6;//下注位置总数
+    uint32 bets  = 7;//下注位置个人总数
+    uint32 error = 8;//错误码
+}
+
+// 结算广播接口，游戏开始
+message SFreeGamestart
+{
+    uint32 code    = 1;//协议号
+    uint32 state   = 2;//房间状态
+    string dealer  = 3;//庄家
+    uint32 coin    = 4;//庄家金额
+    string photo   = 5;//庄家头像
+    uint32 dealerNum     = 6;//可坐庄总次数
+    uint32 leftDealerNum = 7;//剩余坐庄次数
+}
+
+// 结算广播接口，游戏结束
+message SFreeGameover
+{
+    uint32 code          = 1;//协议号
+    uint32 state         = 2;//房间状态
+    string dealer        = 3;//庄家
+    uint32 dealerNum     = 4;//可坐庄总次数
+    uint32 leftDealerNum = 5;//剩余坐庄次数
+    uint32 coin          = 6;//庄家金额
+    uint32 pond          = 7;//奖池
+    repeated FreeRoomOver data = 8;//结算
+    repeated RoomScore    list = 9;//闲家总结果
+}
+
+// 百人牛牛趋势
+message CFreeTrend
+{
+    uint32 code = 1;//协议号
+}
+
+// 百人牛牛趋势
+message SFreeTrend
+{
+    uint32 code = 1;//协议号
+    repeated FreeTrendList list = 2;//各位置输赢
+}

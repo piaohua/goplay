@@ -1,0 +1,186 @@
+syntax = "proto3";
+package pb;
+import "vo.proto";
+
+// 进入房间
+message CEnterZiRoom
+{
+	uint32 code        = 1;//协议号
+	string invitecode  = 2;//房间邀请码
+	string id          = 3; //id为空自由分配
+	bool   dan         = 4; //排位赛匹配,优先级 4 - 2 -3
+}
+
+message SEnterZiRoom
+{
+	uint32    code     = 1 ;//协议号
+	RoomData  roominfo = 2;//房间的详细资料
+	repeated RoomUser  userinfo = 3;//已在房间的玩家基础信息
+	RoomVote  voteinfo = 4;//发起投票的信息
+	repeated RoomCard  cardinfo = 5;//牌面
+	uint32    error    = 6 ;//错误码
+}
+
+// 创建房间
+message CCreateZiRoom
+{
+	uint32 code    = 1;  //协议号
+	string rname   = 2;  //房间名字
+	uint32 rtype   = 3;  //房间类型
+	uint32 ante    = 4;  //底分
+	uint32 round   = 5;  //牌局数
+	uint32 payment = 6;  //付费方式0=房主付费,1=AA付费
+	uint32 count   = 7;  //人数限制
+    uint32 chat    = 8;  //1对讲机 2语音 3语音转文字
+	uint32 xi      = 9;  //息数限制
+}
+
+// 返回房间数据,
+message SCreateZiRoom
+{
+	uint32 code    = 1;//协议号
+	RoomData rdata = 2;
+	uint32 error   = 3;//错误码
+}
+
+// 其他玩家进入房间
+message SZiCamein
+{
+	uint32 code       = 1;//协议号
+	RoomUser userinfo = 2;//玩家的信息
+}
+
+// 结算广播接口，游戏结束
+message SZiGameover
+{
+	uint32     code      = 1;//协议号
+	uint32     dealer    = 2;//庄家
+	uint32     seat      = 3;//庄家
+	uint32     value     = 4;//庄家
+	uint32     round     = 5;//剩余牌局数
+	uint32     xi        = 6;//息数量
+	uint32     fan       = 7;//番数量
+	uint32     deng      = 8;//等数量
+	uint32     di        = 9;//底数量
+	repeated RoomSeat   seats     =10;//玩家座位
+	repeated RoomCard   cards     =11;//牌面
+	repeated ZiRoomOver list      =12;//当前局结算
+	repeated uint32     lastcards =13;//底牌
+	repeated DanOver    combat    =14;//排位赛数据
+}
+
+// 个人牌局记录,默认最近30场
+message CZiGameRecord
+{
+	uint32  code = 1;//协议号
+	uint32 page  = 2;//页数,每页30,默认发1最近30场
+}
+
+message SZiGameRecord
+{
+	uint32  code    = 1 ;//协议号
+	repeated ZiRecordList list = 2; //
+}
+
+//发牌
+message SPushDeal
+{
+	uint32 code  = 1;//协议号
+	uint32 seat  = 2;//位置
+	repeated uint32 cards = 3;  //手牌
+}
+
+//庄家发牌
+message SPushDealerDeal
+{
+	uint32 code  = 1;//协议号
+	uint32 seat  = 2;//位置
+	uint32 card  = 3;//牌
+	uint32 value = 4;//操作值
+}
+
+//庄家补牌
+message SPushDealerBu
+{
+	uint32 code  = 1;  //协议号
+	uint32 seat  = 2;  //位置
+	uint32 card  = 3;  //牌
+	uint32 value = 4;  //操作值
+}
+
+//闲家跑胡
+message SPushPaoHu
+{
+	uint32 code  = 1;  //协议号
+	uint32 seat  = 2;  //位置
+	uint32 card  = 3;  //牌
+	uint32 value = 4;  //操作值
+}
+
+//摸牌
+message SPushDraw
+{
+	uint32 code  = 1;  //协议号
+	uint32 seat  = 2;  //位置
+	uint32 card  = 3;  //牌
+	uint32 value = 4;  //操作值
+	uint32 count = 5;  //剩余牌数
+	repeated uint32 cards = 6;  //手牌值
+}
+
+//打牌
+message CPushDiscard
+{
+	uint32 code  = 1;  //协议号
+	uint32 card  = 2;  //牌
+}
+
+//打牌
+message SPushDiscard
+{
+	uint32 code  = 1;  //协议号
+	uint32 seat  = 2;  //位置
+	uint32 card  = 3;  //牌
+	uint32 value = 4;  //操作值
+    uint32 error = 5;  //错误码
+}
+
+//自动操作(提,跑,偎)
+message SPushAuto
+{
+	uint32 code  = 1;  //协议号
+	uint32 seat  = 2;  //位置
+	uint32 card  = 3;  //牌
+	uint32 value = 4;  //操作值
+}
+
+// 玩家吃,碰,胡操作
+message COperate
+{
+    uint32 code             = 1;  //协议号
+    uint32 value            = 2;  //掩码值
+    repeated uint32 cards   = 3;  //吃牌
+    repeated uint32 bione   = 4;  //比牌
+    repeated uint32 bitwo   = 5;  //比牌
+}
+
+message SOperate
+{
+    uint32 code    = 1;  //协议号
+    uint32 seat    = 2;  //操作玩家的座位号
+    uint32 beseat  = 3;  //被操作玩家座位号
+    uint32 card    = 4;  //被操作的牌值
+    uint32 value   = 5;  //操作掩码
+    repeated uint32 cards   = 6;  //吃牌
+    repeated uint32 bione   = 7;  //比牌
+    repeated uint32 bitwo   = 8;  //比牌
+    uint32 error            = 9;  //错误码
+}
+
+//房间状态
+message SPushStatus
+{
+	uint32 code   = 1;  //协议号
+	uint32 seat   = 2;  //位置
+	int32  status = 3;  //状态
+}

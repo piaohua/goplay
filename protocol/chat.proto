@@ -1,0 +1,65 @@
+syntax = "proto3";
+package pb;
+
+// 房间广播文字聊天
+message CChatText
+{
+    uint32 code    = 1;//协议号
+    string content = 2;
+}
+
+// 广播文字聊天
+message SChatText
+{
+    uint32 code    = 1;//协议号
+    uint32 seat    = 2;
+    string userid  = 3;
+    string content = 4;
+    uint32 error   = 5; // 错误码
+}
+
+// 房间广播语音聊天
+message CChatVoice
+{
+    uint32 code    = 1;//协议号
+    string content = 2;
+}
+
+// 广播语音聊天
+message SChatVoice
+{
+    uint32 code    = 1;//协议号
+    uint32 seat    = 2;
+    string userid  = 3;
+    string content = 4;
+    uint32 error   = 5; // 错误码
+}
+
+// 世界广播
+message SBroadcast
+{
+    uint32 code    = 1;//协议号
+    uint32 rtype   = 2;//消息类型 1.活动公告,2.世界广播
+    uint32 num     = 3;//1=播放1次,2=播放2次
+    string content = 4;//消息内容
+}
+
+// 公告列表
+message CNotice
+{
+    uint32 code = 1;//协议号
+}
+
+message SNotice
+{
+    uint32 code = 1;//协议号
+    repeated Notice list = 2;
+    uint32 error = 3; // 错误码
+}
+
+message Notice
+{
+    uint32 rtype   = 1;//消息类型 1.活动公告
+    uint32 acttype = 2;//操作类型 1.活动公告
+    string content = 3;//消息内容
+}

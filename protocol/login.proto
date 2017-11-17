@@ -1,0 +1,62 @@
+syntax = "proto3";
+package pb;
+
+// 登陆
+message CLogin
+{
+    uint32 code     = 1; //协议号
+    string phone    = 2; //手机
+    string password = 3; //密码 (MD5)
+    uint32 type     = 4; //登录
+    string ipaddr   = 5; //登录地址
+}
+
+message SLogin
+{
+    uint32 code     = 1 ;//协议号
+    string userid   = 2 ;//用户id
+    uint32 error    = 3 ;//错误码
+}
+
+// 注册
+message CRegist
+{
+    uint32 code     = 1;//协议号
+    string nickname = 2;//昵称
+    string phone    = 3;//手机号
+    string password = 4;//密码(md5)
+    uint32 type     = 5;//登录
+    string ipaddr   = 6;//登录地址
+}
+
+message SRegist
+{
+    uint32 code   = 1 ;//协议号
+    string userid = 2 ;//用户id
+    uint32 error  = 3 ;//错误码
+}
+
+// 微信登录登陆
+message CWxLogin
+{
+    uint32 code    = 1; //协议号
+    string wxcode  = 2; //微信code
+    string token   = 3; //token登录
+    uint32 type    = 4; //登录
+    string ipaddr  = 5;//登录地址
+}
+
+message SWxLogin
+{
+    uint32 code    = 1 ;//协议号
+    string userid  = 2 ;// 用户id
+    string token   = 3 ;// 返回access_token
+    bool   isreg   = 4 ;// 是否注册
+    uint32 error   = 5 ;// 错误码
+}
+
+message SLoginOut
+{
+    uint32 code  = 1 ;//协议号
+    uint32 rtype = 2 ;//1别处登录,2停服
+}

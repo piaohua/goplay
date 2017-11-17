@@ -1,0 +1,54 @@
+syntax = "proto3";
+package pb;
+import "pub.proto";
+
+//排位赛
+
+//排位基本数据信息
+message CDanInfo
+{
+    uint32 code = 1;//协议号
+}
+
+message SDanInfo
+{
+    uint32 code   = 1 ;//协议号
+    repeated DanList info  = 2;
+    uint32 error  = 3 ;//错误码
+}
+
+//个人排位赛数据
+message CQualifying
+{
+    uint32 code = 1 ;//协议号
+}
+
+message SQualifying
+{
+    uint32 code = 1 ;//协议号
+    repeated DanTaskList task  = 2; // 任务列表
+    DanCombat combat  = 3; // 个人战绩
+    DanSeason season  = 4; // 赛季时间
+    uint32 error      = 5; // 错误码
+}
+
+//排位赛排行榜
+message CDanRanking
+{
+    uint32 code = 1 ;//协议号
+}
+
+message SDanRanking
+{
+    uint32 code     = 1 ; // 协议号
+    repeated DanRanking list = 2; // 排行数据
+    uint32 error    = 3 ; // 错误码
+}
+
+//排位赛更新
+message SDanNotice
+{
+    uint32 code      = 1;//协议号
+    string userid    = 2;//用户id
+    DanCombat combat = 3;//个人战绩
+}

@@ -1,0 +1,336 @@
+syntax = "proto3";
+package pb;
+import "pub.proto";
+
+// 玩家的详细数据
+message UserData
+{
+    string userid    =1;//用户账号
+    string nickname  =2;//昵称
+    string phone     =3;//电话号码
+    uint32 sex       =4;//用户性别,男1 女0
+    string photo     =5;//头像
+    uint32 coin      =6;//金币
+    uint32 diamond   =7;//钻石
+    uint32 roomtype  =8;//所在房间类型id
+    string roomid    =9;//所在房间id
+    string invitecode=10;//所在房间邀请码
+    string agent     =11;//绑定的代理ID
+    uint32 give      =12;//当日已赠送金额
+    uint32 bank      =13;//银行存款
+    Activity data    =14;//活动数据
+    VipInfo vip      =15;//vip
+}
+
+message UserInfo
+{
+    string userid    =1;//用户账号
+    string nickname  =2;//昵称
+    string phone     =3;//电话号码
+    uint32 sex       =4;//用户性别,男1 女0
+    string photo     =5;//头像
+    uint32 coin      =6;//金币
+    uint32 diamond   =7;//钻石
+}
+
+// 房间数据
+message RoomInfo
+{
+    string roomid    = 1;//牌局id
+    uint32 rtype     = 2;//room type
+    string rname     = 3;//room name
+    uint32 count     = 4;//当前房间限制玩家数量
+    uint32 ante      = 5;//房间底分
+    uint32 chat      = 6;//1对讲机 2语音 3语音转文字
+}
+
+// 玩家的活动数据
+message Activity
+{
+    uint32 firstpay   =1;//首充1没有完成,0已经完成
+    uint32 relieve    =2;//剩余救济次数
+    uint32 bankrupt   =3;//已经破产次数
+    uint32 prizedraw  =4;//已经抽奖次数
+    uint32 leftdraw   =5;//剩余抽奖次数
+    uint32 kicktimes  =6;//剩余踢人次数
+}
+
+// vip
+message VipInfo
+{
+    uint32 level     = 1;//
+    uint32 number    = 2;//
+}
+
+// 玩家的基础数据
+message RoomUser
+{
+    string userid   =1;//用户账号
+    string nickname =2;//昵称
+    string phone    =3;//电话号码
+    uint32 sex      =4;//用户性别,男1 女0
+    string photo    =5;//头像
+    uint32 coin     =6;//金币
+    uint32 diamond  =7;//钻石
+    uint32 seat     =8;//座位号
+    bool   ready    =9;//玩家de准备状态
+    int32  score    =10;//私人局积分
+    uint32 dealer   =11;//玩家抢庄0抢庄中,1抢庄,2不抢
+    uint32 bet      =12;//玩家下注0下注中,n下注额度
+    repeated uint32 cards    =13;//玩家手牌
+    uint32 num      =14;//玩家抢庄倍数
+    bool   niu      =15;//是否选牛
+    VipInfo vip     =16;//vip
+    uint32 value    =17;//操作值
+    DanCombat dan   =18;//个人战绩
+}
+
+// 房间数据
+message RoomData
+{
+    string roomid    = 1;//牌局id
+    uint32 rtype     = 2;//room type
+    string rname     = 3;//room name
+    uint32 count     = 4;//当前房间限制玩家数量
+    uint32 ante      = 5;//房间底分
+    uint32 chat      = 6;//1对讲机 2语音 3语音转文字
+    uint32 expire    = 7;  //牌局设定的时间（牌局存在的时间）
+    string invitecode= 8;  //房间邀请码  私人牌局都有邀请码,邀请码是唯一的
+    uint32 dealer    = 9;  //庄家seat
+    uint32 round     = 10;  //剩余牌局数
+    string userid    = 11;  //房主ID
+    uint32 state     = 12;  //房间状态,0准备中,1抢庄中,2下注中
+    uint32 card      = 13;  //公共牌
+    uint32 xi        = 14;  //息
+    uint32 draw      = 15;  //摸牌
+    uint32 discard   = 16;  //出牌
+    uint32 seat      = 17;  //操作位置
+    uint32 number    = 18;  //剩余牌数
+}
+
+// 下注信息
+message RoomBets
+{
+    uint32 seat    =1;//位置
+    uint32 bets    =2;//位置上下注倍数
+}
+
+// 玩家的基础数据
+message FreeUser
+{
+    string userid   =1;//用户账号
+    string nickname =2;//昵称
+    string phone    =3;//电话号码
+    uint32 sex      =4;//用户性别,男1 女0
+    string photo    =5;//头像
+    uint32 coin     =6;//金币
+    uint32 diamond  =7;//钻石
+    uint32 seat     =8;//座位号
+    bool   ready    =9;//玩家de状态,true游戏中
+    uint32 bet      =10;//玩家下注0下注中,n下注总额度
+    repeated RoomBets bets   =11;//个人各位置对应下注额
+    VipInfo vip     =12;//vip
+}
+
+// 房间数据
+message FreeRoom
+{
+    string roomid        = 1;//牌局id
+    uint32 rtype         = 2;//room type
+    string rname         = 3;//room name
+    uint32 count         = 4;//当前房间限制玩家数量
+    uint32 ante          = 5;//房间底分
+    uint32 chat          = 6;//1对讲机 2语音 3语音转文字
+    uint32 dealer        = 7;//庄家seat
+    string userid        = 8;//庄家ID
+    uint32 coin          = 9;//庄家上庄金额
+    uint32 pond          =10;//奖池
+    uint32 state         =11;//房间状态,0准备中,1游戏中
+    uint32 timer         =12;//下注剩余时间
+    uint32 dealerNum     =13;//可坐庄总次数
+    uint32 leftDealerNum =14;//剩余坐庄次数
+    string photo         =15;//庄家头像
+}
+
+// 结算数据
+message RoomOver
+{
+    uint32 seat  =1; //玩家座位号
+    repeated uint32 cards =2; //玩家手牌
+    uint32 value =3; //牌力
+    int32  total =4; //总输赢,百人场时为位置总输赢
+    int32  score =5; //输赢数量
+}
+
+// 结算数据,百人场时为5个位置1庄家，2天，3地，4玄，5黄
+message FreeRoomOver
+{
+    uint32    seat  =1; //玩家座位号
+    repeated uint32 cards =2; //玩家手牌
+    uint32    value =3; //牌力
+    int32     total =4; //下注总数量
+    int32     score =5; //输赢数量
+    repeated RoomScore list  =6; //位置下注个人输赢
+}
+
+// 投票信息
+message RoomScore
+{
+    uint32 seat    =1;//玩家位置
+    string userid  =2;//玩家ID
+    int32  score   =3;//当局输赢
+    uint32 pond    =4;//分到奖池金额
+    uint32 coin    =5;//个人总剩余
+}
+
+//
+message ClassicOver
+{
+    uint32 seat    =1;//玩家位置
+    string userid  =2;//玩家ID
+    repeated uint32 cards   =3;//玩家手牌
+    uint32 value   =4;//牌力
+    uint32 bets    =5;//下注总数量
+    int32  score   =6;//当局输赢
+    uint32 coin    =7;//个人总剩余
+}
+
+// 结算数据
+message OverList
+{
+    uint32 seat   =1; //玩家座位号
+    string userid =2; //玩家ID
+    repeated uint32 cards  =3; //玩家手牌
+    uint32 value  =4; //牌力
+    uint32 round  =5; //第几轮
+    int32  score  =6; //输赢数量
+    uint32 dealer =7; //庄家seat
+    uint32 bets   =8; //下注倍数
+    string nickname =9;  //
+    string photo    =10; //
+}
+
+// 投票信息
+message RoomVote
+{
+    uint32 seat    =1;//发起投票的玩家座位号
+    repeated uint32 agree   =2;//同意
+    repeated uint32 disagree=3;//不同意
+}
+
+//获取玩家的私人房间记录
+message RecordList
+{
+    string roomid    = 1;//牌局id
+    uint32 rtype     = 2;//room type
+    string rname     = 3;//room name
+    uint32 count     = 4;//当前房间限制玩家数量
+    uint32 ante      = 5;//房间底分
+    uint32 chat      = 6;//1对讲机 2语音 3语音转文字
+    string invitecode= 7;  //房间邀请码
+    uint32 totalRound= 8;  //房间总局数
+    string userid    = 9;  //房间房主ID
+    uint32 ctime     = 10; //房间创建时间
+    repeated OverList list    = 11;  //房间总结算
+}
+
+// 上庄列表
+message DealerList
+{
+    string userid   = 1;  //
+    string nickname = 2;  //
+    string photo    = 3;  //
+    uint32 coin     = 4;  //上庄金额
+}
+
+message FreeTrendList
+{
+    uint32    round = 1;//20局的排序,1为最近一局
+    repeated FreeTrend list  = 2;
+}
+
+message FreeTrend
+{
+    uint32 seat = 1;  //天 地 玄 黄 座位号 2,3,4,5
+    bool   win  = 2;  //true赢 false输  只判断牌型大小输赢
+}
+
+message PrizeCard
+{
+	uint32 card      = 1;//牌值
+    uint32 rtype     = 2;//奖品类型
+    uint32 number    = 3;//奖品数量
+}
+
+// zi
+
+//牌面
+message RoomCard {
+    uint32 seat      =1; //玩家座位号
+    repeated uint32 handcards =2; //玩家手牌
+    repeated uint32 kancards  =3; //玩家坎牌
+    repeated uint32 outcards  =4; //玩家出牌
+    repeated uint32 chowcards =5; //玩家吃牌
+    repeated uint32 pongcards =6; //玩家碰,偎牌
+    repeated uint32 ticards   =7; //玩家提,跑牌
+}
+
+//房间内位置数据
+message RoomSeat {
+    uint32 seat      =1; //玩家座位号
+    string userid    =2; //玩家ID
+    string nickname  =3; //
+    string photo     =4; //
+    int32  score     =5; //输赢数量
+}
+
+// 单局结算数据
+message ZiRoomOver
+{
+    uint32 seat   =1; //玩家座位号
+    int32  total  =2; //总输赢
+    int32  score  =3; //输赢数量
+    uint32 coin   =4; //个人总剩余
+    int32  points =5; //积分
+}
+
+//排位赛更新
+message DanOver
+{
+    uint32 seat      = 1;//玩家座位号
+    string userid    = 2;//用户id
+    DanCombat combat = 3;//个人战绩
+}
+
+// 单局结算数据
+message ZiRoomRound
+{
+    uint32 seat  =1; //玩家座位号
+    int32  score =2; //输赢数量
+    uint32 round =3; //局数
+}
+
+//获取玩家的私人房间记录
+message ZiRecordList
+{
+    ZiRoomInfo info =1; //房间信息
+    repeated RoomSeat seats  =2; //位置信息
+    repeated ZiRoomRound list=3; //单局信息
+}
+
+//房间基本信息
+message ZiRoomInfo {
+    string roomid    = 1;  //牌局id
+    uint32 rtype     = 2;  //room type
+    string rname     = 3;  //room name
+    uint32 expire    = 4;  //牌局设定的时间（牌局存在的时间）
+    uint32 count     = 5;  //当前房间限制玩家数量
+    string invitecode= 6;  //房间邀请码  私人牌局都有邀请码,邀请码是唯一的
+    string userid    = 7;  //房主ID
+    uint32 round     = 8;  //房间局数
+    uint32 ante      = 9;  //房间底分
+    uint32 chat      =10;  //1对讲机 2语音 3语音转文字
+    uint32 dealer    =11;  //庄家seat
+    uint32 ctime     =12;  //房间创建时间
+    uint32 xi        =13;  //房间息数
+}

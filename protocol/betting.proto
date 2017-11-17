@@ -1,0 +1,137 @@
+syntax = "proto3";
+package pb;
+
+//seat
+//(1有牛，2无牛)
+//(3牛1-3， 4牛4-6，5牛7-9)
+//(6牛牛，7两对，8同花，9五花牛，10四炸，11五小牛)
+//
+//（有牛，两对，同花）
+//（牛牛，无牛）
+
+// 疯狂投注
+message CBettingInfo
+{
+    uint32  code   = 1 ;//协议号
+}
+
+message SBettingInfo
+{
+    uint32  code     = 1 ;//协议号
+    string  index    = 2 ;//期数
+    Betting status   = 3 ;//状态0下注,1等待
+    repeated JackpotInfo list = 4 ;//奖池
+    uint32  error    = 5 ;//错误码
+}
+
+// 投注状态
+message Betting
+{
+    uint32  times   = 1 ;//剩余时间(秒)
+    uint32  state   = 2 ;//状态0投注,1等待
+}
+
+// 奖池
+message JackpotInfo
+{
+    uint32 seat   = 1;//位置
+    float  odds   = 2;//赔率
+    uint32 number = 3;//数量
+}
+
+// 疯狂投注押注
+message CBetting
+{
+    uint32  code   = 1 ;//协议号
+    uint32  seat   = 2 ;//押注位置
+    uint32  number = 3 ;//押注数量
+}
+
+message SBetting
+{
+    uint32  code   = 1 ;//协议号
+    uint32  seat   = 2 ;//押注位置
+    uint32  number = 3 ;//押注数量
+    uint32  error  = 4 ;//错误码
+}
+
+// 奖池更新广播
+message SPushJackpot {
+    uint32  code  = 1 ;//协议号
+    repeated Jackpot list  = 2;//奖池列表
+}
+
+// 奖池
+message Jackpot
+{
+    uint32 seat   = 1;//位置
+    uint32 number = 2;//数量
+}
+
+// 开奖结果
+message SPushBetting
+{
+    uint32 code               = 1;//协议号
+    repeated uint32 cards     = 2;//牌面
+    uint32 niu                = 3;//牛(掩码)
+    int32  number             = 4;//个人输赢总数量
+    repeated JackpotSelf list = 5;//奖池列表
+    repeated JackpotOver info = 6;//奖池列表
+    Betting status            = 7;//状态
+}
+
+// 奖池
+message JackpotOver
+{
+    uint32 seat   = 1;//位置
+    bool   win    = 2;//是否中奖
+    float  odds   = 3;//赔率
+    uint32 count  = 4;//位置下注总数量
+}
+
+// 奖池
+message JackpotSelf
+{
+    uint32 seat   = 1;//位置
+    uint32 ante   = 2;//个人位置下注量
+    int32  number = 3;//个人位置输赢量
+}
+
+// 新一轮开始广播
+message SPushNewBetting
+{
+    uint32  code   = 1;//协议号
+    string  index  = 2;//期号
+    Betting status = 3;//状态
+}
+
+// 疯狂投注记录
+message CBettingRecord
+{
+    uint32 code = 1 ;//协议号
+	uint32 page = 2; //页数,每页30,默认发1最近30场
+}
+
+message SBettingRecord
+{
+    uint32  code    = 1 ;//协议号
+	repeated RecordBettings list = 2; //记录
+}
+
+// 个人投注记录列表
+message RecordBettings
+{
+    string                 index  = 1;//期数
+    repeated uint32        cards  = 2;//牌面
+    uint32                 niu    = 3;//牛(掩码)
+    repeated uint32        seats  = 4;//中奖位置
+    int32                  number = 5;//输赢数量
+    repeated RecordBetting list   = 6;//下注情况
+}
+
+// 个人下注情况
+message RecordBetting
+{
+    uint32 seat   = 1;//位置
+    uint32 number = 2;//下注数量
+}

@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pb;
+
+//import google_protobuf "github.com/golang/protobuf/ptypes/timestamp"
+//
+//message File {
+//    string name = 1;
+//    google.protobuf.Timestamp creatation_time = 2;
+//}
+
+//struct File {
+//  name string
+//  creatation_time time.Time
+//}
+
+//import google_protobuf "github.com/golang/protobuf/ptypes/struct"
+//
+//message File {
+//    string name = 1;
+//    google.protobuf.Struct creatation_time = 2;
+//}

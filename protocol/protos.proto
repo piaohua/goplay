@@ -1,0 +1,83 @@
+syntax = "proto3";
+package pb;
+import "github.com/AsynkronIT/protoactor-go/actor/protos.proto";
+
+//请求响应
+message Request {
+    string UserName = 1;
+    string Message = 2;
+}
+
+message Response {
+    string UserName = 1;
+    string Message = 2;
+}
+
+//连接节点
+message Connect {
+    actor.PID Sender = 1;
+}
+
+message Connected {
+    string Message = 1;
+}
+
+//断开连接
+message Disconnect {
+    actor.PID Sender = 1;
+}
+
+message Disconnected {
+    string Message = 1;
+}
+
+//设置连接
+message SetLogin {
+    actor.PID Sender = 1;
+}
+
+message SetLogined {
+    string Message = 1;
+    actor.PID DbmsPid = 2;
+    actor.PID RoomPid = 3;
+    actor.PID RolePid = 4;
+    actor.PID HallPid = 5;
+}
+
+//登录网关
+message LoginGate {
+    actor.PID Sender = 1;
+    string Userid = 2;
+}
+
+message LoginedGate {
+    actor.PID Sender = 1;
+}
+
+//登录大厅
+message LoginHall {
+    actor.PID Sender = 1;
+    string Userid = 2;
+    string Node = 3;
+}
+
+message LoginedHall {
+    string Message = 1;
+}
+
+//大厅通知网关登出
+message Logout {
+    actor.PID Sender = 1;
+    string Userid = 2;
+}
+
+message Logouted {
+    actor.PID Sender = 1;
+}
+
+//机器人消息
+message RobotMsg {
+    string Code  = 1;
+    uint32 Num   = 2;
+    uint32 Rtype = 3;
+}

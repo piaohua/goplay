@@ -1,0 +1,101 @@
+syntax = "proto3";
+package pb;
+import "vo.proto";
+
+// 获取游戏全局配置数据
+message CConfig
+{
+    uint32 code = 1;//协议号
+}
+
+message SConfig
+{
+    uint32 code     = 1;//协议号
+    string imageurl = 2;//玩家头像图片服务器地址和端口
+    string version  = 3;//版本号
+}
+
+// 获取玩家的数据
+message CUserData
+{
+    uint32 code   = 1;//协议号
+    string userid = 2;//用户id
+}
+
+message SUserData
+{
+    uint32 code   = 1;//协议号
+    UserData data = 2;
+    uint32 error  = 3;//错误码
+}
+
+// 获取虚拟货币
+message CGetCurrency
+{
+    uint32 code = 1;//协议号
+}
+
+message SGetCurrency
+{
+    uint32 code     = 1;//协议号
+    uint32 coin     = 2;//金币
+    uint32 diamond  = 3;//钻石
+    uint32 roomcard = 4;//房卡
+}
+
+// 绑定代理id
+message CBuildAgent
+{
+    uint32 code   = 1;//协议号
+    string userid = 2;//用户id
+}
+
+message SBuildAgent
+{
+    uint32 code   = 1;//协议号
+    uint32 result = 2;//0成功,1不能绑定自己,2已经绑定,3不合格id,4已经是代理商不能绑定,5代理商不存在
+}
+
+//1注册赠送,2开房消耗,3房间解散返还,
+//4充值购买,5,下注,6游戏收益,7上庄，
+//8下庄, 9后台操作,10玩家赠送,11破产补助
+//12存款,13取款,14取款抽成,15赠送,16赠送抽成
+message SPushCurrency
+{
+    uint32 code     = 1;//协议号
+    uint32 rtype    = 2;//类型
+    int32  diamond  = 3;//钻石数量
+    int32  coin     = 4;//金币数量
+}
+
+// bank
+message CBank
+{
+    uint32 code   = 1;//协议号
+    uint32 rtype  = 2;//1存入,2取出,3赠送,4查询存款余额
+    uint32 amount = 3;//操作金额
+    string userid = 4;//用户id
+}
+
+message SBank
+{
+    uint32 code    = 1;//协议号
+    uint32 rtype   = 2;//1存入,2取出,3赠送,4查询存款余额
+    uint32 amount  = 3;//操作金额
+    string userid  = 4;//用户id
+    uint32 balance = 5;//账户余额
+    uint32 error   = 6;//错误码
+}
+
+message CPing
+{
+    uint32 code = 1;//协议号
+    uint32 time = 2;//时间截
+}
+
+message SPing
+{
+    uint32 code = 1;//协议号
+    uint32 time = 2;//时间截
+    uint32 error= 3;//错误码 ,0:正常
+}

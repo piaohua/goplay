@@ -1,0 +1,139 @@
+syntax = "proto3";
+package pb;
+import "vo.proto";
+
+// 进入房间
+message CEnterRoom
+{
+    uint32 code        = 1;//协议号
+    string invitecode  = 2;//房间邀请码
+}
+
+message SEnterRoom
+{
+    uint32   code              = 1;//协议号
+    RoomData roominfo          = 2;//房间的详细资料
+    repeated RoomUser userinfo = 3;//已在房间的玩家基础信息
+    RoomVote voteinfo          = 4;//发起投票的信息
+    repeated RoomBets betsinfo = 5;//下注倍数
+    uint32   error             = 6;//错误码
+}
+
+// 创建房间
+message CCreateRoom
+{
+    uint32 code    = 1;  //协议号
+    string rname   = 2;  //房间名字
+    uint32 rtype   = 3;  //房间类型
+    uint32 ante    = 4;  //底分
+    uint32 round   = 5;  //牌局数
+    uint32 payment = 6;  //付费方式0=房主付费,1=AA付费
+    uint32 count   = 7;  //人数限制
+    uint32 chat    = 8;  //1对讲机 2语音 3语音转文字
+}
+
+// 返回房间数据,
+message SCreateRoom
+{
+    uint32 code    = 1; //协议号
+    RoomData rdata = 2; //
+    uint32 error   = 3; // 错误码
+}
+
+// 其他玩家进入房间
+message SCamein
+{
+    uint32   code    = 1;//协议号
+    RoomUser userinfo= 2;//玩家的信息
+}
+
+//2.发牌(全部准备后或达到开始条件,发完状态切为抢庄)
+message SDraw
+{
+    uint32 code  = 1;  //协议号
+    uint32 seat  = 2;  //位置
+    uint32 state = 3;  //房间状态,1抢庄中(发4张),2下注中(发第5张)
+    repeated uint32 cards = 4;  //手牌4张,手牌1张
+}
+
+//3.开始抢庄(发完第一轮牌后,抢完切为下注)
+message CDealer
+{
+    uint32 code  = 1;  //协议号
+    bool   dealer= 2;  //true抢庄,false不抢
+    uint32 num   = 3;  //抢庄倍数
+}
+
+message SDealer
+{
+    uint32 code  = 1;  //协议号
+    uint32 seat  = 2;  //位置
+    bool   dealer= 3;  //true抢庄,false不抢
+    uint32 num   = 4;  //抢庄倍数
+    uint32 error = 5;  //错误码
+}
+
+//完成抢庄,推送庄家位置
+message SPushDealer
+{
+    uint32 code  = 1;  //协议号
+    uint32 dealer= 2;  //庄家位置
+}
+
+//4.玩家下注(抢庄完成后),下注完成后再步骤2发牌
+message CBet
+{
+    uint32 code    = 1;//协议号
+    uint32 seatbet = 2;//百人场使用,下注位置,1庄家，2天，3地，4玄，5黄
+    uint32 value   = 3;//提交相应的值
+}
+
+message SBet
+{
+    uint32 code    = 1;//协议号
+    uint32 seat    = 2;//玩家的座位号
+    uint32 seatbet = 3;//百人场使用,下注位置,1庄家，2天，3地，4玄，5黄
+    uint32 value   = 4;//值
+    uint32 error   = 5;//错误码
+}
+
+//5.玩家组合牌提交
+message CNiu
+{
+    uint32 code           = 1;//协议号
+    uint32 value          = 2;//提交相应的值,0为无
+    repeated uint32 cards = 3;//手牌5张,前3张为牛,后2张为点
+}
+
+//广播提交结果
+message SNiu
+{
+    uint32 code  = 1;  //协议号
+    uint32 seat  = 2;  //玩家的座位号
+    uint32 value = 3;  //提交相应的值,0为无
+    repeated uint32 cards = 4; //手牌5张,前3张为牛,后2张为点
+    uint32 error = 5;  //错误码
+}
+
+// 结算广播接口，游戏结束
+message SGameover
+{
+    uint32   code    = 1;//协议号
+    uint32   dealer  = 2;//庄家
+    uint32   round   = 3;//剩余牌局数
+    repeated RoomOver data  = 4;//结算
+    repeated OverList  list = 5;//总结算
+}
+
+// 个人牌局记录,默认最近30场
+message CGameRecord
+{
+    uint32 code = 1;//协议号
+    uint32 page = 2;//页数,每页30,默认发1最近30场
+}
+
+message SGameRecord
+{
+    uint32 code = 1;//协议号
+    repeated RecordList list = 2; //
+}

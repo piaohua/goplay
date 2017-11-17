@@ -1,0 +1,120 @@
+syntax = "proto3";
+package pb;
+
+message CPrizeList
+{
+    uint32 code = 1;//协议号
+}
+
+message SPrizeList
+{
+    uint32 code   = 1;//协议号
+    repeated Prize list = 2;//奖品
+    uint32 error  = 3;//错误码 ,0:正常
+}
+
+message CPrizeDraw
+{
+    uint32 code = 1;//协议号
+}
+
+message SPrizeDraw
+{
+    uint32 code      = 1;//协议号
+    uint32 leftdraw  = 2;//剩余抽奖次数
+    uint32 prizedraw = 3;//已经抽奖次数
+    repeated Prize list = 4;//奖品
+    uint32 error     = 5;//错误码 ,0:正常
+}
+
+message CPrizeBox
+{
+    uint32 code  = 1;//协议号
+    uint32 state = 2;//1=获取信息2=领取
+}
+
+message SPrizeBox
+{
+    uint32 code      = 1;//协议号
+    uint32 time      = 2;//已经在线时长
+    uint32 duration  = 3;//所需在线时长
+    uint32 state     = 4;//1=可以领取,2完成
+    repeated Prize list = 5;//奖品
+    repeated Prize next = 6;//奖品
+    uint32 error     = 7;//错误码 ,0:正常
+}
+
+// 奖品
+message Prize
+{
+    string id        = 1;//id
+    uint32 rtype     = 2;//奖品类型
+    uint32 number    = 3;//奖品数量
+}
+
+
+message CBankrupts
+{
+    uint32 code = 1;//协议号
+}
+
+message SBankrupts
+{
+    uint32 code     = 1;//协议号
+    uint32 relieve  = 2;//剩余救济次数
+    uint32 bankrupt = 3;//已经破产次数
+    repeated Prize list = 4;//奖品
+    uint32 error    = 5;//错误码 ,0:正常
+}
+
+message CClassicList
+{
+    uint32 code  = 1 ;//协议号
+}
+
+message SClassicList
+{
+    uint32  code      = 1 ;//协议号
+    repeated Classic list = 2;//
+    uint32  error     = 3 ;//错误码 ,0:正常
+}
+
+// 经典场
+message Classic
+{
+    string id        = 1;//id
+    uint32 ptype     = 2;//玩法类型1看牌抢庄,3通比牛牛4牛牛坐庄
+    uint32 rtype     = 3;//房间类型1初级,2中级,3高级,4大师
+    uint32 ante      = 4;//房间底分
+    uint32 minimum   = 5;//房间最低
+    uint32 maximum   = 6;//房间最高0表示没限制
+}
+
+message CVipList
+{
+    uint32 code  = 1 ;//协议号
+}
+
+message SVipList
+{
+    uint32  code      = 1 ;//协议号
+    repeated Vip list = 2 ;//
+    uint32  error     = 3 ;//错误码 ,0:正常
+}
+
+// Vip
+message Vip
+{
+    uint32 level  = 1;//等级
+    uint32 number = 2;//等级充值金额数量限制
+    uint32 pay    = 3;//充值赠送百分比5=赠送充值的5%
+    uint32 prize  = 4;//赠送抽奖次数
+    uint32 kick   = 5;//经典场可踢人次数
+}
+
+message SPushVip
+{
+    uint32  code   = 1;//协议号
+    uint32  level  = 2;//
+    uint32  number = 3;//
+}
