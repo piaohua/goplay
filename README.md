@@ -42,13 +42,13 @@ admin      后台 web 服务
 
 ## package
 >protocol
-    >> 协议文件目录
-    >> Google Protobuf version 3.0
+    >>协议文件目录</br>
+    >>Google Protobuf version 3.0</br>
 >pb
-    >> 生成协议文件目录
-    >> pack unpack 文件
-    >> 机器人协议文件
-    >> 工具自动生成文件,无需手动修改
+    >> 生成协议文件目录</br>
+    >> pack unpack 文件</br>
+    >> 机器人协议文件</br>
+    >> 工具自动生成文件,无需手动修改</br>
 >data
     >> 1个端口
     >> 数据库操作
