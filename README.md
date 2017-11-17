@@ -41,41 +41,42 @@ admin      后台 web 服务
 ```
 
 ## package
->protocol
-    >>协议文件目录</br>
-    >>Google Protobuf version 3.0</br>
->pb
-    >> 生成协议文件目录</br>
-    >> pack unpack 文件</br>
-    >> 机器人协议文件</br>
-    >> 工具自动生成文件,无需手动修改</br>
->data
-    >> 1个端口
-    >> 数据库操作
-    >> room唯一id,列表管理,房间基础信息
-    >> logger日志写入记录,pid
-    >> 玩家数据中心
->login
-    >> 2端口,1个rpc,1个http
-    >> 加密返回网关信息
->gate
-    >> 2个端口,1个rpc,1个websocket
-    >> 处理消息转发
-    >> 消息打包解包
-    >> 各个游戏状态管理
->hall
-    >> 1个端口
-    >> 处理服务注册,连接数
-    >> 玩家数据缓存
-    >> 网关信息
-    >> 处理请求消息
->game
-    >> 1个端口
-    >> 处理业务逻辑
-    >> 暂时包括排位,排行
-    >> TODO 支付回调
+>protocol</br>
+>>协议文件目录</br>
+>>Google Protobuf version 3.0</br>
+
+>pb</br>
+    >>生成协议文件目录</br>
+    >>pack unpack 文件</br>
+    >>机器人协议文件</br>
+    >>工具自动生成文件,无需手动修改</br>
+>data</br>
+    >> 1个端口</br>
+    >> 数据库操作</br>
+    >> room唯一id,列表管理,房间基础信息</br>
+    >> logger日志写入记录,pid</br>
+    >> 玩家数据中心</br>
+>login</br>
+    >> 2端口,1个rpc,1个http</br>
+    >> 加密返回网关信息</br>
+>gate</br>
+    >> 2个端口,1个rpc,1个websocket</br>
+    >> 处理消息转发</br>
+    >> 消息打包解包</br>
+    >> 各个游戏状态管理</br>
+>hall</br>
+    >> 1个端口</br>
+    >> 处理服务注册,连接数</br>
+    >> 玩家数据缓存</br>
+    >> 网关信息</br>
+    >> 处理请求消息</br>
+>game</br>
+    >> 1个端口</br>
+    >> 处理业务逻辑</br>
+    >> 暂时包括排位,排行</br>
+    >> TODO 支付回调</br>
 >web
-    >> 2端口,1个rpc,1个http
+    >> 2端口,1个rpc,1个http</br>
 
 ## TODO
 * 配置文件动态加载,读取配置服务独立
