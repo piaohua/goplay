@@ -1,0 +1,191 @@
+#!/bin/bash
+
+usage() {
+    echo " ./ctrl cmd "
+    echo " cmd : build (server|robot) (linux) "
+    echo " cmd : start (server|robot) "
+    echo " cmd : status (server|robot) "
+    echo " cmd : stop (server|robot) "
+    echo " cmd : restart, sync, proto, bb "
+}
+
+appName=goplay
+
+workDir=$(cd `dirname $0`; pwd)
+
+cd $workDir
+
+GOPATH=$(cd ../../"$(dirname "$0")"; pwd)
+
+SUI_SRC_DIR="${GOPATH}/src/${appName}"
+
+PROTO_SRC="${SUI_SRC_DIR}/protocol"
+MSGDIR="${SUI_SRC_DIR}/pb"
+
+get_src_file() {
+    if [[ ! -d ${SUI_SRC_DIR}/$1 ]]; then
+        echo ""
+    else
+        echo ${appName}/$1
+    fi
+}
+
+get_bin_file() {
+    echo ${SUI_SRC_DIR}/$1-bin
+}
+
+get_pid_file() {
+    echo ${SUI_SRC_DIR}/$1-bin.pid
+}
+
+get_pid() {
+    binFile=`get_bin_file $1`
+    if [[ ${binFile} == '' ]]; then
+        return 1
+    fi
+    ps aux | grep '${binFile}' | grep -v grep | awk '{print $2}' | head -1
+}
+
+# 生成协议
+proto() {
+    if [[ ! -d ${PROTO_SRC} ]]; then
+        echo "协议文件路径不存在"
+        exit 1
+    fi
+    export GOPATH=${GOPATH}
+    cd ${PROTO_SRC}
+    protoc -I=. -I=${GOPATH}/src --gogoslick_out=plugins=grpc:${MSGDIR} *.proto
+    cd ${SUI_SRC_DIR}/tool
+    go run gen.go
+}
+
+build() {
+    export GOPATH=${GOPATH}
+    binFile=`get_bin_file $1`
+    srcFile=`get_src_file $1`
+    case $2 in
+        linux)
+            export CGO_ENABLED=0
+            export GOOS=linux
+            export GOARCH=amd64
+            export GOPATH=${GOPATH}
+            echo -n "编译LINUX版本 ... "
+            ;;
+    esac
+    if [[ ${binFile} == '' ]]; then
+        echo "未指定输出文件"
+        exit 1
+    fi
+    if [[ ! -d ${GOPATH}/src/${srcFile} ]]; then
+        echo "目录不存在"
+        exit 1
+    fi
+    echo "编译中 ... "
+    go build -o ${binFile} -ldflags "-w -s" ${srcFile}
+}
+
+start() {
+    pidFile=`get_pid_file $1`
+    if [[ -e ${pidFile} ]]; then
+        pid=`cat ${pidFile}`
+    else
+        pid=`get_pid $1`
+        if [[ $? -gt 0 ]]; then
+            echo "失败, 执行文件不存在"
+            exit 1
+        fi
+    fi
+    if [ "$pid" != '' ]; then
+        echo "服务正在运行中, 进程ID为${pid}"
+    else
+        binFile=`get_bin_file $1`
+        if [[ ! -e ${binFile} ]]; then
+            echo "执行BIN文件不存在"
+            exit 1
+        fi
+        if [[ ${pidFile} == '' ]]; then
+            echo "未指定输出PID文件"
+            exit 1
+        fi
+        if [[ ${1} == '' ]]; then
+            echo "未指定输出日志文件"
+            exit 1
+        fi
+        echo -n "正在启动 ... "
+        ${binFile} -log_dir="log" -stderrthreshold="ERROR" > $1.log 2>&1 &
+        echo $! > ${pidFile}
+        sleep 3s
+        status $1
+    fi
+}
+
+status() {
+    pidFile=`get_pid_file $1`
+    if [[ -e ${pidFile} ]]; then
+        pid=`cat ${pidFile}`
+    else
+        pid=`get_pid $1`
+        if [[ $? -gt 0 ]]; then
+            echo "失败, 执行文件不存在"
+            exit 1
+        fi
+    fi
+    if [[ -z "$pid" ]]; then
+        echo "服务不在运行状态"
+        exit 1
+    fi
+    exists=$(ps -ef | grep $pid | grep -v grep | wc -l)
+    if [[ $exists -gt 0 ]]; then
+        echo "服务正在运行中, 进程ID为${pid}"
+    else
+        echo "服务不在运行状态, 但进程ID文件存在"
+    fi
+}
+
+stop() {
+    pidFile=`get_pid_file $1`
+    if [[ -e ${pidFile} ]]; then
+        pid=`cat ${pidFile}`
+        #rm -f $pidFile
+        mv -f $pidFile $pidFile"_bak"
+    else
+        pid=`get_pid $1`
+        if [[ $? -gt 0 ]]; then
+            echo "失败, 执行文件不存在"
+            exit 1
+        fi
+    fi
+    if [ "$pid" != '' ]; then
+        echo -n "正在停止 ... "
+        #kill -9 $PID
+        kill -2 $pid
+        sleep 15s
+        echo "$pid killed!"
+    else
+        echo "服务不在运行状态"
+    fi
+}
+
+restart() {
+    echo -n "正在重启 ... "
+    stop $1
+    sleep 1s
+    start $1
+}
+
+case $1 in
+    build)
+        build $2 $3;;
+    start)
+        start $2;;
+    status)
+        status $2;;
+    stop)
+        stop $2;;
+    restart)
+        restart $2;;
+    proto)
+        proto;;
+    *)
+        usage;;
+esac
