@@ -106,6 +106,7 @@ message RoomData
     uint32 discard   = 16;  //出牌
     uint32 seat      = 17;  //操作位置
     uint32 number    = 18;  //剩余牌数
+	uint32 total     = 19;  //总牌局数
 }
 
 // 下注信息

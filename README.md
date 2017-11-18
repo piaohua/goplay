@@ -14,6 +14,9 @@ go clone github.com/piaohua/goplay
 ```
 cd $GOPATH/bin/ctrl
 ./ctrl
+
+./ctrl build login
+./login-bin -log_dir=./logs
 ```
 
 ## Document

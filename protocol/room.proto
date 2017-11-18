@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "vo.proto";
 
 // 离开房间
 message CLeave
@@ -87,4 +88,18 @@ message SPubDraw
 	uint32 code  = 1 ;//协议号
 	uint32 state = 2;  //房间状态
 	uint32 card  = 3;  //公共牌1张
+}
+
+//房间列表
+message CRoomList
+{
+	uint32 code   = 1;//协议号
+	uint32 rtype  = 2;  //房间类型
+}
+
+message SRoomList
+{
+	uint32 code   = 1 ;//协议号
+	repeated RoomData list = 2;  //列表
+	uint32 error  = 3 ; // 错误码
 }

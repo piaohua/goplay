@@ -13,21 +13,21 @@ message Response {
     string Message = 2;
 }
 
-//连接节点
-message Connect {
+//网关连接节点
+message GateConnect {
     actor.PID Sender = 1;
 }
 
-message Connected {
+message GateConnected {
     string Message = 1;
 }
 
-//断开连接
-message Disconnect {
+//网关节点断开连接
+message GateDisconnect {
     actor.PID Sender = 1;
 }
 
-message Disconnected {
+message GateDisconnected {
     string Message = 1;
 }
 
@@ -44,6 +44,33 @@ message SetLogined {
     actor.PID HallPid = 5;
 }
 
+//注册
+message RegistDbms {
+    actor.PID Sender = 1;
+}
+
+message RegistedDbms {
+    string Message = 1;
+}
+
+//注册
+message RegistRoom {
+    actor.PID Sender = 1;
+}
+
+message RegistedRoom {
+    string Message = 1;
+}
+
+//注册
+message RegistRole {
+    actor.PID Sender = 1;
+}
+
+message RegistedRole {
+    string Message = 1;
+}
+
 //登录网关
 message LoginGate {
     actor.PID Sender = 1;
@@ -58,7 +85,7 @@ message LoginedGate {
 message LoginHall {
     actor.PID Sender = 1;
     string Userid = 2;
-    string Node = 3;
+    string NodeName = 3;
 }
 
 message LoginedHall {
