@@ -21,6 +21,15 @@ cd $GOPATH/bin/ctrl
 
 ## Document
 ```
+包引用规范
+import (
+    系统包
+
+    自定义包
+
+    第三方包
+)
+
 src/goplay/
 protocol   协议文件目录 Google Protobuf version 3.0
 pb         生成协议文件目录, pack unpack 文件
@@ -43,7 +52,7 @@ src/
 admin      后台 web 服务
 ```
 
-## package
+## package & program
 >protocol</br>
 >>协议文件目录</br>
 >>Google Protobuf version 3.0</br>

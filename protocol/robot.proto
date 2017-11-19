@@ -1,0 +1,24 @@
+syntax = "proto3";
+package pb;
+
+//机器人消息
+message RobotMsg {
+    string Code  = 1;
+    uint32 Num   = 2;
+    uint32 Rtype = 3;
+}
+
+message RobotLogin {
+	phone string = 1;
+}
+
+message RobotReLogin {
+	phone string = 1;
+	code  string = 2;
+	rtype uint32 = 3;
+}
+
+message RobotLogout {
+	phone string = 1;
+	code  string = 2;
+}

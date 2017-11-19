@@ -78,7 +78,7 @@ message LoginGate {
 }
 
 message LoginedGate {
-    actor.PID Sender = 1;
+    string Message = 1;
 }
 
 //登录大厅
@@ -92,7 +92,12 @@ message LoginedHall {
     string Message = 1;
 }
 
-//大厅通知网关登出
+//别处登录
+message LoginElse {
+    string Userid = 1;
+}
+
+//登出
 message Logout {
     actor.PID Sender = 1;
     string Userid = 2;
@@ -100,11 +105,4 @@ message Logout {
 
 message Logouted {
     actor.PID Sender = 1;
-}
-
-//机器人消息
-message RobotMsg {
-    string Code  = 1;
-    uint32 Num   = 2;
-    uint32 Rtype = 3;
 }
