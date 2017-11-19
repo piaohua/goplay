@@ -9,16 +9,16 @@ message RobotMsg {
 }
 
 message RobotLogin {
-	phone string = 1;
+	string Phone = 1;
 }
 
 message RobotReLogin {
-	phone string = 1;
-	code  string = 2;
-	rtype uint32 = 3;
+	string Phone = 1;
+	string Code  = 2;
+	uint32 Rtype = 3;
 }
 
 message RobotLogout {
-	phone string = 1;
-	code  string = 2;
+	string Phone = 1;
+	string Code  = 2;
 }
