@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 // 登陆
 message CLogin
@@ -15,7 +16,7 @@ message SLogin
 {
     uint32 code     = 1 ;//协议号
     string userid   = 2 ;//用户id
-    uint32 error    = 3 ;//错误码
+    ErrCode error    = 3 ;//错误码
 }
 
 // 注册
@@ -33,7 +34,7 @@ message SRegist
 {
     uint32 code   = 1 ;//协议号
     string userid = 2 ;//用户id
-    uint32 error  = 3 ;//错误码
+    ErrCode error  = 3 ;//错误码
 }
 
 // 微信登录登陆
@@ -52,7 +53,7 @@ message SWxLogin
     string userid  = 2 ;// 用户id
     string token   = 3 ;// 返回access_token
     bool   isreg   = 4 ;// 是否注册
-    uint32 error   = 5 ;// 错误码
+    ErrCode error   = 5 ;// 错误码
 }
 
 message SLoginOut

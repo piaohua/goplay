@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 // 房间广播文字聊天
 message CChatText
@@ -15,7 +16,7 @@ message SChatText
     uint32 seat    = 2;
     string userid  = 3;
     string content = 4;
-    uint32 error   = 5; // 错误码
+    ErrCode error   = 5; // 错误码
 }
 
 // 房间广播语音聊天
@@ -32,7 +33,7 @@ message SChatVoice
     uint32 seat    = 2;
     string userid  = 3;
     string content = 4;
-    uint32 error   = 5; // 错误码
+    ErrCode error   = 5; // 错误码
 }
 
 // 世界广播
@@ -54,7 +55,7 @@ message SNotice
 {
     uint32 code = 1;//协议号
     repeated Notice list = 2;
-    uint32 error = 3; // 错误码
+    ErrCode error = 3; // 错误码
 }
 
 message Notice

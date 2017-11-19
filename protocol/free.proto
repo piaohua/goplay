@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 进入房间
 message CEnterFreeRoom
@@ -14,7 +15,7 @@ message SEnterFreeRoom
     FreeRoom  roominfo = 2;//房间的详细资料
     repeated FreeUser  userinfo = 3;//已在房间的玩家基础信息
     repeated RoomBets  betsinfo = 5;//下注倍数
-    uint32    error    = 6;//错误码
+    ErrCode error    = 6;//错误码
 }
 
 // 其他玩家进入房间
@@ -40,7 +41,7 @@ message SFreeDealer
     string userid   = 4;//申请上庄玩家
     string nickname = 5;//昵称
     uint32 coin     = 6;//上/下庄金额
-    uint32 error    = 7;//错误码
+    ErrCode error    = 7;//错误码
 }
 
 //3.上庄列表
@@ -53,7 +54,7 @@ message SDealerList
 {
     uint32 code     = 1;//协议号
     repeated DealerList list = 2;//上庄
-    uint32 error    = 3;//错误码
+    ErrCode error    = 3;//错误码
 }
 
 //4.玩家入坐,站起
@@ -73,7 +74,7 @@ message SFreeSit
     string nickname = 5;//
     string photo    = 6;//
     uint32 coin     = 7;//
-    uint32 error    = 8;//错误码
+    ErrCode error    = 8;//错误码
 }
 
 //4.玩家下注
@@ -93,7 +94,7 @@ message SFreeBet
     string userid= 5;//下注玩家id
     uint32 coin  = 6;//下注位置总数
     uint32 bets  = 7;//下注位置个人总数
-    uint32 error = 8;//错误码
+    ErrCode error = 8;//错误码
 }
 
 // 结算广播接口，游戏开始

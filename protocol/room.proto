@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 离开房间
 message CLeave
@@ -13,7 +14,7 @@ message SLeave
     uint32 code   = 1; //协议号
     uint32 seat   = 2; //玩家选择的座位号
     string userid = 3; //玩家id
-    uint32 error  = 4; //错误码
+    ErrCode error  = 4; //错误码
 }
 
 // 踢人
@@ -29,7 +30,7 @@ message SKick
     uint32 seat   = 2; //被踢的玩家座位
     string userid = 3; //被踢的玩家id
     uint32 result = 4; //0失败,1房主T人,2房间被解散
-    uint32 error  = 5; //错误码
+    ErrCode error  = 5; //错误码
 }
 
 //1.准备游戏(准备完成开始游戏时状态切为发牌)
@@ -44,7 +45,7 @@ message SReady
     uint32 code = 1; //协议号
     uint32 seat = 2; //准备游戏的玩家座位
     bool   ready= 3; //true准备,false取消
-    uint32 error= 4; //错误码
+    ErrCode error= 4; //错误码
 }
 
 // 私人局,发起投票申请解散房间
@@ -57,7 +58,7 @@ message SLaunchVote
 {
     uint32 code = 1;//协议号
     uint32 seat = 2;//发起人玩家座位号
-    uint32 error= 3;
+    ErrCode error= 3;
 }
 
 // 私人局,发起投票,投票解散房间,如果投票成功，服务器主动推送SKick协议，并且reason字段值为1
@@ -72,7 +73,7 @@ message SVote
     uint32 code = 1;//协议号
     uint32 vote = 2;//0同意,1不同意
     uint32 seat = 3;//投票玩家座位号
-    uint32 error= 4;
+    ErrCode error= 4;
 }
 
 // 投票解散房间事件结果,服务器主动推送
@@ -101,5 +102,5 @@ message SRoomList
 {
 	uint32 code   = 1 ;//协议号
 	repeated RoomData list = 2;  //列表
-	uint32 error  = 3 ; // 错误码
+	ErrCode error  = 3 ; // 错误码
 }

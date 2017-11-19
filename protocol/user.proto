@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 获取游戏全局配置数据
 message CConfig
@@ -26,7 +27,7 @@ message SUserData
 {
     uint32 code   = 1;//协议号
     UserData data = 2;
-    uint32 error  = 3;//错误码
+    ErrCode error  = 3;//错误码
 }
 
 // 获取虚拟货币
@@ -84,7 +85,7 @@ message SBank
     uint32 amount  = 3;//操作金额
     string userid  = 4;//用户id
     uint32 balance = 5;//账户余额
-    uint32 error   = 6;//错误码
+    ErrCode error   = 6;//错误码
 }
 
 message CPing
@@ -97,5 +98,5 @@ message SPing
 {
     uint32 code = 1;//协议号
     uint32 time = 2;//时间截
-    uint32 error= 3;//错误码 ,0:正常
+    ErrCode error= 3;//错误码 ,0:正常
 }

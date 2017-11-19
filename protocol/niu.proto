@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 进入房间
 message CEnterRoom
@@ -16,7 +17,7 @@ message SEnterRoom
     repeated RoomUser userinfo = 3;//已在房间的玩家基础信息
     RoomVote voteinfo          = 4;//发起投票的信息
     repeated RoomBets betsinfo = 5;//下注倍数
-    uint32   error             = 6;//错误码
+    ErrCode error             = 6;//错误码
 }
 
 // 创建房间
@@ -37,7 +38,7 @@ message SCreateRoom
 {
     uint32 code    = 1; //协议号
     RoomData rdata = 2; //
-    uint32 error   = 3; // 错误码
+    ErrCode error   = 3; // 错误码
 }
 
 // 其他玩家进入房间
@@ -70,7 +71,7 @@ message SDealer
     uint32 seat  = 2;  //位置
     bool   dealer= 3;  //true抢庄,false不抢
     uint32 num   = 4;  //抢庄倍数
-    uint32 error = 5;  //错误码
+    ErrCode error = 5;  //错误码
 }
 
 //完成抢庄,推送庄家位置
@@ -94,7 +95,7 @@ message SBet
     uint32 seat    = 2;//玩家的座位号
     uint32 seatbet = 3;//百人场使用,下注位置,1庄家，2天，3地，4玄，5黄
     uint32 value   = 4;//值
-    uint32 error   = 5;//错误码
+    ErrCode error   = 5;//错误码
 }
 
 //5.玩家组合牌提交
@@ -112,7 +113,7 @@ message SNiu
     uint32 seat  = 2;  //玩家的座位号
     uint32 value = 3;  //提交相应的值,0为无
     repeated uint32 cards = 4; //手牌5张,前3张为牛,后2张为点
-    uint32 error = 5;  //错误码
+    ErrCode error = 5;  //错误码
 }
 
 // 结算广播接口，游戏结束

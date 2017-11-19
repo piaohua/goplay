@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 //seat
 //(1有牛，2无牛)
@@ -21,7 +22,7 @@ message SBettingInfo
     string  index    = 2 ;//期数
     Betting status   = 3 ;//状态0下注,1等待
     repeated JackpotInfo list = 4 ;//奖池
-    uint32  error    = 5 ;//错误码
+    ErrCode error    = 5 ;//错误码
 }
 
 // 投注状态
@@ -52,7 +53,7 @@ message SBetting
     uint32  code   = 1 ;//协议号
     uint32  seat   = 2 ;//押注位置
     uint32  number = 3 ;//押注数量
-    uint32  error  = 4 ;//错误码
+    ErrCode error  = 4 ;//错误码
 }
 
 // 奖池更新广播

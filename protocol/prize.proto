@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 message CPrizeList
 {
@@ -10,7 +11,7 @@ message SPrizeList
 {
     uint32 code   = 1;//协议号
     repeated Prize list = 2;//奖品
-    uint32 error  = 3;//错误码 ,0:正常
+    ErrCode error  = 3;//错误码 ,0:正常
 }
 
 message CPrizeDraw
@@ -24,7 +25,7 @@ message SPrizeDraw
     uint32 leftdraw  = 2;//剩余抽奖次数
     uint32 prizedraw = 3;//已经抽奖次数
     repeated Prize list = 4;//奖品
-    uint32 error     = 5;//错误码 ,0:正常
+    ErrCode error     = 5;//错误码 ,0:正常
 }
 
 message CPrizeBox
@@ -41,7 +42,7 @@ message SPrizeBox
     uint32 state     = 4;//1=可以领取,2完成
     repeated Prize list = 5;//奖品
     repeated Prize next = 6;//奖品
-    uint32 error     = 7;//错误码 ,0:正常
+    ErrCode error     = 7;//错误码 ,0:正常
 }
 
 // 奖品
@@ -64,7 +65,7 @@ message SBankrupts
     uint32 relieve  = 2;//剩余救济次数
     uint32 bankrupt = 3;//已经破产次数
     repeated Prize list = 4;//奖品
-    uint32 error    = 5;//错误码 ,0:正常
+    ErrCode error    = 5;//错误码 ,0:正常
 }
 
 message CClassicList
@@ -76,7 +77,7 @@ message SClassicList
 {
     uint32  code      = 1 ;//协议号
     repeated Classic list = 2;//
-    uint32  error     = 3 ;//错误码 ,0:正常
+    ErrCode error     = 3 ;//错误码 ,0:正常
 }
 
 // 经典场
@@ -99,7 +100,7 @@ message SVipList
 {
     uint32  code      = 1 ;//协议号
     repeated Vip list = 2 ;//
-    uint32  error     = 3 ;//错误码 ,0:正常
+    ErrCode error     = 3 ;//错误码 ,0:正常
 }
 
 // Vip

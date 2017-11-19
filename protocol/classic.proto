@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 进入房间
 message CEnterClassicRoom
@@ -15,7 +16,7 @@ message SEnterClassicRoom
     RoomData  roominfo = 2;//房间的详细资料
     repeated RoomUser  userinfo = 3;//已在房间的玩家基础信息
     repeated RoomBets  betsinfo = 4;//下注倍数
-    uint32    error    = 5;//错误码
+    ErrCode error    = 5;//错误码
 }
 
 // 结算广播接口，游戏结束
@@ -39,7 +40,7 @@ message SGetPrize
 {
     uint32       code          = 1;//协议号
 	uint32       card          = 2;//获奖的牌值
-    uint32       error         = 3;//错误码
+    ErrCode error         = 3;//错误码
 }
 
 // 刮奖
@@ -53,5 +54,5 @@ message SPrizeCards
 {
     uint32       code          = 1;//协议号
 	repeated PrizeCard    list = 2;//奖励牌值列表
-    uint32       error         = 3;//错误码
+    ErrCode error         = 3;//错误码
 }

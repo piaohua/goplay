@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 // 新邮件通知
 message SMailNotice
@@ -31,7 +32,7 @@ message SDeleteMail
 {
     uint32 code  = 1; // 协议号
     string id    = 2; // 邮件ID
-    uint32 error = 3; // 错误码
+    ErrCode error = 3; // 错误码
 }
 
 // 收取附件
@@ -45,7 +46,7 @@ message SGetMailItem
 {
     uint32 code  = 1; // 协议号
     string id    = 2; // 邮件ID
-    uint32 error = 3; // 错误码
+    ErrCode error = 3; // 错误码
 }
 
 // 附件

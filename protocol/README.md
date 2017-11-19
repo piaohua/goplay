@@ -27,8 +27,11 @@ lottery  code 4000+ 全民刮奖
 
 pub   公共
 
+code  错误码
+
 内部通信消息
 protos
 logger
 data
+robot
 ```

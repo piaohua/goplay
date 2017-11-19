@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "pub.proto";
+import "code.proto";
 
 //排位赛
 
@@ -14,7 +15,7 @@ message SDanInfo
 {
     uint32 code   = 1 ;//协议号
     repeated DanList info  = 2;
-    uint32 error  = 3 ;//错误码
+    ErrCode error  = 3 ;//错误码
 }
 
 //个人排位赛数据
@@ -29,7 +30,7 @@ message SQualifying
     repeated DanTaskList task  = 2; // 任务列表
     DanCombat combat  = 3; // 个人战绩
     DanSeason season  = 4; // 赛季时间
-    uint32 error      = 5; // 错误码
+    ErrCode error      = 5; // 错误码
 }
 
 //排位赛排行榜
@@ -42,7 +43,7 @@ message SDanRanking
 {
     uint32 code     = 1 ; // 协议号
     repeated DanRanking list = 2; // 排行数据
-    uint32 error    = 3 ; // 错误码
+    ErrCode error    = 3 ; // 错误码
 }
 
 //排位赛更新

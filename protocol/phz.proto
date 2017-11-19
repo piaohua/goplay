@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "vo.proto";
+import "code.proto";
 
 // 进入房间
 message CEnterZiRoom
@@ -18,7 +19,7 @@ message SEnterZiRoom
 	repeated RoomUser  userinfo = 3;//已在房间的玩家基础信息
 	RoomVote  voteinfo = 4;//发起投票的信息
 	repeated RoomCard  cardinfo = 5;//牌面
-	uint32    error    = 6 ;//错误码
+	ErrCode error    = 6 ;//错误码
 }
 
 // 创建房间
@@ -40,7 +41,7 @@ message SCreateZiRoom
 {
 	uint32 code    = 1;//协议号
 	RoomData rdata = 2;
-	uint32 error   = 3;//错误码
+	ErrCode error   = 3;//错误码
 }
 
 // 其他玩家进入房间
@@ -142,7 +143,7 @@ message SPushDiscard
 	uint32 seat  = 2;  //位置
 	uint32 card  = 3;  //牌
 	uint32 value = 4;  //操作值
-    uint32 error = 5;  //错误码
+    ErrCode error = 5;  //错误码
 }
 
 //自动操作(提,跑,偎)
@@ -174,7 +175,7 @@ message SOperate
     repeated uint32 cards   = 6;  //吃牌
     repeated uint32 bione   = 7;  //比牌
     repeated uint32 bitwo   = 8;  //比牌
-    uint32 error            = 9;  //错误码
+    ErrCode error            = 9;  //错误码
 }
 
 //房间状态

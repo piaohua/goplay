@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 // 全民刮奖
 message CLotteryInfo
@@ -13,7 +14,7 @@ message SLotteryInfo
     repeated Lottery  list      = 2 ;//数量
     uint32   single    = 3 ;//一注需要消耗的钻石(目前定义的是一注5钻石，如果我购买10注那就是花费50钻石)
     uint32   maxnumber = 4 ;//一次最多购买多少注
-    uint32   error     = 5 ;//错误码
+    ErrCode error     = 5 ;//错误码
 }
 
 // 刮奖机会
@@ -36,5 +37,5 @@ message SLottery
     repeated uint32  cards  = 2 ;//牌面
     uint32  niu    = 3 ;//牛(掩码)
     uint32  number = 4 ;//中奖金额
-    uint32  error  = 5 ;//错误码
+    ErrCode error  = 5 ;//错误码
 }

@@ -1,5 +1,6 @@
 syntax = "proto3";
 package pb;
+import "code.proto";
 
 // 商城
 message CBuy
@@ -12,7 +13,7 @@ message SBuy
 {
     uint32 code   = 1; //协议号
     uint32 result = 2; //0购买成功,1失败
-    uint32 error  = 3; //错误码
+    ErrCode error  = 3; //错误码
 }
 
 // 微信支付 - 下单
@@ -29,7 +30,7 @@ message SWxpayOrder
     uint32 id      = 2; // 购买商品ID
     string payreq  = 3; // 调起支付接口请求参数
     string orderid = 4; // 订单号
-    uint32 error   = 5; // 错误码
+    ErrCode error   = 5; // 错误码
 }
 
 // 微信支付 - 查询
@@ -44,7 +45,7 @@ message SWxpayQuery
     uint32 code    = 1;// 协议号
     string orderid = 2;// 订单号
     uint32 result  = 3;// 0支付成功,1发货中,2订单号不存在,3支付失败
-    uint32 error   = 4;// 错误码
+    ErrCode error   = 4;// 错误码
 }
 
 //  苹果支付
@@ -59,7 +60,7 @@ message SApplePay
 {
     uint32 code    = 1;//协议号
     uint32 id      = 2;//购买商品ID
-    uint32 error   = 3;//错误码
+    ErrCode error   = 3;//错误码
 }
 
 // 商城
@@ -72,7 +73,7 @@ message SShop
 {
     uint32 code   = 1;//协议号
     repeated Shop   list   = 2; //商品列表
-    uint32 error  = 3; //错误码
+    ErrCode error  = 3; //错误码
 }
 
 // 商品
