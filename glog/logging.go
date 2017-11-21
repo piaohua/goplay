@@ -123,5 +123,9 @@ func Debug(args ...interface{}) {
 
 // Debugf logs a message using DEBUG as log level.
 func Debugf(format string, args ...interface{}) {
+	//TODO
+	//if !strings.HasSuffix(format, "\n") {
+	//	format += "\n"
+	//}
 	log.Debugf(format, args...)
 }

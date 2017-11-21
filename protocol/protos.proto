@@ -97,6 +97,10 @@ message LoginElse {
     string Userid = 1;
 }
 
+message LoginedElse {
+    string Userid = 1;
+}
+
 //登出
 message Logout {
     actor.PID Sender = 1;
