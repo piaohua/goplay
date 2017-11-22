@@ -14,6 +14,8 @@ import (
 //大厅服务
 type HallActor struct {
 	Name string
+	//登录服务
+	loginPid *actor.PID
 	//数据中心服务
 	dbmsPid *actor.PID
 	//房间服务
@@ -34,6 +36,7 @@ func (a *HallActor) Receive(ctx actor.Context) {
 		ctx.Respond(&pb.Response{})
 	case *actor.Started:
 		fmt.Println("Starting, initialize actor here")
+		a.init(ctx)
 	case *actor.Stopping:
 		fmt.Println("Stopping, actor is about to shut down")
 	case *actor.Stopped:
@@ -51,6 +54,11 @@ func (a *HallActor) Receive(ctx actor.Context) {
 
 func newHallActor() actor.Actor {
 	return new(HallActor)
+}
+
+func (a *HallActor) init(ctx actor.Context) {
+	//name
+	a.Name = cfg.Section("hall").Name()
 }
 
 func NewRemote(bind, name string) {

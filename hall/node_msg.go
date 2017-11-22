@@ -19,21 +19,28 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		glog.Infof("GateConnect %s", arg.Sender.String())
 		//网关注册
 		a.gates[arg.Sender.String()] = arg.Sender
-	case *pb.RegistDbms:
-		a.dbmsPid = arg.Sender
-		rsp := new(pb.RegistedDbms)
-		rsp.Message = a.Self().String()
-		ctx.Respond(rsp)
-	case *pb.RegistRoom:
-		a.roomPid = arg.Sender
-		rsp := new(pb.RegistedRoom)
-		rsp.Message = a.Self().String()
-		ctx.Respond(rsp)
-	case *pb.RegistRole:
-		a.rolePid = arg.Sender
-		rsp := new(pb.RegistedRole)
-		rsp.Message = a.Self().String()
-		ctx.Respond(rsp)
+	case *pb.HallConnect:
+		//初始化建立连接
+		arg := msg.(*pb.HallConnect)
+		name := arg.Name
+		dbmsName := cfg.Section("dbms").Name()
+		roomName := cfg.Section("room").Name()
+		roleName := cfg.Section("role").Name()
+		loginName := cfg.Section("login").Name()
+		if name == dbmsName {
+			a.dbmsPid = arg.Sender
+		} else if name == roomName {
+			a.roomPid = arg.Sender
+		} else if name == roleName {
+			a.rolePid = arg.Sender
+		} else if name == loginName {
+			a.loginPid = arg.Sender
+		}
+		//connected := &pb.HallConnected{
+		//	Message: ctx.Self().String(),
+		//	Name:    arg.Name,
+		//}
+		//ctx.Respond(rsp)
 	case *pb.LoginHall:
 		arg := msg.(*pb.LoginHall)
 		userid := arg.GetUserid()
