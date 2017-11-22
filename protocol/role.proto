@@ -1,0 +1,58 @@
+syntax = "proto3";
+package pb;
+import "github.com/AsynkronIT/protoactor-go/actor/protos.proto";
+
+//玩家行为操作
+
+//登录设置连接
+message SetLogin {
+    actor.PID Sender = 1;
+}
+
+message SetLogined {
+    string Message = 1;
+    actor.PID DbmsPid = 2;
+    actor.PID RoomPid = 3;
+    actor.PID RolePid = 4;
+    actor.PID HallPid = 5;
+}
+
+//登录网关
+message LoginGate {
+    actor.PID Sender = 1;
+    string Userid = 2;
+}
+
+message LoginedGate {
+    string Message = 1;
+}
+
+//登录大厅
+message LoginHall {
+    actor.PID Sender = 1;
+    string Userid = 2;
+    string NodeName = 3;
+}
+
+message LoginedHall {
+    string Message = 1;
+}
+
+//别处登录
+message LoginElse {
+    string Userid = 1;
+}
+
+message LoginedElse {
+    string Userid = 1;
+}
+
+//登出
+message Logout {
+    actor.PID Sender = 1;
+    string Userid = 2;
+}
+
+message Logouted {
+    actor.PID Sender = 1;
+}
