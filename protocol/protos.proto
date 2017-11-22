@@ -2,6 +2,8 @@ syntax = "proto3";
 package pb;
 import "github.com/AsynkronIT/protoactor-go/actor/protos.proto";
 
+//节点行为操作
+
 //请求响应
 message Request {
     string UserName = 1;
@@ -31,82 +33,13 @@ message GateDisconnected {
     string Message = 1;
 }
 
-//设置连接
-message SetLogin {
+//连接中心节点
+message HallConnect {
     actor.PID Sender = 1;
+    string Name = 2;
 }
 
-message SetLogined {
+message HallConnected {
     string Message = 1;
-    actor.PID DbmsPid = 2;
-    actor.PID RoomPid = 3;
-    actor.PID RolePid = 4;
-    actor.PID HallPid = 5;
-}
-
-//注册
-message RegistDbms {
-    actor.PID Sender = 1;
-}
-
-message RegistedDbms {
-    string Message = 1;
-}
-
-//注册
-message RegistRoom {
-    actor.PID Sender = 1;
-}
-
-message RegistedRoom {
-    string Message = 1;
-}
-
-//注册
-message RegistRole {
-    actor.PID Sender = 1;
-}
-
-message RegistedRole {
-    string Message = 1;
-}
-
-//登录网关
-message LoginGate {
-    actor.PID Sender = 1;
-    string Userid = 2;
-}
-
-message LoginedGate {
-    string Message = 1;
-}
-
-//登录大厅
-message LoginHall {
-    actor.PID Sender = 1;
-    string Userid = 2;
-    string NodeName = 3;
-}
-
-message LoginedHall {
-    string Message = 1;
-}
-
-//别处登录
-message LoginElse {
-    string Userid = 1;
-}
-
-message LoginedElse {
-    string Userid = 1;
-}
-
-//登出
-message Logout {
-    actor.PID Sender = 1;
-    string Userid = 2;
-}
-
-message Logouted {
-    actor.PID Sender = 1;
+    string Name = 2;
 }

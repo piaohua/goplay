@@ -1,6 +1,8 @@
 syntax = "proto3";
 package pb;
 
+//玩家数据操作
+
 //import google_protobuf "github.com/golang/protobuf/ptypes/timestamp"
 //
 //message File {

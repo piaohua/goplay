@@ -30,8 +30,9 @@ pub   公共
 code  错误码
 
 内部通信消息
-protos
-logger
-data
-robot
+protos   节点操作
+logger   日志操作
+data     数据操作
+robot    机器人操作
+role     玩家操作
 ```
