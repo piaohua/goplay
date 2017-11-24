@@ -39,6 +39,6 @@ func signalListen() {
 	//signal.Stop(c)
 	for {
 		s := <-c
-		glog.Fatal("get signal:", s)
+		glog.Error("get signal:", s)
 	}
 }

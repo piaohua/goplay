@@ -26,19 +26,19 @@ func (p Password) Redacted() interface{} {
 //TODO 设置log level
 func Init() {
 	flag.Parse()
-	//backend1 := logging.NewLogBackendFile(os.Stderr, "", 0)
+	backend1 := logging.NewLogBackendFile(os.Stderr, "", 0)
 	backend2 := logging.NewLogBackend(os.Stderr, "", 0)
 
-	//backend1Formatter := logging.NewBackendFormatter(backend1, format1)
-	//backend1Leveled := logging.AddModuleLevel(backend1Formatter)
-	//backend1Leveled.SetLevel(logging.DEBUG, "")
+	backend1Formatter := logging.NewBackendFormatter(backend1, format1)
+	backend1Leveled := logging.AddModuleLevel(backend1Formatter)
+	backend1Leveled.SetLevel(logging.DEBUG, "")
 
 	backend2Formatter := logging.NewBackendFormatter(backend2, format2)
 	backend2Leveled := logging.AddModuleLevel(backend2Formatter)
 	backend2Leveled.SetLevel(logging.DEBUG, "")
 
-	//logging.SetBackend(backend1Leveled, backend2Leveled)
-	logging.SetBackend(backend2Leveled)
+	logging.SetBackend(backend1Leveled, backend2Leveled)
+	//logging.SetBackend(backend2Leveled)
 }
 
 // Flush flushes all pending log I/O.
