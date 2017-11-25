@@ -44,5 +44,6 @@ func signalListen() {
 	for {
 		s := <-c
 		glog.Error("get signal:", s)
+		return
 	}
 }

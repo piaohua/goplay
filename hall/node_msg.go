@@ -75,7 +75,7 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		a.roles[userid] = name
 		//响应登录
 		rsp := new(pb.LoginedHall)
-		rsp.Message = a.Self().String()
+		rsp.Message = ctx.Self().String()
 		ctx.Respond(rsp)
 	case *pb.Logout:
 		//登出成功

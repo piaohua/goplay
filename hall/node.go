@@ -39,6 +39,7 @@ func (a *HallActor) Receive(ctx actor.Context) {
 		a.init(ctx)
 	case *actor.Stopping:
 		fmt.Println("Stopping, actor is about to shut down")
+		a.disc(ctx)
 	case *actor.Stopped:
 		fmt.Println("Stopped, actor and its children are stopped")
 	case *actor.Restarting:
@@ -59,6 +60,13 @@ func newHallActor() actor.Actor {
 func (a *HallActor) init(ctx actor.Context) {
 	//name
 	a.Name = cfg.Section("hall").Name()
+	a.gates = make(map[string]*actor.PID)
+	a.roles = make(map[string]string)
+	a.count = make(map[string]uint32)
+}
+
+func (a *HallActor) disc(ctx actor.Context) {
+	//TODO
 }
 
 func NewRemote(bind, name string) {
