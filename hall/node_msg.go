@@ -19,6 +19,15 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		glog.Infof("GateConnect %s", arg.Sender.String())
 		//网关注册
 		a.gates[arg.Sender.String()] = arg.Sender
+	case *pb.GateDisconnect:
+		arg := msg.(*pb.GateDisconnect)
+		connected := &pb.GateDisconnected{
+			Message: ctx.Self().String(),
+		}
+		arg.Sender.Tell(connected)
+		glog.Infof("GateDisconnect %s", arg.Sender.String())
+		//网关注销
+		delete(a.gates, arg.Sender.String())
 	case *pb.HallConnect:
 		//初始化建立连接
 		arg := msg.(*pb.HallConnect)
