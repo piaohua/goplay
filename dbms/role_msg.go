@@ -69,6 +69,13 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.Login:
+		//登录成功
+		arg := msg.(*pb.Login)
+		a.router[arg.Sender.String()] = arg.Userid
+		//响应登录
+		rsp := new(pb.Logined)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

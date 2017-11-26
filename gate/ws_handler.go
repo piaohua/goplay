@@ -96,7 +96,7 @@ func (ws *WSConn) login(userid string, ctx actor.Context) {
 	msg1 := new(pb.LoginHall)
 	msg1.Userid = userid
 	msg1.NodeName = nodePid.String()
-	timeout := 2 * time.Second
+	timeout := 3 * time.Second
 	res1, err1 := ws.hallPid.RequestFuture(msg1, timeout).Result()
 	if err1 != nil {
 		glog.Errorf("LoginHall err: %v", err1)
@@ -113,8 +113,19 @@ func (ws *WSConn) login(userid string, ctx actor.Context) {
 	}
 	response2 := res2.(*pb.LoginedGate)
 	glog.Debugf("response2: %#v", response2)
-	//查看房间数据
+	//TODO 查看房间数据
 	//msg3 := &pb.LoginGate{}
 	//res3, err3 := ws.roomPid.RequestFuture(msg3, timeout).Result()
 	//response3 := res3.(*pb.LoginedGate)
+	//登录成功响应
+	msg4 := new(pb.Login)
+	msg4.Sender = ctx.Self()
+	msg4.Userid = userid
+	res4, err4 := ws.rolePid.RequestFuture(msg4, timeout).Result()
+	if err4 != nil {
+		//TODO 断开
+		glog.Errorf("Login err: %v", err4)
+	}
+	response4 := res4.(*pb.Logined)
+	glog.Debugf("response4: %#v", response4)
 }
