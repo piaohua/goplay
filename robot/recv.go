@@ -95,7 +95,7 @@ func (r *Robot) recvRegist(stoc *pb.SRegist) {
 		glog.Infof("regist err -> %d", errcode)
 	}
 	//重新尝试登录
-	go ReLogined(r.data.Phone, r.code, r.rtype)
+	//go ReLogined(r.data.Phone, r.code, r.rtype)
 	r.Close()
 }
 

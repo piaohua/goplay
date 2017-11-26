@@ -36,6 +36,7 @@ type RobotServer struct {
 	online  map[string]bool  //map[phone]状态,true=在线,
 	offline map[string]bool  //map[phone]状态,true=离线,false=登录中
 	msgCh   chan interface{} //消息通道
+	stopCh  chan struct{}    // 关闭通道
 }
 
 func (server *RobotServer) Start() {
@@ -54,6 +55,7 @@ func (server *RobotServer) Start() {
 	server.online = make(map[string]bool)
 	server.offline = make(map[string]bool)
 	server.msgCh = make(chan interface{}, 100)
+	server.stopCh = make(chan struct{})
 	//启动管理服务
 	go server.run()
 	//启动测试
@@ -64,8 +66,9 @@ func (server *RobotServer) Start() {
 
 //关闭连接
 func (server *RobotServer) Close() {
-	close(server.channel)
-	close(server.msgCh) //关闭
+	close(server.stopCh)  //关闭
+	close(server.msgCh)   //关闭
+	close(server.channel) //关闭
 
 	server.mutexConns.Lock()
 	for conn := range server.conns {
@@ -78,7 +81,7 @@ func (server *RobotServer) Close() {
 }
 
 //启动一个机器人
-func (server *RobotServer) RunRobot(code, phone string, rtype uint32, regist bool) {
+func (server *RobotServer) RunRobot(phone, code string, rtype uint32, regist bool) {
 	host := getHost()
 	u := url.URL{Scheme: "ws", Host: host, Path: "/"}
 	conn, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
@@ -104,11 +107,11 @@ func (server *RobotServer) RunRobot(code, phone string, rtype uint32, regist boo
 	robot.code = code //设置邀请码
 	robot.rtype = rtype
 	robot.data.Phone = phone
-	//robot.data.Nickname = RandNickName()
+	robot.data.Nickname = phone
 	glog.Infof("run robot -> %s", phone)
 	glog.Infof("run robot -> code:%s, rtype:%d, regist:%v", code, rtype, regist)
 	go robot.writePump()
-	if regist {
+	if !regist {
 		go robot.SendRegist() //发起请求,注册-登录-进入房间
 	} else {
 		go robot.SendLogin() //登录

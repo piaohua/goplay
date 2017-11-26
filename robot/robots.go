@@ -52,7 +52,12 @@ func ReLogined(phone, code string, rtype uint32) {
 
 //发送消息
 func (r *RobotServer) Send2rbs(msg interface{}) {
-	r.msgCh <- msg
+	select {
+	case <-r.stopCh:
+		return
+	default:
+		r.msgCh <- msg
+	}
 }
 
 func (r *RobotServer) runTest1() {
