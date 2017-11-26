@@ -38,6 +38,16 @@ message LoginedHall {
     string Message = 1;
 }
 
+//登录成功
+message Login {
+    actor.PID Sender = 1;
+    string Userid = 2;
+}
+
+message Logined {
+    string Message = 1;
+}
+
 //别处登录
 message LoginElse {
     string Userid = 1;
@@ -55,4 +65,14 @@ message Logout {
 
 message Logouted {
     actor.PID Sender = 1;
+}
+
+//同步数据
+message SyncUser {
+    string Userid = 1;
+}
+
+message SyncedUser {
+    string Userid = 1;
+    string Data = 2;
 }
