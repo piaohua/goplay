@@ -40,8 +40,7 @@ message LoginedHall {
 
 //登录成功
 message Login {
-    actor.PID Sender = 1;
-    string Userid = 2;
+    string Userid = 1;
 }
 
 message Logined {

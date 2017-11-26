@@ -119,7 +119,6 @@ func (ws *WSConn) login(userid string, ctx actor.Context) {
 	//response3 := res3.(*pb.LoginedGate)
 	//登录成功响应
 	msg4 := new(pb.Login)
-	msg4.Sender = ctx.Self()
 	msg4.Userid = userid
 	res4, err4 := ws.rolePid.RequestFuture(msg4, timeout).Result()
 	if err4 != nil {

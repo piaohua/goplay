@@ -46,6 +46,14 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 			//移除
 			delete(a.roles, userid)
 		}
+		delete(a.router, arg.Sender.String())
+	case *pb.Login:
+		//登录成功
+		arg := msg.(*pb.Login)
+		a.router[ctx.Sender().String()] = arg.Userid
+		//响应登录
+		rsp := new(pb.Logined)
+		ctx.Respond(rsp)
 	case *pb.HallConnect:
 		//初始化建立连接
 		glog.Infof("role init: %v", ctx.Self().String())
@@ -68,13 +76,6 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		a.HandlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
-		ctx.Respond(rsp)
-	case *pb.Login:
-		//登录成功
-		arg := msg.(*pb.Login)
-		a.router[arg.Sender.String()] = arg.Userid
-		//响应登录
-		rsp := new(pb.Logined)
 		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
