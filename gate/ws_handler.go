@@ -79,6 +79,8 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.Send(arg)
 		//断开连接
 		ws.Close()
+	case *pb.CBuy, *pb.CShop:
+		ws.rolePid.Request(msg, ctx.Self())
 	case proto.Message:
 		//响应消息
 		ws.Send(msg)

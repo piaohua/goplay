@@ -3,6 +3,7 @@ package main
 import (
 	"goplay/data"
 	"goplay/game/config"
+	"goplay/game/handler"
 	"goplay/game/login"
 	"goplay/glog"
 	"goplay/pb"
@@ -77,9 +78,27 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.CBuy:
+		arg := msg.(*pb.CBuy)
+		user := a.getUser(ctx)
+		//响应
+		rsp := handler.Buy(arg, user)
+		ctx.Respond(rsp)
+	case *pb.CShop:
+		arg := msg.(*pb.CShop)
+		user := a.getUser(ctx)
+		//响应
+		rsp := handler.Shop(arg, user)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (a *RoleActor) getUser(ctx actor.Context) *data.User {
+	userid := a.router[ctx.Sender().String()]
+	user := a.roles[userid]
+	return
 }
 
 //登录处理
