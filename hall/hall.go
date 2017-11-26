@@ -4,7 +4,6 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"time"
 
 	"goplay/glog"
 
@@ -34,7 +33,7 @@ func main() {
 	signalListen()
 	//TODO 关闭处理
 	//延迟等待
-	<-time.After(5 * time.Second) //延迟关闭
+	//<-time.After(5 * time.Second) //延迟关闭
 }
 
 func signalListen() {
