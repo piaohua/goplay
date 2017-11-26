@@ -43,3 +43,11 @@ message HallConnected {
     string Message = 1;
     string Name = 2;
 }
+
+message ServeStop {
+    string Message = 1;
+}
+
+message ServeStoped {
+    string Message = 1;
+}

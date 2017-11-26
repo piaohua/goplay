@@ -87,7 +87,35 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		a.count[name] -= 1
 		//移除
 		delete(a.roles, userid)
+	case *pb.ServeStop:
+		//关闭服务
+		a.HandlerStop(ctx)
+		//响应登录
+		rsp := new(pb.ServeStoped)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
+	}
+}
+
+func (a *HallActor) HandlerStop(ctx actor.Context) {
+	glog.Debugf("HandlerStop: %s", a.Name)
+	//回存数据
+	msg := new(pb.ServeStop)
+	for k, v := range a.roles {
+		glog.Debugf("Stop role: %s", k)
+		v.Tell(msg)
+	}
+	if a.rolePid != nil {
+		a.rolePid.Stop()
+	}
+	if a.roomPid != nil {
+		a.roomPid.Stop()
+	}
+	if a.hallPid != nil {
+		a.hallPid.Stop()
+	}
+	if a.dbmsPid != nil {
+		a.dbmsPid.Stop()
 	}
 }
