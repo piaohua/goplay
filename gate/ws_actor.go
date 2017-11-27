@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"goplay/glog"
 	"goplay/pb"
 
@@ -16,22 +14,22 @@ type testWs struct{ Who string }
 func (ws *WSConn) Receive(ctx actor.Context) {
 	switch msg := ctx.Message().(type) {
 	case *actor.Started:
-		fmt.Println("Starting, initialize actor here")
+		glog.Notice("Starting, initialize actor here")
 		ws.init(ctx)
 	case *actor.Stopping:
-		fmt.Println("Stopping, actor is about to shut down")
+		glog.Notice("Stopping, actor is about to shut down")
 		ws.disc(ctx)
 	case *actor.Stopped:
-		fmt.Println("Stopped, actor and its children are stopped")
+		glog.Notice("Stopped, actor and its children are stopped")
 	case *actor.Restarting:
-		fmt.Println("Restarting, actor is about to restart")
+		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
 		//断开连接
 		ws.Close()
 	case *testWs:
-		fmt.Printf("self %s\n", ctx.Self().String())
-		fmt.Printf("msg.Who %v\n", msg.Who)
+		glog.Infof("self %s\n", ctx.Self().String())
+		glog.Infof("msg.Who %v\n", msg.Who)
 	case proto.Message:
 		ws.Handler(msg, ctx)
 	default:

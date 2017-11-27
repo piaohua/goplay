@@ -101,19 +101,16 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 func (a *HallActor) HandlerStop(ctx actor.Context) {
 	glog.Debugf("HandlerStop: %s", a.Name)
 	//回存数据
-	msg := new(pb.ServeStop)
-	for k, v := range a.roles {
-		glog.Debugf("Stop role: %s", k)
-		v.Tell(msg)
-	}
+	//msg := new(pb.ServeStop)
+	//for k, v := range a.roles {
+	//	glog.Debugf("Stop role: %s", k)
+	//	v.Tell(msg)
+	//}
 	if a.rolePid != nil {
 		a.rolePid.Stop()
 	}
 	if a.roomPid != nil {
 		a.roomPid.Stop()
-	}
-	if a.hallPid != nil {
-		a.hallPid.Stop()
 	}
 	if a.dbmsPid != nil {
 		a.dbmsPid.Stop()

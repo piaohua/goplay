@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 
 	"goplay/glog"
@@ -32,13 +31,13 @@ func (a *DBMSActor) Receive(ctx actor.Context) {
 	case *pb.Request:
 		ctx.Respond(&pb.Response{})
 	case *actor.Started:
-		fmt.Println("Starting, initialize actor here")
+		glog.Notice("Starting, initialize actor here")
 	case *actor.Stopping:
-		fmt.Println("Stopping, actor is about to shut down")
+		glog.Notice("Stopping, actor is about to shut down")
 	case *actor.Stopped:
-		fmt.Println("Stopped, actor and its children are stopped")
+		glog.Notice("Stopped, actor and its children are stopped")
 	case *actor.Restarting:
-		fmt.Println("Restarting, actor is about to restart")
+		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
 	case proto.Message:
