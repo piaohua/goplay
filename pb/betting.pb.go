@@ -182,6 +182,8 @@
 		GateDisconnected
 		HallConnect
 		HallConnected
+		ServeStop
+		ServeStoped
 		DanSeason
 		DanRanking
 		DanTaskList
@@ -198,10 +200,14 @@
 		LoginedGate
 		LoginHall
 		LoginedHall
+		Login
+		Logined
 		LoginElse
 		LoginedElse
 		Logout
 		Logouted
+		SyncUser
+		SyncedUser
 		CLeave
 		SLeave
 		CKick
