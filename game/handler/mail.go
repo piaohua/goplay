@@ -6,25 +6,22 @@ import (
 	"niu/inter"
 	"niu/mail"
 	"niu/protocol"
-	"niu/socket"
 	"utils"
 
 	"github.com/golang/protobuf/proto"
 )
 
-func init() {
-	p1 := protocol.CMailList{}
-	socket.Regist(p1.GetCode(), p1, getMailList)
-	p2 := protocol.CDeleteMail{}
-	socket.Regist(p2.GetCode(), p2, delMail)
-	p3 := protocol.CGetMailItem{}
-	socket.Regist(p3.GetCode(), p3, getMailItem)
-}
-
 //test
 func newMail(p inter.IPlayer) {
 	from := "系统消息"
-	content := "北京时间10月19日凌晨，时隔20余月，AlphaGo再次登上科学杂志《nature》。谷歌人工智能团队DeepMind 发布了他们的最新论文Mastering the game of Go without human knowledge，向人们介绍了阿尔法狗家族的新成员——阿尔法元。与之前几个版本的阿尔法狗不同，阿尔法元除了解围棋规则外，完全不依靠棋谱和人类数据，从零开始“自学成才”，成为全世界最厉害的（人工智能）围棋手。"
+	content := `北京时间10月19日凌晨，时隔20余月，
+	AlphaGo再次登上科学杂志《nature》。
+	谷歌人工智能团队DeepMind 发布了他们的最新论文
+	Mastering the game of Go without human knowledge，
+	向人们介绍了阿尔法狗家族的新成员——阿尔法元。
+	与之前几个版本的阿尔法狗不同，阿尔法元除了解围棋规则外，
+	完全不依靠棋谱和人类数据，从零开始“自学成才”，
+	成为全世界最厉害的（人工智能）围棋手。`
 	m := mail.New2(from, p.GetUserid(), content)
 	m.Save()
 	msg := new(protocol.SMailNotice)

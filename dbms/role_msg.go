@@ -143,7 +143,9 @@ func (a *RoleActor) HandlerLogin(user *data.User,
 }
 
 func (a *RoleActor) HandlerSync(user *data.User, ctx actor.Context) {
-	//同步数据
+	//同步数据,只有登录时才向节点同步数据
+	//其它时候为节点向role同步,避免数据覆盖
+	//TODO 定时回存数据
 	msg3 := new(pb.SyncUser)
 	msg3.Userid = user.Userid
 	result, err := json.Marshal(user)
@@ -168,6 +170,8 @@ func (a *RoleActor) HandlerLogined(user *data.User) {
 	//登录成功
 	a.roles[user.Userid] = user
 	glog.Debugf("Logoin userid: %s", user.Userid)
+	glog.Debugf("roles len: %d", len(a.roles))
+	glog.Debugf("offline len: %d", len(a.offline))
 	//TODO router 可直接在这里处理
 }
 
