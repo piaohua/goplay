@@ -7,6 +7,7 @@ import (
 
 //路由
 func (ws *WSConn) Router(id uint32, body []byte) {
+	body = aesDe(body) //解密
 	msg, err := pb.Unpack(id, body)
 	if err != nil {
 		glog.Error("protocol unpack err:", id, err)
@@ -34,6 +35,7 @@ func (ws *WSConn) Send(msg interface{}) {
 
 //封包
 func pack(code uint32, msg []byte, index int) []byte {
+	msg = aesEn(msg) //加密
 	buff := make([]byte, 9+len(msg))
 	msglen := uint32(len(msg))
 	buff[0] = byte(index)

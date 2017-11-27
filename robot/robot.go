@@ -30,7 +30,8 @@ var (
 
 	rbs *RobotServer
 
-	aesEnc *utils.AesEncrypt
+	aesEnc   *utils.AesEncrypt
+	pbAesEnc *utils.AesEncrypt
 )
 
 func main() {
@@ -46,6 +47,7 @@ func main() {
 	cfg.BlockMode = false //只读
 	//初始化
 	aesInit()
+	pbAesInit()
 	//
 	bind := cfg.Section("robot").Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()
@@ -101,5 +103,30 @@ func aesDe(arrEncrypt []byte) (strMsg string) {
 		glog.Errorf("arrEncrypt: %s", string(arrEncrypt))
 	}
 	strMsg = string(bMsg)
+	return
+}
+
+//加密初始化
+func pbAesInit() {
+	pbAesEnc = new(utils.AesEncrypt)
+	key := cfg.Section("gate").Key("key").Value()
+	pbAesEnc.SetKey([]byte(key))
+}
+
+//加密
+func pbAesEn(doc []byte) (arrEncrypt []byte) {
+	arrEncrypt, err = pbAesEnc.Encrypt(doc)
+	if err != nil {
+		glog.Errorf("arrEncrypt: %s", string(doc))
+	}
+	return
+}
+
+//解密
+func pbAesDe(arrEncrypt []byte) (bMsg []byte) {
+	bMsg, err = pbAesEnc.Decrypt(arrEncrypt)
+	if err != nil {
+		glog.Errorf("arrEncrypt: %s", string(arrEncrypt))
+	}
 	return
 }

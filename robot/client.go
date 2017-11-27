@@ -95,6 +95,7 @@ func (ws *Robot) Close() {
 
 //接收
 func (ws *Robot) Router(id uint32, body []byte) {
+	body = pbAesDe(body) //解密
 	msg, err := pb.Runpack(id, body)
 	if err != nil {
 		glog.Error("protocol unpack err:", id, err)
@@ -240,6 +241,7 @@ func encodeUint32(i uint32) (b []byte) {
 
 //封包
 func pack(code uint32, msg []byte, index int) []byte {
+	msg = pbAesEn(msg) //加密
 	buff := make([]byte, 9+len(msg))
 	msglen := uint32(len(msg))
 	buff[0] = byte(index)
