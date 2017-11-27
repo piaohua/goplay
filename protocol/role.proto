@@ -66,12 +66,8 @@ message Logouted {
     actor.PID Sender = 1;
 }
 
-//同步数据
+//同步数据,(登录时,变更时)
 message SyncUser {
-    string Userid = 1;
-}
-
-message SyncedUser {
     string Userid = 1;
     string Data = 2;
 }

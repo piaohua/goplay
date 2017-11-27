@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"time"
 
 	"goplay/data"
@@ -64,6 +65,13 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 			ws.login(arg.GetUserid(), ctx)
 		}
 		ws.Send(msg)
+	case *pb.SyncUser:
+		arg := msg.(*pb.SWxLogin)
+		glog.Debugf("SyncUser %#v", arg.Userid)
+		err := json.Unmarshal(arg.Data, ws.User)
+		if err != nil {
+			glog.Errorf("user Unmarshal err %v", err)
+		}
 	case *pb.LoginElse:
 		arg := new(pb.SLoginOut)
 		glog.Debugf("SLoginOut %#v", arg)

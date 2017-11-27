@@ -1,13 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"time"
+
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/game/handler"
 	"goplay/game/login"
 	"goplay/glog"
 	"goplay/pb"
-	"time"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
 	"github.com/AsynkronIT/protoactor-go/remote"
@@ -98,7 +100,7 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 func (a *RoleActor) getUser(ctx actor.Context) *data.User {
 	userid := a.router[ctx.Sender().String()]
 	user := a.roles[userid]
-	return
+	return user
 }
 
 //登录处理
@@ -137,6 +139,19 @@ func (a *RoleActor) HandlerLogin(user *data.User,
 	}
 	nodePid.Tell(msg2)
 	glog.Debugf("user %#v", user)
+	a.HandlerSync(user, ctx)
+}
+
+func (a *RoleActor) HandlerSync(user *data.User, ctx actor.Context) {
+	//同步数据
+	msg3 := new(pb.SyncUser)
+	msg3.Userid = user.Userid
+	result, err := json.Marshal(user)
+	if err != nil {
+		glog.Errorf("user Marshal err %v", err)
+	}
+	msg3.Data = result
+	ctx.Sender().Tell(msg3)
 }
 
 func (a *RoleActor) HandlerLogined(user *data.User) {
@@ -153,6 +168,7 @@ func (a *RoleActor) HandlerLogined(user *data.User) {
 	//登录成功
 	a.roles[user.Userid] = user
 	glog.Debugf("Logoin userid: %s", user.Userid)
+	//TODO router 可直接在这里处理
 }
 
 //奖励发放
