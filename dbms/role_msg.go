@@ -80,6 +80,8 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.SyncUser:
+		//TODO
 	case *pb.CBuy:
 		arg := msg.(*pb.CBuy)
 		user := a.getUser(ctx)

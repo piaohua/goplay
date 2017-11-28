@@ -34,6 +34,7 @@ func (a *HallActor) Receive(ctx actor.Context) {
 		ctx.Respond(&pb.Response{})
 	case *actor.Started:
 		glog.Notice("Starting, initialize actor here")
+		glog.Errorf("name %s", a.Name)
 	case *actor.Stopping:
 		glog.Notice("Stopping, actor is about to shut down")
 	case *actor.Stopped:
