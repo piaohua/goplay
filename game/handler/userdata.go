@@ -8,38 +8,10 @@ import (
 	"niu/inter"
 	"niu/players"
 	"niu/protocol"
-	"niu/socket"
 	"utils"
 
 	"github.com/golang/protobuf/proto"
 )
-
-func init() {
-	p1 := protocol.CConfig{}
-	socket.Regist(p1.GetCode(), p1, config)
-	u := protocol.CUserData{}
-	socket.Regist(u.GetCode(), u, getUserDataHdr)
-	p2 := protocol.CBuildAgent{}
-	socket.Regist(p2.GetCode(), p2, buildAgent)
-	p3 := protocol.CGetCurrency{}
-	socket.Regist(p3.GetCode(), p3, getCurrency)
-	p4 := protocol.CBank{}
-	socket.Regist(p4.GetCode(), p4, bank)
-	p5 := protocol.CPing{}
-	socket.Regist(p5.GetCode(), p5, ping)
-	p6 := protocol.CBankrupts{}
-	socket.Regist(p6.GetCode(), p6, bankrupt)
-	p7 := protocol.CPrizeList{}
-	socket.Regist(p7.GetCode(), p7, prizeList)
-	p8 := protocol.CPrizeDraw{}
-	socket.Regist(p8.GetCode(), p8, prizeDraw)
-	p9 := protocol.CPrizeBox{}
-	socket.Regist(p9.GetCode(), p9, prizeBox)
-	p10 := protocol.CClassicList{}
-	socket.Regist(p10.GetCode(), p10, classicList)
-	p11 := protocol.CVipList{}
-	socket.Regist(p11.GetCode(), p11, vipList)
-}
 
 func vipList(ctos *protocol.CVipList, p inter.IPlayer) {
 	stoc := &protocol.SVipList{Error: proto.Uint32(0)}
