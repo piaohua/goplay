@@ -13,12 +13,12 @@ var (
 	mailPid *actor.PID
 )
 
-//房间列表服务
+//邮件列表服务
 type MailActor struct {
 	Name string
 	//大厅服务
 	hallPid *actor.PID
-	//房间列表
+	//邮件列表
 	mails map[string]*data.Mail
 	//唯一id生成
 	uniqueid *data.IDGen

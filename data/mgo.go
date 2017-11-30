@@ -39,7 +39,6 @@ var Prizes *mgo.Collection
 var Classics *mgo.Collection
 var Vips *mgo.Collection
 var Mails *mgo.Collection
-var MailIDGens *mgo.Collection
 var DanLists *mgo.Collection
 var TaskLists *mgo.Collection
 var DanTasks *mgo.Collection
@@ -105,7 +104,6 @@ func InitMgo(dbHost, dbPort, dbUser, dbPassword, dbName string) {
 	Classics = Session.DB(dbName).C("col_classic")
 	Vips = Session.DB(dbName).C("col_vip")
 	Mails = Session.DB(dbName).C("col_mail")
-	MailIDGens = Session.DB(dbName).C("col_mail_id_gen")
 	DanLists = Session.DB(dbName).C("col_dan_list")
 	TaskLists = Session.DB(dbName).C("col_task_list")
 	DanTasks = Session.DB(dbName).C("col_dan_task")

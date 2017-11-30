@@ -6,19 +6,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-type MailIDGen struct {
-	ServerID   string `bson:"_id"`
-	LastMailID string `bson:"LastMailID"`
-}
-
-func (this *MailIDGen) Save() bool {
-	return Upsert(MailIDGens, bson.M{"_id": this.ServerID}, this)
-}
-
-func (this *MailIDGen) Get() {
-	Get(MailIDGens, this.ServerID, this)
-}
-
 type Items struct {
 	Rtype  int    `bson:"rtype"`  //类型,1钻石,2金币
 	Number uint32 `bson:"number"` //数量
