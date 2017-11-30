@@ -74,6 +74,10 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 			glog.Errorf("user Unmarshal err %v", err)
 		}
 		glog.Debugf("User %#v", ws.User)
+	case *pb.ChangeCurrency:
+		arg := msg.(*pb.ChangeCurrency)
+		ws.User.AddDiamond(arg.Diamond)
+		ws.User.AddCoin(arg.Coin)
 	case *pb.LoginElse:
 		arg := new(pb.SLoginOut)
 		glog.Debugf("SLoginOut %#v", arg)

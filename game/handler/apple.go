@@ -1,26 +1,19 @@
 package handler
 
 import (
+	"goplay/pb"
 	"niu/apple"
 	"niu/data"
 	"niu/errorcode"
 	"niu/images"
-	"niu/inter"
-	"niu/protocol"
-	"niu/socket"
 	"utils"
 
 	"github.com/golang/glog"
 	"github.com/golang/protobuf/proto"
 )
 
-func init() {
-	p := protocol.CApplePay{}
-	socket.Regist(p.GetCode(), p, appleOrder)
-}
-
-func appleOrder(ctos *protocol.CApplePay, p inter.IPlayer) {
-	stoc := &protocol.SApplePay{}
+func appleOrder(ctos *pb.CApplePay, p *data.User) {
+	stoc := &pb.SApplePay{}
 	id := ctos.GetId()
 	receipt := ctos.GetReceipt()
 	stoc.Id = proto.Uint32(id)
@@ -55,7 +48,7 @@ func appleOrder(ctos *protocol.CApplePay, p inter.IPlayer) {
 	p.Send(stoc)
 }
 
-func appleVerify(product_id string, tradeRecord *data.TradeRecord, p inter.IPlayer) bool {
+func appleVerify(product_id string, tradeRecord *data.TradeRecord, p *data.User) bool {
 	if tradeRecord.Has() {
 		//重复发货
 		glog.Errorf("apple pay already exist %#v", tradeRecord)

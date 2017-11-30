@@ -83,10 +83,16 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.SyncUser:
 		//TODO
 	case *pb.CBuy:
+		//TODO 优化
 		arg := msg.(*pb.CBuy)
 		user := a.getUser(ctx)
 		//响应
-		rsp := handler.Buy(arg, user)
+		rsp, diamond, coin := handler.Buy(arg, user)
+		//兑换
+		a.HandlerPrize(user, diamond, coin, data.LogType18, ctx)
+		//同步兑换
+		a.HandlerSync3(user, ctx)
+		//响应
 		ctx.Respond(rsp)
 	case *pb.CShop:
 		arg := msg.(*pb.CShop)
@@ -155,6 +161,24 @@ func (a *RoleActor) HandlerSync(user *data.User, ctx actor.Context) {
 		glog.Errorf("user Marshal err %v", err)
 	}
 	msg3.Data = result
+	ctx.Sender().Tell(msg3)
+}
+
+func (a *RoleActor) HandlerSync2(user *data.User, ctx actor.Context) {
+	msg3 := new(pb.SyncCurrency)
+	msg3.Userid = user.Userid
+	msg3.Coin = user.GetCoin()
+	msg3.Diamond = user.GetDiamond()
+	ctx.Sender().Tell(msg3)
+}
+
+func (a *RoleActor) HandlerSync3(user *data.User,
+	diamond, coin int32, ltype int, ctx actor.Context) {
+	msg3 := new(pb.ChangeCurrency)
+	msg3.Userid = user.Userid
+	msg3.Type = int32(ltype)
+	msg3.Coin = coin
+	msg3.Diamond = diamond
 	ctx.Sender().Tell(msg3)
 }
 

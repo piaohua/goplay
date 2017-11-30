@@ -71,3 +71,18 @@ message SyncUser {
     string Userid = 1;
     string Data = 2;
 }
+
+//同步货币数据
+message SyncCurrency {
+    string Userid = 1;
+    uint32 Coin = 2;//金币数量
+    uint32 Diamond = 3;//钻石数量
+}
+
+//同步变动货币数据
+message ChangeCurrency {
+    string Userid = 1;
+    int32 Type = 2;//变动类型
+    int32 Coin = 3;//变动金币数量
+    int32 Diamond = 4;//变动钻石数量
+}

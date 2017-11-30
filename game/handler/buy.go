@@ -7,7 +7,8 @@ import (
 	"utils"
 )
 
-func Buy(ctos *pb.CBuy, p *data.User) (stoc *pb.SBuy) {
+func Buy(ctos *pb.CBuy, p *data.User) (stoc *pb.SBuy,
+	diamond, coin int32) {
 	stoc = new(pb.SBuy)
 	id := ctos.GetId()
 	d := config.GetShop(utils.String(id))
@@ -15,10 +16,8 @@ func Buy(ctos *pb.CBuy, p *data.User) (stoc *pb.SBuy) {
 	case data.DIA:
 		if p.GetDiamond() >= d.Price {
 			stoc.Result = 0
-			//TODO
-			diamond := int32(-1 * int32(d.Price))
-			coin := int32(d.Number)
-			add_prize(p, diamond, coin, data.LogType18)
+			diamond = int32(-1 * int32(d.Price))
+			coin = int32(d.Number)
 		} else {
 			stoc.Result = 1
 			stoc.Error = pb.NotEnoughDiamond
