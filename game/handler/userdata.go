@@ -1,11 +1,12 @@
-package handle
+package handler
 
+/*
 import (
 	"math"
 	"niu/data"
-	"niu/errorcode"
 	"niu/images"
 	"niu/inter"
+	"niu/pb"
 	"niu/players"
 	"niu/protocol"
 	"utils"
@@ -54,7 +55,7 @@ func prizeBox(ctos *protocol.CPrizeBox, p inter.IPlayer) {
 	d := images.GetBox(id)
 	boxstate := p.GetBoxState()
 	if d.Id == "" { //不存在或全部完成
-		stoc.Error = proto.Uint32(errorcode.NotBox)
+		stoc.Error = proto.Uint32(pb.NotBox)
 		p.Send(stoc)
 		return
 	}
@@ -111,7 +112,7 @@ func prizeDraw(ctos *protocol.CPrizeDraw, p inter.IPlayer) {
 	num += int32(vip.Prize) //vip赠送
 	draw := p.GetPrizeDraw()
 	if int32(draw) >= num {
-		stoc.Error = proto.Uint32(errorcode.NotPrizeDraw)
+		stoc.Error = proto.Uint32(pb.NotPrizeDraw)
 		p.Send(stoc)
 		return
 	}
@@ -141,7 +142,7 @@ func prizeDraw(ctos *protocol.CPrizeDraw, p inter.IPlayer) {
 			return
 		}
 	}
-	stoc.Error = proto.Uint32(errorcode.NotGotPrizeDraw)
+	stoc.Error = proto.Uint32(pb.NotGotPrizeDraw)
 	p.Send(stoc)
 }
 
@@ -190,7 +191,7 @@ func bankrupt(ctos *protocol.CBankrupts, p inter.IPlayer) {
 		coin1 = images.GetEnv("bankrupt_coin").(int32)
 	}
 	if int32(p.GetCoin()) >= coin1 {
-		stoc.Error = proto.Uint32(errorcode.NotBankrupt)
+		stoc.Error = proto.Uint32(pb.NotBankrupt)
 		p.Send(stoc)
 		return
 	}
@@ -200,7 +201,7 @@ func bankrupt(ctos *protocol.CBankrupts, p inter.IPlayer) {
 	}
 	num2 := p.GetBankrupts()
 	if int32(num2) > num {
-		stoc.Error = proto.Uint32(errorcode.NotRelieves)
+		stoc.Error = proto.Uint32(pb.NotRelieves)
 		p.Send(stoc)
 		return
 	}
@@ -248,7 +249,7 @@ func getUserDataHdr(ctos *protocol.CUserData, p inter.IPlayer) {
 	stoc.Data = &protocol.UserData{}
 	userid := ctos.GetUserid()
 	if userid == "" {
-		stoc.Error = proto.Uint32(errorcode.UsernameEmpty)
+		stoc.Error = proto.Uint32(pb.UsernameEmpty)
 		p.Send(stoc)
 		return
 	}
@@ -400,9 +401,9 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 	case 1: //存入
 		if int32(coin-amount) < int32(data.BANKRUPT) {
 			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
-			stoc.Error = proto.Uint32(errorcode.NotEnoughCoin)
+			stoc.Error = proto.Uint32(pb.NotEnoughCoin)
 		} else if int32(amount) <= 0 {
-			stoc.Error = proto.Uint32(errorcode.DepositNumberError)
+			stoc.Error = proto.Uint32(pb.DepositNumberError)
 			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
 		} else {
 			num := -1 * int32(amount)
@@ -414,7 +415,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 		}
 	case 2: //取出
 		if amount < data.DRAW_MONEY || amount > p.GetBank() {
-			stoc.Error = proto.Uint32(errorcode.DrawMoneyNumberError)
+			stoc.Error = proto.Uint32(pb.DrawMoneyNumberError)
 		} else {
 			var tax uint32
 			if amount < data.TAX_NUMBER {
@@ -433,11 +434,11 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 		}
 	case 3: //赠送
 		if amount+p.GetGive() > data.GIVE_LIMIT {
-			stoc.Error = proto.Uint32(errorcode.GiveTooMuch)
+			stoc.Error = proto.Uint32(pb.GiveTooMuch)
 		} else if amount < data.DRAW_MONEY || amount > p.GetBank() {
-			stoc.Error = proto.Uint32(errorcode.GiveNumberError)
+			stoc.Error = proto.Uint32(pb.GiveNumberError)
 		} else if userid == "" {
-			stoc.Error = proto.Uint32(errorcode.GiveUseridError)
+			stoc.Error = proto.Uint32(pb.GiveUseridError)
 		} else {
 			var tax uint32
 			if amount < data.TAX_NUMBER {
@@ -454,7 +455,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 				user := new(data.User)
 				user.GetById(userid)
 				if user.Userid == "" || coin <= 0 {
-					stoc.Error = proto.Uint32(errorcode.GiveUseridError)
+					stoc.Error = proto.Uint32(pb.GiveUseridError)
 				} else {
 					if user.UpdateCoin(uint32(coin)) {
 						p.AddGive(amount)
@@ -465,7 +466,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 						//日志
 						data.CoinRecord(p.GetUserid(), data.LogType16, p.GetBank(), int32(tax))
 					} else {
-						stoc.Error = proto.Uint32(errorcode.GiveUseridError)
+						stoc.Error = proto.Uint32(pb.GiveUseridError)
 					}
 				}
 			} else {
@@ -490,3 +491,4 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 	stoc.Balance = proto.Uint32(p.GetBank())
 	p.Send(stoc)
 }
+*/

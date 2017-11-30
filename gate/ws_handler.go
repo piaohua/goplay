@@ -67,9 +67,9 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.Send(msg)
 	case *pb.SyncUser:
 		//TODO 定时同步
-		arg := msg.(*pb.SWxLogin)
+		arg := msg.(*pb.SyncUser)
 		glog.Debugf("SyncUser %#v", arg.Userid)
-		err := json.Unmarshal(arg.Data, ws.User)
+		err := json.Unmarshal([]byte(arg.Data), ws.User)
 		if err != nil {
 			glog.Errorf("user Unmarshal err %v", err)
 		}

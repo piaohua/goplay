@@ -269,9 +269,10 @@ func (m *Logouted) GetSender() *actor.PID {
 	return nil
 }
 
-// 同步数据
+// 同步数据,(登录时,变更时)
 type SyncUser struct {
 	Userid string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Data   string `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
 }
 
 func (m *SyncUser) Reset()                    { *m = SyncUser{} }
@@ -285,27 +286,83 @@ func (m *SyncUser) GetUserid() string {
 	return ""
 }
 
-type SyncedUser struct {
-	Userid string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
-	Data   string `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
+func (m *SyncUser) GetData() string {
+	if m != nil {
+		return m.Data
+	}
+	return ""
 }
 
-func (m *SyncedUser) Reset()                    { *m = SyncedUser{} }
-func (*SyncedUser) ProtoMessage()               {}
-func (*SyncedUser) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{13} }
+// 同步货币数据
+type SyncCurrency struct {
+	Userid  string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Coin    uint32 `protobuf:"varint,2,opt,name=Coin,proto3" json:"Coin,omitempty"`
+	Diamond uint32 `protobuf:"varint,3,opt,name=Diamond,proto3" json:"Diamond,omitempty"`
+}
 
-func (m *SyncedUser) GetUserid() string {
+func (m *SyncCurrency) Reset()                    { *m = SyncCurrency{} }
+func (*SyncCurrency) ProtoMessage()               {}
+func (*SyncCurrency) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{13} }
+
+func (m *SyncCurrency) GetUserid() string {
 	if m != nil {
 		return m.Userid
 	}
 	return ""
 }
 
-func (m *SyncedUser) GetData() string {
+func (m *SyncCurrency) GetCoin() uint32 {
 	if m != nil {
-		return m.Data
+		return m.Coin
+	}
+	return 0
+}
+
+func (m *SyncCurrency) GetDiamond() uint32 {
+	if m != nil {
+		return m.Diamond
+	}
+	return 0
+}
+
+// 同步变动货币数据
+type ChangeCurrency struct {
+	Userid  string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Type    int32  `protobuf:"varint,2,opt,name=Type,proto3" json:"Type,omitempty"`
+	Coin    int32  `protobuf:"varint,3,opt,name=Coin,proto3" json:"Coin,omitempty"`
+	Diamond int32  `protobuf:"varint,4,opt,name=Diamond,proto3" json:"Diamond,omitempty"`
+}
+
+func (m *ChangeCurrency) Reset()                    { *m = ChangeCurrency{} }
+func (*ChangeCurrency) ProtoMessage()               {}
+func (*ChangeCurrency) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{14} }
+
+func (m *ChangeCurrency) GetUserid() string {
+	if m != nil {
+		return m.Userid
 	}
 	return ""
+}
+
+func (m *ChangeCurrency) GetType() int32 {
+	if m != nil {
+		return m.Type
+	}
+	return 0
+}
+
+func (m *ChangeCurrency) GetCoin() int32 {
+	if m != nil {
+		return m.Coin
+	}
+	return 0
+}
+
+func (m *ChangeCurrency) GetDiamond() int32 {
+	if m != nil {
+		return m.Diamond
+	}
+	return 0
 }
 
 func init() {
@@ -322,7 +379,8 @@ func init() {
 	proto.RegisterType((*Logout)(nil), "pb.Logout")
 	proto.RegisterType((*Logouted)(nil), "pb.Logouted")
 	proto.RegisterType((*SyncUser)(nil), "pb.SyncUser")
-	proto.RegisterType((*SyncedUser)(nil), "pb.SyncedUser")
+	proto.RegisterType((*SyncCurrency)(nil), "pb.SyncCurrency")
+	proto.RegisterType((*ChangeCurrency)(nil), "pb.ChangeCurrency")
 }
 func (this *SetLogin) Equal(that interface{}) bool {
 	if that == nil {
@@ -736,9 +794,12 @@ func (this *SyncUser) Equal(that interface{}) bool {
 	if this.Userid != that1.Userid {
 		return false
 	}
+	if this.Data != that1.Data {
+		return false
+	}
 	return true
 }
-func (this *SyncedUser) Equal(that interface{}) bool {
+func (this *SyncCurrency) Equal(that interface{}) bool {
 	if that == nil {
 		if this == nil {
 			return true
@@ -746,9 +807,9 @@ func (this *SyncedUser) Equal(that interface{}) bool {
 		return false
 	}
 
-	that1, ok := that.(*SyncedUser)
+	that1, ok := that.(*SyncCurrency)
 	if !ok {
-		that2, ok := that.(SyncedUser)
+		that2, ok := that.(SyncCurrency)
 		if ok {
 			that1 = &that2
 		} else {
@@ -766,7 +827,49 @@ func (this *SyncedUser) Equal(that interface{}) bool {
 	if this.Userid != that1.Userid {
 		return false
 	}
-	if this.Data != that1.Data {
+	if this.Coin != that1.Coin {
+		return false
+	}
+	if this.Diamond != that1.Diamond {
+		return false
+	}
+	return true
+}
+func (this *ChangeCurrency) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ChangeCurrency)
+	if !ok {
+		that2, ok := that.(ChangeCurrency)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Type != that1.Type {
+		return false
+	}
+	if this.Coin != that1.Coin {
+		return false
+	}
+	if this.Diamond != that1.Diamond {
 		return false
 	}
 	return true
@@ -921,20 +1024,35 @@ func (this *SyncUser) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 5)
+	s := make([]string, 0, 6)
 	s = append(s, "&pb.SyncUser{")
 	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Data: "+fmt.Sprintf("%#v", this.Data)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *SyncedUser) GoString() string {
+func (this *SyncCurrency) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 6)
-	s = append(s, "&pb.SyncedUser{")
+	s := make([]string, 0, 7)
+	s = append(s, "&pb.SyncCurrency{")
 	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
-	s = append(s, "Data: "+fmt.Sprintf("%#v", this.Data)+",\n")
+	s = append(s, "Coin: "+fmt.Sprintf("%#v", this.Coin)+",\n")
+	s = append(s, "Diamond: "+fmt.Sprintf("%#v", this.Diamond)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ChangeCurrency) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&pb.ChangeCurrency{")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Type: "+fmt.Sprintf("%#v", this.Type)+",\n")
+	s = append(s, "Coin: "+fmt.Sprintf("%#v", this.Coin)+",\n")
+	s = append(s, "Diamond: "+fmt.Sprintf("%#v", this.Diamond)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -1339,10 +1457,16 @@ func (m *SyncUser) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
 		i += copy(dAtA[i:], m.Userid)
 	}
+	if len(m.Data) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Data)))
+		i += copy(dAtA[i:], m.Data)
+	}
 	return i, nil
 }
 
-func (m *SyncedUser) Marshal() (dAtA []byte, err error) {
+func (m *SyncCurrency) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1352,7 +1476,7 @@ func (m *SyncedUser) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SyncedUser) MarshalTo(dAtA []byte) (int, error) {
+func (m *SyncCurrency) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
@@ -1363,11 +1487,54 @@ func (m *SyncedUser) MarshalTo(dAtA []byte) (int, error) {
 		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
 		i += copy(dAtA[i:], m.Userid)
 	}
-	if len(m.Data) > 0 {
-		dAtA[i] = 0x12
+	if m.Coin != 0 {
+		dAtA[i] = 0x10
 		i++
-		i = encodeVarintRole(dAtA, i, uint64(len(m.Data)))
-		i += copy(dAtA[i:], m.Data)
+		i = encodeVarintRole(dAtA, i, uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Diamond))
+	}
+	return i, nil
+}
+
+func (m *ChangeCurrency) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ChangeCurrency) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if m.Type != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Type))
+	}
+	if m.Coin != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		dAtA[i] = 0x20
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Diamond))
 	}
 	return i, nil
 }
@@ -1558,19 +1725,44 @@ func (m *SyncUser) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
 	return n
 }
 
-func (m *SyncedUser) Size() (n int) {
+func (m *SyncCurrency) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Userid)
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
 	}
-	l = len(m.Data)
+	if m.Coin != 0 {
+		n += 1 + sovRole(uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		n += 1 + sovRole(uint64(m.Diamond))
+	}
+	return n
+}
+
+func (m *ChangeCurrency) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
 	if l > 0 {
 		n += 1 + l + sovRole(uint64(l))
+	}
+	if m.Type != 0 {
+		n += 1 + sovRole(uint64(m.Type))
+	}
+	if m.Coin != 0 {
+		n += 1 + sovRole(uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		n += 1 + sovRole(uint64(m.Diamond))
 	}
 	return n
 }
@@ -1722,17 +1914,32 @@ func (this *SyncUser) String() string {
 	}
 	s := strings.Join([]string{`&SyncUser{`,
 		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Data:` + fmt.Sprintf("%v", this.Data) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *SyncedUser) String() string {
+func (this *SyncCurrency) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&SyncedUser{`,
+	s := strings.Join([]string{`&SyncCurrency{`,
 		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
-		`Data:` + fmt.Sprintf("%v", this.Data) + `,`,
+		`Coin:` + fmt.Sprintf("%v", this.Coin) + `,`,
+		`Diamond:` + fmt.Sprintf("%v", this.Diamond) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ChangeCurrency) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ChangeCurrency{`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Type:` + fmt.Sprintf("%v", this.Type) + `,`,
+		`Coin:` + fmt.Sprintf("%v", this.Coin) + `,`,
+		`Diamond:` + fmt.Sprintf("%v", this.Diamond) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3019,6 +3226,35 @@ func (m *SyncUser) Unmarshal(dAtA []byte) error {
 			}
 			m.Userid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRole(dAtA[iNdEx:])
@@ -3040,7 +3276,7 @@ func (m *SyncUser) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SyncedUser) Unmarshal(dAtA []byte) error {
+func (m *SyncCurrency) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3063,10 +3299,10 @@ func (m *SyncedUser) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SyncedUser: wiretype end group for non-group")
+			return fmt.Errorf("proto: SyncCurrency: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SyncedUser: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SyncCurrency: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3099,8 +3335,96 @@ func (m *SyncedUser) Unmarshal(dAtA []byte) error {
 			m.Userid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
+			}
+			m.Coin = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Coin |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Diamond", wireType)
+			}
+			m.Diamond = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Diamond |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ChangeCurrency) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ChangeCurrency: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ChangeCurrency: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3125,8 +3449,65 @@ func (m *SyncedUser) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Data = string(dAtA[iNdEx:postIndex])
+			m.Userid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+			}
+			m.Type = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Type |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
+			}
+			m.Coin = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Coin |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Diamond", wireType)
+			}
+			m.Diamond = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Diamond |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRole(dAtA[iNdEx:])
@@ -3256,31 +3637,34 @@ var (
 func init() { proto.RegisterFile("role.proto", fileDescriptorRole) }
 
 var fileDescriptorRole = []byte{
-	// 408 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x93, 0xcf, 0x6e, 0xda, 0x40,
-	0x10, 0xc6, 0xbd, 0x14, 0x8c, 0x3d, 0xdc, 0xf6, 0x50, 0x21, 0x0e, 0xdb, 0x6a, 0x69, 0xd5, 0x1e,
-	0x5a, 0x23, 0xb5, 0x52, 0xd5, 0x6b, 0x2b, 0x57, 0x14, 0x89, 0x22, 0x64, 0x9a, 0x07, 0xf0, 0x9f,
-	0x95, 0x83, 0x62, 0x7b, 0x91, 0x6d, 0x0e, 0xdc, 0xf2, 0x08, 0x79, 0x8c, 0x3c, 0x45, 0xce, 0x39,
-	0x72, 0xcc, 0x31, 0x38, 0x97, 0x1c, 0x79, 0x84, 0x68, 0xd7, 0x0b, 0x49, 0x44, 0x4c, 0x90, 0xb8,
-	0xed, 0x30, 0xbf, 0x6f, 0xe6, 0x9b, 0x19, 0x0c, 0x90, 0xf2, 0x88, 0x59, 0xb3, 0x94, 0xe7, 0x1c,
-	0xd7, 0x66, 0x5e, 0xe7, 0x47, 0x38, 0xcd, 0x4f, 0xe7, 0x9e, 0xe5, 0xf3, 0xb8, 0xf7, 0x2b, 0x5b,
-	0x24, 0x67, 0x29, 0x4f, 0x06, 0xff, 0x7b, 0x12, 0x70, 0xfd, 0x9c, 0xa7, 0x5f, 0x43, 0xde, 0x93,
-	0x8f, 0xf2, 0xb7, 0xac, 0xd4, 0x52, 0x0b, 0x8c, 0x09, 0xcb, 0x87, 0x3c, 0x9c, 0x26, 0x98, 0x82,
-	0x3e, 0x61, 0x49, 0xc0, 0xd2, 0x36, 0x7a, 0x8f, 0x3e, 0xb7, 0xbe, 0x81, 0x25, 0x05, 0xd6, 0x78,
-	0x60, 0x3b, 0x2a, 0x43, 0xaf, 0x10, 0xc0, 0x46, 0xc0, 0x02, 0xdc, 0x86, 0xe6, 0x3f, 0x96, 0x65,
-	0x6e, 0xc8, 0xa4, 0xc6, 0x74, 0x36, 0x21, 0xfe, 0x00, 0x4d, 0xdb, 0x8b, 0xb3, 0xf1, 0x34, 0x68,
-	0xd7, 0x76, 0xaa, 0x6d, 0x52, 0x82, 0x72, 0x38, 0x8f, 0x05, 0xf5, 0x66, 0x97, 0x52, 0xa9, 0x92,
-	0x8a, 0x98, 0xa0, 0xea, 0x2f, 0x51, 0x32, 0x25, 0xa8, 0xbf, 0x6e, 0x14, 0x09, 0xaa, 0xb1, 0x4b,
-	0xa9, 0x14, 0xed, 0x83, 0x29, 0xcd, 0xf7, 0xdd, 0x9c, 0x1d, 0x32, 0x31, 0x7e, 0x0b, 0xfa, 0x49,
-	0xc6, 0x52, 0x35, 0x87, 0xe9, 0xa8, 0x88, 0x7e, 0x82, 0x96, 0xda, 0x82, 0x2c, 0x55, 0xb9, 0x09,
-	0xea, 0xab, 0x8e, 0xc2, 0xc1, 0x31, 0x1d, 0x71, 0x07, 0x8c, 0x11, 0x0f, 0xd8, 0xc8, 0x8d, 0x99,
-	0xdc, 0x96, 0xe9, 0x6c, 0xe3, 0x27, 0x6e, 0x64, 0x9b, 0x6a, 0x37, 0xef, 0xa0, 0x51, 0x5e, 0xfb,
-	0xb1, 0x0b, 0x7a, 0x36, 0x57, 0x17, 0x9a, 0xaf, 0x5e, 0x97, 0x76, 0xd5, 0x4c, 0x7f, 0xa2, 0x8c,
-	0x55, 0x56, 0xfa, 0xb8, 0xf5, 0xb4, 0x17, 0xb3, 0x41, 0x1f, 0xf2, 0x90, 0xcf, 0xf3, 0xa3, 0xce,
-	0x61, 0x81, 0x51, 0x56, 0x61, 0xc1, 0x41, 0x7f, 0x64, 0x0a, 0xc6, 0x64, 0x91, 0xf8, 0x42, 0x5d,
-	0xe9, 0xec, 0x27, 0x80, 0x60, 0x58, 0xb0, 0x8f, 0xc2, 0x18, 0xea, 0xb6, 0x9b, 0xbb, 0xca, 0x8f,
-	0x7c, 0xff, 0xfe, 0xb2, 0x5c, 0x11, 0xed, 0x66, 0x45, 0xb4, 0xf5, 0x8a, 0xa0, 0xf3, 0x82, 0xa0,
-	0xcb, 0x82, 0xa0, 0xeb, 0x82, 0xa0, 0x65, 0x41, 0xd0, 0x6d, 0x41, 0xd0, 0x7d, 0x41, 0xb4, 0x75,
-	0x41, 0xd0, 0xc5, 0x1d, 0xd1, 0x3c, 0x5d, 0x7e, 0x8b, 0xdf, 0x1f, 0x02, 0x00, 0x00, 0xff, 0xff,
-	0xb3, 0x91, 0x61, 0x6a, 0xd5, 0x03, 0x00, 0x00,
+	// 464 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x54, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xce, 0xb6, 0xf9, 0x9d, 0x52, 0x0e, 0x3e, 0xa0, 0xa8, 0x87, 0x05, 0x6d, 0x41, 0x70, 0x00,
+	0x47, 0x02, 0xa9, 0x77, 0x88, 0x51, 0xa9, 0x54, 0xaa, 0xca, 0x09, 0x0f, 0xb0, 0xb1, 0x47, 0xae,
+	0xc1, 0xde, 0x8d, 0x6c, 0xe7, 0x90, 0x1b, 0x8f, 0xc0, 0x63, 0xf0, 0x14, 0x9c, 0x39, 0xf6, 0xc8,
+	0x91, 0x98, 0x0b, 0xc7, 0x3e, 0x02, 0xda, 0xf1, 0x3a, 0xfc, 0x04, 0xb7, 0x91, 0x7a, 0x9b, 0xd9,
+	0xf9, 0xbe, 0xf9, 0xbe, 0x99, 0xb1, 0x0c, 0x90, 0xe9, 0x04, 0xdd, 0x79, 0xa6, 0x0b, 0xed, 0xec,
+	0xcc, 0x67, 0x07, 0x47, 0x51, 0x5c, 0x5c, 0x2c, 0x66, 0x6e, 0xa0, 0xd3, 0xd1, 0xcb, 0x7c, 0xa9,
+	0x3e, 0x64, 0x5a, 0x9d, 0x4c, 0x47, 0x04, 0x90, 0x41, 0xa1, 0xb3, 0x67, 0x91, 0x1e, 0x51, 0x50,
+	0xbd, 0xe5, 0x15, 0x57, 0xb8, 0xd0, 0x9f, 0x60, 0x71, 0xaa, 0xa3, 0x58, 0x39, 0x02, 0xba, 0x13,
+	0x54, 0x21, 0x66, 0x43, 0xf6, 0x80, 0x3d, 0xd9, 0x7b, 0x0e, 0x2e, 0x11, 0xdc, 0xf3, 0x13, 0xcf,
+	0xb7, 0x15, 0xf1, 0x85, 0x01, 0xd4, 0x04, 0x0c, 0x9d, 0x21, 0xf4, 0xde, 0x62, 0x9e, 0xcb, 0x08,
+	0x89, 0x33, 0xf0, 0xeb, 0xd4, 0x79, 0x08, 0x3d, 0x6f, 0x96, 0xe6, 0xe7, 0x71, 0x38, 0xdc, 0xd9,
+	0xe8, 0x56, 0x97, 0x0c, 0xca, 0xd7, 0x3a, 0x35, 0xa8, 0xdd, 0x4d, 0x94, 0x2d, 0x55, 0xa8, 0x04,
+	0x0d, 0xaa, 0xfd, 0x3f, 0x14, 0x95, 0x0c, 0xea, 0x8d, 0x4c, 0x12, 0x83, 0xea, 0x6c, 0xa2, 0x6c,
+	0x49, 0x1c, 0xc3, 0x80, 0xcc, 0x1f, 0xcb, 0x02, 0xb7, 0x99, 0xd8, 0xb9, 0x07, 0xdd, 0x77, 0x39,
+	0x66, 0x76, 0x8e, 0x81, 0x6f, 0x33, 0xf1, 0x18, 0xf6, 0xec, 0x16, 0xa8, 0x55, 0xe3, 0x26, 0x44,
+	0x60, 0x15, 0x8d, 0x83, 0xdb, 0x28, 0x3a, 0x07, 0xd0, 0x3f, 0xd3, 0x21, 0x9e, 0xc9, 0x14, 0x69,
+	0x5b, 0x03, 0x7f, 0x9d, 0xff, 0xe1, 0x86, 0x64, 0x9a, 0xdd, 0xdc, 0x87, 0x4e, 0x75, 0xed, 0xdf,
+	0x2a, 0xec, 0xaf, 0xb9, 0x0e, 0xa1, 0x77, 0xe3, 0x75, 0xc5, 0xa1, 0x9d, 0xe9, 0x75, 0x92, 0x63,
+	0x63, 0xa7, 0x47, 0x6b, 0x4f, 0xd7, 0xc2, 0x3c, 0xe8, 0x9e, 0xea, 0x48, 0x2f, 0x8a, 0x5b, 0x9d,
+	0xc3, 0x85, 0x7e, 0xd5, 0x05, 0xc3, 0xad, 0x3e, 0xe4, 0x23, 0xe8, 0x4f, 0x96, 0x2a, 0x30, 0xec,
+	0x26, 0x67, 0x8e, 0x03, 0x6d, 0x4f, 0x16, 0xd2, 0x2a, 0x51, 0x2c, 0xa6, 0x70, 0xc7, 0xf0, 0xc6,
+	0x8b, 0x2c, 0x43, 0x15, 0x2c, 0xaf, 0xe3, 0x8e, 0x75, 0xac, 0x88, 0xbb, 0xef, 0x53, 0x6c, 0xf6,
+	0xe9, 0xc5, 0x32, 0xd5, 0xaa, 0xfa, 0xda, 0xf7, 0xfd, 0x3a, 0x15, 0xef, 0xe1, 0xee, 0xf8, 0x42,
+	0xaa, 0x08, 0xb7, 0xe9, 0x3b, 0x5d, 0xce, 0x91, 0xfa, 0x76, 0x7c, 0x8a, 0xd7, 0x5a, 0xbb, 0xd5,
+	0xdb, 0xbf, 0x5a, 0x6d, 0x7a, 0xae, 0xd3, 0x57, 0x4f, 0x2f, 0x57, 0xbc, 0xf5, 0x6d, 0xc5, 0x5b,
+	0x57, 0x2b, 0xce, 0x3e, 0x96, 0x9c, 0x7d, 0x2e, 0x39, 0xfb, 0x5a, 0x72, 0x76, 0x59, 0x72, 0xf6,
+	0xbd, 0xe4, 0xec, 0x67, 0xc9, 0x5b, 0x57, 0x25, 0x67, 0x9f, 0x7e, 0xf0, 0xd6, 0xac, 0x4b, 0xff,
+	0x89, 0x17, 0xbf, 0x02, 0x00, 0x00, 0xff, 0xff, 0xcf, 0x9f, 0x91, 0x3e, 0x71, 0x04, 0x00, 0x00,
 }

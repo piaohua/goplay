@@ -207,7 +207,8 @@
 		Logout
 		Logouted
 		SyncUser
-		SyncedUser
+		SyncCurrency
+		ChangeCurrency
 		CLeave
 		SLeave
 		CKick

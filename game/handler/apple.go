@@ -1,33 +1,30 @@
 package handler
 
+/*
 import (
 	"goplay/pb"
 	"niu/apple"
 	"niu/data"
-	"niu/errorcode"
 	"niu/images"
 	"utils"
 
 	"github.com/golang/glog"
-	"github.com/golang/protobuf/proto"
 )
 
 func appleOrder(ctos *pb.CApplePay, p *data.User) {
-	stoc := &pb.SApplePay{}
+	stoc := new(pb.SApplePay)
 	id := ctos.GetId()
 	receipt := ctos.GetReceipt()
-	stoc.Id = proto.Uint32(id)
+	stoc.Id = id
 	result, err := apple.PayVeriy(receipt)
 	if err != nil || result == nil {
 		glog.Errorf("apple pay err %#v", err)
-		stoc.Error = proto.Uint32(errorcode.AppleOrderFail)
-		p.Send(stoc)
+		stoc.Error = pb.AppleOrderFail
 		return
 	}
 	if result.Status != 0 {
 		glog.Errorf("apple pay err result %#v", result)
-		stoc.Error = proto.Uint32(errorcode.AppleOrderFail)
-		p.Send(stoc)
+		stoc.Error = pb.AppleOrderFail
 		return
 	}
 	glog.Infof("apple pay result %#v", result)
@@ -40,12 +37,10 @@ func appleOrder(ctos *pb.CApplePay, p *data.User) {
 		//if !appleVerify(v.Product_id, tradeRecord, p) {
 		if !appleVerify(utils.String(id), tradeRecord, p) {
 			glog.Errorf("apple pay verify err %#v", tradeRecord)
-			stoc.Error = proto.Uint32(errorcode.AppleOrderFail)
-			p.Send(stoc)
+			stoc.Error = pb.AppleOrderFail
 			return
 		}
 	}
-	p.Send(stoc)
 }
 
 func appleVerify(product_id string, tradeRecord *data.TradeRecord, p *data.User) bool {
@@ -81,3 +76,4 @@ func appleVerify(product_id string, tradeRecord *data.TradeRecord, p *data.User)
 	images.DeliverGoods(p, tradeRecord.Diamond, tradeRecord.Money, tradeRecord.First)
 	return true
 }
+*/

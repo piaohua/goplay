@@ -1,5 +1,6 @@
-package handle
+package handler
 
+/*
 import (
 	"goplay/data"
 	"goplay/pb"
@@ -20,8 +21,8 @@ func newMail(p *data.User) {
 	成为全世界最厉害的（人工智能）围棋手。`
 	m := mail.New2(from, p.GetUserid(), content)
 	m.Save()
-	msg := new(pb.SMailNotice)
-	p.Send(msg)
+	//msg := new(pb.SMailNotice)
+	//p.Send(msg)
 }
 
 // 新邮件列表
@@ -89,3 +90,4 @@ func getMailItem(ctos *pb.CGetMailItem, p *data.User) (stoc *pb.SGetMailItem) {
 	stoc.Id = ctos.GetId()
 	return
 }
+*/

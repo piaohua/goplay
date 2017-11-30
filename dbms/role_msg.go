@@ -64,11 +64,12 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		bind := cfg.Section("hall").Key("bind").Value()
 		name := cfg.Section("cookie").Key("name").Value()
 		timeout := 3 * time.Second
-		a.hallPid, err = remote.SpawnNamed(bind, a.Name, name, timeout)
+		hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
 		glog.Infof("a.hallPid: %s", a.hallPid.String())
 		if err != nil {
 			glog.Fatalf("remote hall err %v", err)
 		}
+		a.hallPid = hallPid.Pid
 		connect := &pb.HallConnect{
 			Sender: ctx.Self(),
 			Name:   a.Name,
@@ -91,7 +92,7 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//兑换
 		a.HandlerPrize(user, diamond, coin, data.LogType18, ctx)
 		//同步兑换
-		a.HandlerSync3(user, ctx)
+		a.HandlerSync3(user, diamond, coin, data.LogType18, ctx)
 		//响应
 		ctx.Respond(rsp)
 	case *pb.CShop:
@@ -160,7 +161,7 @@ func (a *RoleActor) HandlerSync(user *data.User, ctx actor.Context) {
 	if err != nil {
 		glog.Errorf("user Marshal err %v", err)
 	}
-	msg3.Data = result
+	msg3.Data = string(result)
 	ctx.Sender().Tell(msg3)
 }
 

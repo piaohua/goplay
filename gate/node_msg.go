@@ -108,11 +108,12 @@ func (a *GateActor) init(ctx actor.Context) {
 	//hall
 	bind = cfg.Section("hall").Key("bind").Value()
 	//name
-	a.hallPid, err = remote.SpawnNamed(bind, a.Name, name, timeout)
-	glog.Infof("a.hallPid: %s", a.hallPid.String())
+	hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
 	if err != nil {
 		glog.Fatalf("remote hall err %v", err)
 	}
+	a.hallPid = hallPid.Pid
+	glog.Infof("a.hallPid: %s", a.hallPid.String())
 	connect := &pb.GateConnect{
 		Sender: ctx.Self(),
 	}
