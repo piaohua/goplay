@@ -12,14 +12,8 @@ import (
 //大厅服务
 type HallActor struct {
 	Name string
-	//登录服务
-	loginPid *actor.PID
-	//数据中心服务
-	dbmsPid *actor.PID
-	//房间服务
-	roomPid *actor.PID
-	//角色服务
-	rolePid *actor.PID
+	//服务注册
+	serve map[string]*actor.PID
 	//所有网关节点
 	gates map[string]*actor.PID
 	//玩家所在节点
@@ -54,6 +48,7 @@ func newHallActor() actor.Actor {
 	a := new(HallActor)
 	//name
 	a.Name = cfg.Section("hall").Name()
+	a.serve = make(map[string]*actor.PID)
 	a.gates = make(map[string]*actor.PID)
 	a.roles = make(map[string]string)
 	a.count = make(map[string]uint32)

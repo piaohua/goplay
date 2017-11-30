@@ -11,6 +11,7 @@ const (
 	ROOMID_KEY  = "LastRoomID" //房间唯一id
 	USERID_KEY  = "LastUserID" //玩家唯一id
 	BETTING_KEY = "betting"    //疯狂投注期号 + today
+	MAILID_KEY  = "LastMailID" //邮件
 )
 
 type IDGen struct {

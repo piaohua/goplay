@@ -31,20 +31,7 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.HallConnect:
 		//初始化建立连接
 		arg := msg.(*pb.HallConnect)
-		name := arg.Name
-		dbmsName := cfg.Section("dbms").Name()
-		roomName := cfg.Section("room").Name()
-		roleName := cfg.Section("role").Name()
-		loginName := cfg.Section("login").Name()
-		if name == dbmsName {
-			a.dbmsPid = arg.Sender
-		} else if name == roomName {
-			a.roomPid = arg.Sender
-		} else if name == roleName {
-			a.rolePid = arg.Sender
-		} else if name == loginName {
-			a.loginPid = arg.Sender
-		}
+		a.serve[arg.Name] = arg.Sender
 		//connected := &pb.HallConnected{
 		//	Message: ctx.Self().String(),
 		//	Name:    arg.Name,
@@ -106,13 +93,31 @@ func (a *HallActor) HandlerStop(ctx actor.Context) {
 	//	glog.Debugf("Stop role: %s", k)
 	//	v.Tell(msg)
 	//}
-	if a.rolePid != nil {
-		a.rolePid.Stop()
+	dbmsName := cfg.Section("dbms").Name()
+	roomName := cfg.Section("room").Name()
+	roleName := cfg.Section("role").Name()
+	loginName := cfg.Section("login").Name()
+	mailName := cfg.Section("mail").Name()
+	bettingName := cfg.Section("betting").Name()
+	if v, ok := a.serve[loginName]; ok {
+		v.Stop()
 	}
-	if a.roomPid != nil {
-		a.roomPid.Stop()
+	if v, ok := a.serve[roleName]; ok {
+		v.Stop()
 	}
-	if a.dbmsPid != nil {
-		a.dbmsPid.Stop()
+	if v, ok := a.serve[roomName]; ok {
+		v.Stop()
 	}
+	if v, ok := a.serve[mailName]; ok {
+		v.Stop()
+	}
+	if v, ok := a.serve[bettingName]; ok {
+		v.Stop()
+	}
+	if v, ok := a.serve[dbmsName]; ok {
+		v.Stop()
+	}
+	//for k, v := range a.serve {
+	//	v.Stop()
+	//}
 }
