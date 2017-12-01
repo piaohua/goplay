@@ -1,6 +1,5 @@
 package handler
 
-/*
 import (
 	"goplay/data"
 	"goplay/pb"
@@ -90,4 +89,3 @@ func getMailItem(ctos *pb.CGetMailItem, p *data.User) (stoc *pb.SGetMailItem) {
 	stoc.Id = ctos.GetId()
 	return
 }
-*/

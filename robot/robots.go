@@ -64,7 +64,7 @@ func (r *RobotServer) runTest1() {
 	msg := &pb.RobotMsg{
 		Code: "create",
 	}
-	go Msg2Robots(msg, 1)
+	go Msg2Robots(msg, 2)
 }
 
 //机器人测试

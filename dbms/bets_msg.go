@@ -46,9 +46,9 @@ func (a *BetsActor) HandlerStop(ctx actor.Context) {
 	if a.uniqueid != nil {
 		a.uniqueid.Save()
 	}
-	for k, _ := range a.bets {
-		glog.Debugf("Stop bets: %s", k)
-		//TODO
-		//v.Save()
-	}
+	//for k, _ := range a.bets {
+	//	glog.Debugf("Stop bets: %s", k)
+	//	//TODO
+	//	//v.Save()
+	//}
 }

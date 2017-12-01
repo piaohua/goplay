@@ -148,6 +148,7 @@ func (a *RoleActor) HandlerLogin(user *data.User,
 	}
 	nodePid.Tell(msg2)
 	glog.Debugf("user %#v", user)
+	//TODO 全部由gate处理
 	a.HandlerSync(user, ctx)
 }
 
