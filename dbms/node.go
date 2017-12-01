@@ -55,7 +55,7 @@ func newDBMSActor() actor.Actor {
 	return a
 }
 
-func NewRemote(bind, name, room, role string) {
+func NewRemote(bind, name, room, role, mail, bets string) {
 	remote.Start(bind)
 	//
 	//remote.Register(name, actor.FromProducer(newDBMSActor))
@@ -90,12 +90,52 @@ func NewRemote(bind, name, room, role string) {
 	}
 	glog.Infof("rolePid %s", rolePid.String())
 	rolePid.Tell(new(pb.HallConnect))
+	//
+	//remote.Register(mail, actor.FromProducer(newMailActor))
+	mailProps := actor.
+		FromInstance(newMailActor())
+	remote.Register(mail, mailProps)
+	mailPid, err = actor.SpawnNamed(mailProps, mail)
+	if err != nil {
+		glog.Fatalf("mailPid err %v", err)
+	}
+	glog.Infof("mailPid %s", mailPid.String())
+	mailPid.Tell(new(pb.HallConnect))
+	//
+	//remote.Register(bets, actor.FromProducer(newBetsActor))
+	betsProps := actor.
+		FromInstance(newBetsActor())
+	remote.Register(bets, betsProps)
+	betsPid, err = actor.SpawnNamed(betsProps, bets)
+	if err != nil {
+		glog.Fatalf("betsPid err %v", err)
+	}
+	glog.Infof("betsPid %s", betsPid.String())
+	betsPid.Tell(new(pb.HallConnect))
 }
 
 //关闭
 func Stop() {
 	timeout := 3 * time.Second
 	msg := new(pb.ServeStop)
+	if mailPid != nil {
+		res1, err1 := mailPid.RequestFuture(msg, timeout).Result()
+		if err1 != nil {
+			glog.Errorf("mailPid Stop err: %v", err1)
+		}
+		response1 := res1.(*pb.ServeStoped)
+		glog.Debugf("response1: %#v", response1)
+		mailPid.Stop()
+	}
+	if betsPid != nil {
+		res1, err1 := betsPid.RequestFuture(msg, timeout).Result()
+		if err1 != nil {
+			glog.Errorf("betsPid Stop err: %v", err1)
+		}
+		response1 := res1.(*pb.ServeStoped)
+		glog.Debugf("response1: %#v", response1)
+		betsPid.Stop()
+	}
 	if rolePid != nil {
 		res1, err1 := rolePid.RequestFuture(msg, timeout).Result()
 		if err1 != nil {

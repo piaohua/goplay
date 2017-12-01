@@ -50,7 +50,9 @@ func main() {
 	name := cfg.Section("cookie").Key("name").Value()
 	room := cfg.Section("cookie").Key("room").Value()
 	role := cfg.Section("cookie").Key("role").Value()
-	NewRemote(bind, name, room, role)
+	mail := cfg.Section("cookie").Key("mail").Value()
+	bets := cfg.Section("cookie").Key("bets").Value()
+	NewRemote(bind, name, room, role, mail, bets)
 	signalListen()
 	//关闭服务
 	Stop()
