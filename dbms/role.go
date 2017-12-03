@@ -24,6 +24,8 @@ type RoleActor struct {
 	offline map[string]*data.User
 	//角色PID-userid
 	router map[string]string
+	//账号映射account-userid
+	players map[string]string
 	//唯一id生成
 	uniqueid *data.IDGen
 }
@@ -55,6 +57,7 @@ func newRoleActor() actor.Actor {
 	a.roles = make(map[string]*data.User)
 	a.offline = make(map[string]*data.User)
 	a.router = make(map[string]string)
+	a.players = make(map[string]string)
 	//唯一id初始化
 	a.uniqueid = data.InitIDGen(data.USERID_KEY)
 	return a

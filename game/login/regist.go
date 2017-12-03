@@ -1,18 +1,20 @@
 package login
 
 import (
+	"encoding/json"
+
 	"goplay/data"
+	"goplay/glog"
 	"goplay/pb"
 	"utils"
 )
 
-func Regist(ctos *pb.CRegist, genid *data.IDGen) (stoc *pb.SRegist, user *data.User) {
+//注册验证
+func RegistCheck(ctos *pb.CRegist) (stoc *pb.SRegist) {
 	stoc = new(pb.SRegist)
 	var nickname string = ctos.GetNickname()
 	var phone string = ctos.GetPhone()
 	var passwd string = ctos.GetPassword()
-	var ipaddr string = ctos.GetIpaddr()
-	var atype uint32 = ctos.GetType()
 	if nickname == "" {
 		stoc.Error = pb.UsernameEmpty
 	}
@@ -25,18 +27,24 @@ func Regist(ctos *pb.CRegist, genid *data.IDGen) (stoc *pb.SRegist, user *data.U
 	if len(passwd) != 32 {
 		stoc.Error = pb.PwdFormatError
 	}
-	//TODO 在线表中查找
-	user = &data.User{Phone: phone}
+	return
+}
+
+//注册
+func Regist(arg *pb.RoleRegist, genid *data.IDGen) (stoc *pb.RoleRegisted) {
+	var nickname string = arg.GetNickname()
+	var phone string = arg.GetPhone()
+	var passwd string = arg.GetPassword()
+	var atype uint32 = ctos.GetType()
+	stoc = new(pb.RoleRegisted)
+	user := new(data.User)
+	user.Phone = phone
 	if user.ExistsPhone() {
 		stoc.Error = pb.PhoneRegisted
-	}
-	if stoc.Error != pb.OK {
-		user = nil
 		return
 	}
 	userid := genid.GenID()
 	if userid == "" {
-		user = nil
 		stoc.Error = pb.RegistError
 		return
 	}
@@ -44,7 +52,6 @@ func Regist(ctos *pb.CRegist, genid *data.IDGen) (stoc *pb.SRegist, user *data.U
 	user = &data.User{
 		Userid:   userid,
 		Nickname: nickname,
-		RegIp:    ipaddr,
 		Auth:     auth,
 		Pwd:      utils.Md5(passwd + auth),
 		Phone:    phone,
@@ -52,10 +59,15 @@ func Regist(ctos *pb.CRegist, genid *data.IDGen) (stoc *pb.SRegist, user *data.U
 		Ctime:    utils.BsonNow(),
 	}
 	if !user.Save() {
-		user = nil
 		stoc.Error = pb.RegistError
 		return
 	}
-	stoc.Userid = userid
+	result, err := json.Marshal(user)
+	if err != nil {
+		glog.Errorf("user Marshal err %v", err)
+		stoc.Error = pb.RegistError
+		return
+	}
+	stoc.Data = string(result)
 	return
 }

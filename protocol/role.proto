@@ -89,6 +89,54 @@ message GotUserid {
     string Userid = 1;
 }
 
+//获取唯一id
+message GetUniqueid {
+    actor.PID Sender = 1;
+}
+
+message GotUniqueid {
+    string Uniqueid = 1;
+}
+
+//登录
+message RoleLogin {
+    string Phone    = 1; //手机
+    string Password = 2; //密码 (MD5)
+    uint32 Type     = 3;//登录
+}
+
+message RoleLogined {
+    string Data = 1;
+    ErrCode Error  = 2 ;// 错误码
+}
+
+//注册
+message RoleRegist {
+    string Nickname = 1;//昵称
+    string Phone    = 2;//手机号
+    string Password = 3;//密码(md5)
+    uint32 Type     = 4;//登录
+}
+
+message RoleRegisted {
+    string Data = 1;
+    ErrCode Error  = 2 ;// 错误码
+}
+
+//登录
+message WxLogin {
+    string Wxuid = 1;
+    string Nickname = 2;
+    string Photo = 3;
+    uint32 Sex = 4;
+    uint32 Type = 5;//登录
+}
+
+message WxLogined {
+    string Data = 1;
+    ErrCode error  = 2 ;// 错误码
+}
+
 // 新邮件
 message NewMail {
     string From = 1;

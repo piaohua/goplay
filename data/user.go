@@ -131,10 +131,7 @@ func (this *User) VerifyPwdByPhone(pwd string) bool {
 	if this.Userid == "" {
 		return false
 	}
-	if utils.Md5(pwd+this.Auth) != this.Pwd {
-		return false
-	}
-	return true
+	return this.VerifyPwd(pwd)
 }
 
 //用户登陆密码验证
@@ -146,10 +143,12 @@ func (this *User) PWDIsOK(userid, pwd string) bool {
 	if this.Userid == "" {
 		return false
 	}
-	if utils.Md5(pwd+this.Auth) != this.Pwd {
-		return false
-	}
-	return true
+	return this.VerifyPwd(pwd)
+}
+
+//密码验证
+func (this *User) VerifyPwd(pwd string) bool {
+	return utils.Md5(pwd+this.Auth) == this.Pwd
 }
 
 //

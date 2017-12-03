@@ -55,6 +55,8 @@ func (ws *WSConn) disc(ctx actor.Context) {
 	if ws.User == nil {
 		return
 	}
+	//回存数据
+	ws.syncUser()
 	//登出日志
 	if ws.dbmsPid != nil {
 		msg2 := &pb.LogLogout{
@@ -69,7 +71,6 @@ func (ws *WSConn) disc(ctx actor.Context) {
 		Userid: ws.User.Userid,
 	}
 	nodePid.Tell(msg)
-	//TODO 回存数据
 }
 
 //初始化

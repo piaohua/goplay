@@ -2,9 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"time"
+	"niu/data"
 
-	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
 
@@ -22,51 +21,16 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.rolePid = arg.RolePid
 		ws.hallPid = arg.HallPid
 		glog.Infof("SetLogined %v", arg.Message)
-	case *pb.CRegist:
-		//注册消息
-		arg := msg.(*pb.CRegist)
-		arg.Ipaddr = ws.GetIPAddr()
-		ws.rolePid.Request(arg, ctx.Self())
-		glog.Debugf("CRegist %#v", arg)
-	case *pb.CLogin:
-		//登录消息
-		arg := msg.(*pb.CLogin)
-		arg.Ipaddr = ws.GetIPAddr()
-		ws.rolePid.Request(arg, ctx.Self())
-		glog.Debugf("CLogin %#v", arg)
-	case *pb.CWxLogin:
-		//登录消息
-		arg := msg.(*pb.CWxLogin)
-		arg.Ipaddr = ws.GetIPAddr()
-		ws.rolePid.Request(arg, ctx.Self())
-		glog.Debugf("CWxLogin %#v", arg)
-	case *pb.SRegist:
-		arg := msg.(*pb.SRegist)
-		glog.Debugf("SRegist %#v", arg)
-		if arg.GetUserid() != "" {
-			//登录成功
-			ctx.SetReceiveTimeout(0) //login Successfully, timeout off
-		}
-		ws.Send(msg)
-	case *pb.SLogin:
-		arg := msg.(*pb.SLogin)
-		glog.Debugf("SLogin %#v", arg)
-		if arg.GetUserid() != "" {
-			//登录成功
-			ctx.SetReceiveTimeout(0) //login Successfully, timeout off
-		}
-		ws.Send(msg)
-	case *pb.SWxLogin:
-		arg := msg.(*pb.SWxLogin)
-		glog.Debugf("SWxLogin %#v", arg)
-		if arg.GetUserid() != "" {
-			//登录成功
-			ctx.SetReceiveTimeout(0) //login Successfully, timeout off
-			ws.login(arg.GetUserid(), ctx)
-			ws.logined(arg.GetIsreg(), ctx)
-		}
-		ws.Send(msg)
+	case *pb.ServeStop:
+		arg := new(pb.SLoginOut)
+		arg.Rtype = 2 //停服
+		ws.Send(arg)
+		//断开连接
+		ws.Close()
+	case *pb.LoginElse:
+		ws.loginElse() //别处登录
 	case *pb.SyncUser:
+		//同步数据
 		arg := msg.(*pb.SyncUser)
 		glog.Debugf("SyncUser %#v", arg.Userid)
 		err := json.Unmarshal([]byte(arg.Data), ws.User)
@@ -75,39 +39,37 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		}
 		glog.Debugf("User %#v", ws.User)
 	case *pb.ChangeCurrency:
+		//货币变更
 		arg := msg.(*pb.ChangeCurrency)
 		diamond := arg.Diamond
 		coin := arg.Coin
 		ltype := int(arg.Type)
-		ws.addCurrency(diamond, coin, ltype, ctx)
-	case *pb.LoginElse:
-		ws.loginElse() //别处登录
-	case *pb.ServeStop:
-		arg := new(pb.SLoginOut)
-		arg.Rtype = 2 //停服
-		ws.Send(arg)
-		//断开连接
-		ws.Close()
-	case *pb.SUserData:
-		//TODO 添加房间数据
-		//重置同步
-		ws.User.GetBankrupts()
-		ws.User.GetPrizeDraw()
-		ws.User.GetKickTimes()
-	case *pb.CBuy, *pb.CShop, *pb.CBank,
-		*pb.CPrizeList, *pb.CVipList,
-		*pb.CPrizeDraw, *pb.CBankrupts,
-		*pb.CUserData, *pb.CBuildAgent,
-		*pb.CClassicList, *pb.CPrizeBox:
-		ws.rolePid.Request(msg, ctx.Self())
-	case *pb.CGetCurrency:
-		ws.Send(arg)
+		ws.addCurrency(diamond, coin, ltype)
 	case proto.Message:
 		//响应消息
 		ws.Send(msg)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+//同步数据
+func (ws *WSConn) syncUser() {
+	if ws.User == nil {
+		return
+	}
+	if ws.rolePid == nil {
+		return
+	}
+	msg := new(pb.SyncUser)
+	msg.Userid = ws.User.GetUserid()
+	result, err := json.Marshal(ws.User)
+	if err != nil {
+		glog.Errorf("user Marshal err %v", err)
+		return
+	}
+	msg.Data = string(result)
+	ws.rolePid.Tell(msg)
 }
 
 func (ws *WSConn) loginElse() {
@@ -127,76 +89,17 @@ func (ws *WSConn) loginElse() {
 	ws.Close()
 }
 
-//登录处理
-func (ws *WSConn) login(userid string, ctx actor.Context) {
-	ws.User = new(data.User)
-	ws.User.Userid = userid
-	//重连处理直接断开旧连接,登录成功再连接节点和大厅
-	//TODO 不在同一节点就关闭旧的,如果在就接替或直接关闭
-	msg1 := new(pb.LoginHall)
-	msg1.Userid = userid
-	msg1.NodeName = nodePid.String()
-	timeout := 3 * time.Second
-	res1, err1 := ws.hallPid.RequestFuture(msg1, timeout).Result()
-	if err1 != nil {
-		glog.Errorf("LoginHall err: %v", err1)
+func (ws *WSConn) addPrize(rtype, ltype int, amount int32) {
+	switch uint32(rtype) {
+	case data.DIAMOND:
+		a.sendCurrency(amount, 0, ltype)
+	case data.COIN:
+		a.addCurrency(0, amount, ltype)
 	}
-	response1 := res1.(*pb.LoginedHall)
-	glog.Debugf("response1: %#v", response1)
-	//成功后登录网关
-	msg2 := new(pb.LoginGate)
-	msg2.Sender = ctx.Self()
-	msg2.Userid = userid
-	res2, err2 := nodePid.RequestFuture(msg2, timeout).Result()
-	if err2 != nil {
-		glog.Errorf("LoginGate err: %v", err2)
-	}
-	response2 := res2.(*pb.LoginedGate)
-	glog.Debugf("response2: %#v", response2)
-	//TODO 查看房间数据
-	//msg3 := &pb.LoginGate{}
-	//res3, err3 := ws.roomPid.RequestFuture(msg3, timeout).Result()
-	//response3 := res3.(*pb.LoginedGate)
-	//登录成功响应
-	msg4 := new(pb.Login)
-	msg4.Userid = userid
-	res4, err4 := ws.rolePid.RequestFuture(msg4, timeout).Result()
-	if err4 != nil {
-		//TODO 断开
-		glog.Errorf("Login err: %v", err4)
-	}
-	response4 := res4.(*pb.Logined)
-	glog.Debugf("response4: %#v", response4)
-}
-
-//登录处理
-func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
-	if ws.User == nil {
-		//登录失败
-		return
-	}
-	if isRegist {
-		//注册日志
-		msg1 := &pb.LogRegist{
-			Userid:   ws.User.Userid,
-			Nickname: ws.User.Nickname,
-			Atype:    ws.User.Atype,
-			Ip:       ws.GetIPAddr(),
-		}
-		ws.dbmsPid.Tell(msg1)
-	}
-	//登录日志
-	msg2 := &pb.LogLogin{
-		Userid: ws.User.Userid,
-		Atype:  ws.User.Atype,
-		Ip:     ws.GetIPAddr(),
-	}
-	ws.dbmsPid.Tell(msg2)
 }
 
 //奖励发放
-func (ws *WSConn) addCurrency(diamond, coin int32,
-	ltype int, ctx actor.Context) {
+func (ws *WSConn) addCurrency(diamond, coin int32, ltype int) {
 	if ws.User == nil {
 		glog.Errorf("add currency user empty: %d", ltype)
 		return
