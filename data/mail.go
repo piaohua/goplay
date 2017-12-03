@@ -42,7 +42,7 @@ func GetNewMailList(maxid, userid string) []Mail {
 }
 
 func (this *Mail) Del() {
-	Delete(Mails, bson.M{"_id": this.Id})
+	Delete(Mails, bson.M{"_id": this.Id, "to": this.To})
 }
 
 func (this *Mail) Update() {

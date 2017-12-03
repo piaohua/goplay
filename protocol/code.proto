@@ -74,4 +74,8 @@ enum ErrCode {
     AlreadyInRoom          = 65; //已经在房间内
     NotYourTurn            = 66; //错误操作,不能进行该操作
     ErrorOperateValue      = 67; //错误操作值
+    MailNotAttachment      = 68; //邮件没有附件
+    MailAlreadyGet         = 69; //邮件附件已经领取过
+    MailAlreadyExpire      = 70; //邮件附件已经领取过
+    MailNotExist           = 71; //邮件不存在
 }

@@ -63,10 +63,10 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 			//登录成功
 			ctx.SetReceiveTimeout(0) //login Successfully, timeout off
 			ws.login(arg.GetUserid(), ctx)
+			ws.logined(arg.GetIsreg(), ctx)
 		}
 		ws.Send(msg)
 	case *pb.SyncUser:
-		//TODO 定时同步
 		arg := msg.(*pb.SyncUser)
 		glog.Debugf("SyncUser %#v", arg.Userid)
 		err := json.Unmarshal([]byte(arg.Data), ws.User)
@@ -76,17 +76,12 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		glog.Debugf("User %#v", ws.User)
 	case *pb.ChangeCurrency:
 		arg := msg.(*pb.ChangeCurrency)
-		ws.User.AddDiamond(arg.Diamond)
-		ws.User.AddCoin(arg.Coin)
+		diamond := arg.Diamond
+		coin := arg.Coin
+		ltype := int(arg.Type)
+		ws.addCurrency(diamond, coin, ltype, ctx)
 	case *pb.LoginElse:
-		arg := new(pb.SLoginOut)
-		glog.Debugf("SLoginOut %#v", arg)
-		arg.Rtype = 1 //别处登录
-		ws.Send(arg)
-		//表示已经断开
-		ws.hallPid = nil
-		//断开连接
-		ws.Close()
+		ws.loginElse() //别处登录
 	case *pb.ServeStop:
 		arg := new(pb.SLoginOut)
 		arg.Rtype = 2 //停服
@@ -101,6 +96,23 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (ws *WSConn) loginElse() {
+	arg := new(pb.SLoginOut)
+	glog.Debugf("SLoginOut %s", ws.User.Userid)
+	arg.Rtype = 1 //别处登录
+	ws.Send(arg)
+	//登出日志
+	msg3 := &pb.LogLogout{
+		Userid: ws.User.Userid,
+		Event:  4, //别处登录
+	}
+	ws.dbmsPid.Tell(msg3)
+	//表示已经断开
+	ws.hallPid = nil
+	//断开连接
+	ws.Close()
 }
 
 //登录处理
@@ -143,4 +155,66 @@ func (ws *WSConn) login(userid string, ctx actor.Context) {
 	}
 	response4 := res4.(*pb.Logined)
 	glog.Debugf("response4: %#v", response4)
+}
+
+//登录处理
+func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
+	if ws.User == nil {
+		//登录失败
+		return
+	}
+	if isRegist {
+		//注册日志
+		msg1 := &pb.LogRegist{
+			Userid:   ws.User.Userid,
+			Nickname: ws.User.Nickname,
+			Atype:    ws.User.Atype,
+			Ip:       ws.GetIPAddr(),
+		}
+		ws.dbmsPid.Tell(msg1)
+	}
+	//登录日志
+	msg2 := &pb.LogLogin{
+		Userid: ws.User.Userid,
+		Atype:  ws.User.Atype,
+		Ip:     ws.GetIPAddr(),
+	}
+	ws.dbmsPid.Tell(msg2)
+}
+
+//奖励发放
+func (ws *WSConn) addCurrency(diamond, coin int32,
+	ltype int, ctx actor.Context) {
+	if ws.User == nil {
+		glog.Errorf("add currency user empty: %d", ltype)
+		return
+	}
+	ws.User.AddDiamond(diamond)
+	ws.User.AddCoin(coin)
+	//消息
+	msg := &pb.SPushCurrency{
+		Rtype:   uint32(ltype),
+		Diamond: diamond,
+		Coin:    coin,
+	}
+	ws.Send(msg)
+	//日志
+	if diamond != 0 {
+		msg1 := &pb.LogDiamond{
+			Userid: ws.User.GetUserid(),
+			Type:   int32(ltype),
+			Num:    diamond,
+			Rest:   ws.User.GetDiamond(),
+		}
+		ws.dbmsPid.Tell(msg1)
+	}
+	if coin != 0 {
+		msg1 := &pb.LogCoin{
+			Userid: ws.User.GetUserid(),
+			Type:   int32(ltype),
+			Num:    coin,
+			Rest:   ws.User.GetCoin(),
+		}
+		ws.dbmsPid.Tell(msg1)
+	}
 }

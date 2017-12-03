@@ -20,25 +20,26 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.CRegist:
 		arg := msg.(*pb.CRegist)
 		glog.Debugf("CRegist %#v", arg)
-		ip := arg.GetIpaddr()
+		//ip := arg.GetIpaddr()
 		rsp, user := login.Regist(arg, a.uniqueid)
 		ctx.Respond(rsp)
-		a.HandlerLogin(user, true, ip, ctx)
+		a.handlerLogin(user, true, ctx)
 	case *pb.CLogin:
 		arg := msg.(*pb.CLogin)
 		glog.Debugf("CLogin %#v", arg)
-		ip := arg.GetIpaddr()
+		//ip := arg.GetIpaddr()
 		rsp, user := login.Login(arg)
 		ctx.Respond(rsp)
-		a.HandlerLogin(user, false, ip, ctx)
+		a.handlerLogin(user, false, ctx)
 	case *pb.CWxLogin:
 		arg := msg.(*pb.CWxLogin)
 		glog.Debugf("CWxLogin %#v", arg)
-		ip := arg.GetIpaddr()
+		//ip := arg.GetIpaddr()
 		rsp, user := login.WxLogin(arg, a.uniqueid)
 		isRegist := rsp.GetIsreg()
 		ctx.Respond(rsp)
-		a.HandlerLogin(user, isRegist, ip, ctx)
+		//顺序不能错
+		a.handlerLogin(user, isRegist, ctx)
 	case *pb.Logout:
 		//登出成功
 		arg := msg.(*pb.Logout)
@@ -77,22 +78,23 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		a.hallPid.Tell(connect)
 	case *pb.ServeStop:
 		//关闭服务
-		a.HandlerStop(ctx)
+		a.handlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
 	case *pb.SyncUser:
-		//TODO
+		arg := msg.(*pb.SyncUser)
+		a.respUser(arg, ctx)
+	case *pb.ChangeCurrency:
+		arg := msg.(*pb.ChangeCurrency)
+		a.respCurrency(arg, ctx)
 	case *pb.CBuy:
-		//TODO 优化
 		arg := msg.(*pb.CBuy)
 		user := a.getUser(ctx)
-		//响应
+		//优化
 		rsp, diamond, coin := handler.Buy(arg, user)
-		//兑换
-		a.HandlerPrize(user, diamond, coin, data.LogType18, ctx)
 		//同步兑换
-		a.HandlerSync3(user, diamond, coin, data.LogType18, ctx)
+		a.sendCurrency(user, diamond, coin, data.LogType18, ctx)
 		//响应
 		ctx.Respond(rsp)
 	case *pb.CShop:
@@ -100,6 +102,12 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		user := a.getUser(ctx)
 		//响应
 		rsp := handler.Shop(arg, user)
+		ctx.Respond(rsp)
+	case *pb.GetUserid:
+		arg := msg.(*pb.GetUserid)
+		//响应登录
+		rsp := new(pb.GotUserid)
+		rsp.Userid = a.router[arg.Sender.String()]
 		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
@@ -113,78 +121,24 @@ func (a *RoleActor) getUser(ctx actor.Context) *data.User {
 }
 
 //登录处理
-func (a *RoleActor) HandlerLogin(user *data.User,
-	isRegist bool, ip string, ctx actor.Context) {
+func (a *RoleActor) handlerLogin(user *data.User,
+	isRegist bool, ctx actor.Context) {
 	if user == nil {
 		//登录失败
 		return
 	}
-	a.HandlerLogined(user)
+	a.logined(user)
+	a.sendUser(user, ctx)
+	glog.Debugf("user %#v", user)
 	if isRegist {
 		//注册奖励发放
 		var diamond int32 = config.GetEnv(data.ENV1)
 		var coin int32 = config.GetEnv(data.ENV2)
-		a.HandlerPrize(user, diamond, coin, data.LogType1, ctx)
-		//注册日志
-		msg1 := &pb.LogRegist{
-			Userid:   user.Userid,
-			Nickname: user.Nickname,
-			Atype:    user.Atype,
-			Ip:       ip,
-		}
-		nodePid.Tell(msg1)
+		a.sendCurrency(user, diamond, coin, data.LogType1, ctx)
 	}
-	//TODO 登录日志有可能在登出消息之前,所以暂时这里处理
-	msg3 := &pb.LogLogout{
-		Userid: user.Userid,
-		Event:  4,
-	}
-	nodePid.Tell(msg3)
-	//登录日志
-	msg2 := &pb.LogLogin{
-		Userid: user.Userid,
-		Atype:  user.Atype,
-		Ip:     ip,
-	}
-	nodePid.Tell(msg2)
-	glog.Debugf("user %#v", user)
-	//TODO 全部由gate处理
-	a.HandlerSync(user, ctx)
 }
 
-func (a *RoleActor) HandlerSync(user *data.User, ctx actor.Context) {
-	//同步数据,只有登录时才向节点同步数据
-	//其它时候为节点向role同步,避免数据覆盖
-	//TODO 定时回存数据
-	msg3 := new(pb.SyncUser)
-	msg3.Userid = user.Userid
-	result, err := json.Marshal(user)
-	if err != nil {
-		glog.Errorf("user Marshal err %v", err)
-	}
-	msg3.Data = string(result)
-	ctx.Sender().Tell(msg3)
-}
-
-func (a *RoleActor) HandlerSync2(user *data.User, ctx actor.Context) {
-	msg3 := new(pb.SyncCurrency)
-	msg3.Userid = user.Userid
-	msg3.Coin = user.GetCoin()
-	msg3.Diamond = user.GetDiamond()
-	ctx.Sender().Tell(msg3)
-}
-
-func (a *RoleActor) HandlerSync3(user *data.User,
-	diamond, coin int32, ltype int, ctx actor.Context) {
-	msg3 := new(pb.ChangeCurrency)
-	msg3.Userid = user.Userid
-	msg3.Type = int32(ltype)
-	msg3.Coin = coin
-	msg3.Diamond = diamond
-	ctx.Sender().Tell(msg3)
-}
-
-func (a *RoleActor) HandlerLogined(user *data.User) {
+func (a *RoleActor) logined(user *data.User) {
 	//已经在线,用在线数据
 	if v, ok := a.roles[user.Userid]; ok && v != nil {
 		user = v
@@ -197,48 +151,82 @@ func (a *RoleActor) HandlerLogined(user *data.User) {
 	}
 	//登录成功
 	a.roles[user.Userid] = user
-	glog.Debugf("Logoin userid: %s", user.Userid)
+	glog.Debugf("login userid: %s", user.Userid)
 	glog.Debugf("roles len: %d", len(a.roles))
 	glog.Debugf("offline len: %d", len(a.offline))
-	//TODO router 可直接在这里处理
+	//router 可直接在这里处理
 }
 
-//奖励发放
-func (a *RoleActor) HandlerPrize(user *data.User,
+func (a *RoleActor) sendUser(user *data.User, ctx actor.Context) {
+	//同步数据,只有登录时才向节点同步数据
+	//其它时候为节点向role同步,避免数据覆盖
+	msg3 := new(pb.SyncUser)
+	msg3.Userid = user.Userid
+	result, err := json.Marshal(user)
+	if err != nil {
+		glog.Errorf("user Marshal err %v", err)
+		return
+	}
+	msg3.Data = string(result)
+	ctx.Sender().Tell(msg3)
+}
+
+func (a *RoleActor) respUser(arg *pb.SyncUser, ctx actor.Context) {
+	glog.Debugf("SyncUser %#v", arg.Userid)
+	user := a.roles[arg.Userid]
+	if user == nil {
+		glog.Errorf("respUser user empty %s", arg.Userid)
+		return
+	}
+	err := json.Unmarshal([]byte(arg.Data), user)
+	if err != nil {
+		glog.Errorf("user Unmarshal err %v", err)
+	}
+	glog.Debugf("user %#v", user)
+	//定时回存数据
+	user.Save()
+}
+
+func (a *RoleActor) addCurrency(user *data.User,
+	rtype, ltype int, amount int32, ctx actor.Context) {
+	switch uint32(rtype) {
+	case data.DIAMOND:
+		a.sendCurrency(user, amount, 0, ltype, ctx)
+	case data.COIN:
+		a.sendCurrency(user, 0, amount, ltype, ctx)
+	}
+}
+
+func (a *RoleActor) sendCurrency(user *data.User,
 	diamond, coin int32, ltype int, ctx actor.Context) {
+	if user == nil {
+		glog.Errorf("sendCurrency user empty: %d", ltype)
+	}
+	msg3 := new(pb.ChangeCurrency)
+	msg3.Userid = user.Userid
+	msg3.Type = int32(ltype)
+	msg3.Coin = coin
+	msg3.Diamond = diamond
+	ctx.Sender().Tell(msg3)
+}
+
+func (a *RoleActor) respCurrency(arg *pb.ChangeCurrency,
+	ctx actor.Context) {
+	userid := arg.Userid
+	diamond := arg.Diamond
+	coin := arg.Coin
+	ltype := int(arg.Type)
+	user := a.roles[userid]
+	if user == nil {
+		glog.Errorf("respCurrency user empty %s, type %d", userid, ltype)
+		return
+	}
 	user.AddDiamond(diamond)
 	user.AddCoin(coin)
-	//消息
-	msg := &pb.SPushCurrency{
-		Rtype:   uint32(ltype),
-		Diamond: diamond,
-		Coin:    coin,
-	}
-	ctx.Respond(msg)
-	if diamond != 0 {
-		//日志
-		msg1 := &pb.LogDiamond{
-			Userid: user.GetUserid(),
-			Type:   int32(ltype),
-			Num:    diamond,
-			Rest:   user.GetDiamond(),
-		}
-		nodePid.Tell(msg1)
-	}
-	if coin != 0 {
-		//日志
-		msg1 := &pb.LogCoin{
-			Userid: user.GetUserid(),
-			Type:   int32(ltype),
-			Num:    coin,
-			Rest:   user.GetCoin(),
-		}
-		nodePid.Tell(msg1)
-	}
 }
 
-func (a *RoleActor) HandlerStop(ctx actor.Context) {
-	glog.Debugf("HandlerStop: %s", a.Name)
+func (a *RoleActor) handlerStop(ctx actor.Context) {
+	glog.Debugf("handlerStop: %s", a.Name)
 	//回存数据
 	if a.uniqueid != nil {
 		a.uniqueid.Save()

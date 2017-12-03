@@ -37,6 +37,8 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		//	Name:    arg.Name,
 		//}
 		//ctx.Respond(rsp)
+		glog.Debugf("name %s", arg.Name)
+		glog.Debugf("serve len %d", len(a.serve))
 	case *pb.LoginHall:
 		arg := msg.(*pb.LoginHall)
 		userid := arg.GetUserid()

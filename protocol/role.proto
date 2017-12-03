@@ -86,3 +86,37 @@ message ChangeCurrency {
     int32 Coin = 3;//变动金币数量
     int32 Diamond = 4;//变动钻石数量
 }
+
+//获取数据
+message GetUserid {
+    actor.PID Sender = 1;
+}
+
+message GotUserid {
+    string Userid = 1;
+}
+
+// 新邮件
+message NewMail {
+    string From = 1;
+    string To = 2;
+    string Content = 3;
+}
+
+// 新邮件列表
+message NewMailList
+{
+    string maxid = 1;//邮件缓存中的最大邮件ID
+}
+
+// 删除邮件
+message DeleteMail
+{
+    string id   = 1;//邮件ID
+}
+
+// 收取附件
+message GetMailItem
+{
+    string id   = 1; //邮件ID
+}

@@ -209,6 +209,12 @@
 		SyncUser
 		SyncCurrency
 		ChangeCurrency
+		GetUserid
+		GotUserid
+		NewMail
+		NewMailList
+		DeleteMail
+		GetMailItem
 		CLeave
 		SLeave
 		CKick
