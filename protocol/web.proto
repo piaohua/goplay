@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pb;
+
+enum ConfigType {
+    CONFIG_OK      = 0; //正常
+	CONFIG_BOX     = 1; //宝箱
+	CONFIG_ENV     = 2; //变量
+	CONFIG_LOTTERY = 3; //全民刮奖
+	CONFIG_NOTICE  = 4; //公告
+	CONFIG_PRIZE   = 5; //抽奖
+	CONFIG_SHOP    = 6; //商城
+	CONFIG_VIP     = 7; //VIP
+	CONFIG_CLASSIC = 8; //经典
+}
+
+// 同步数据
+message SyncConfig
+{
+    ConfigType  Type     = 1 ;//协议号
+    string Data = 2 ;//数据
+}

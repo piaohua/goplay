@@ -10,6 +10,29 @@ import (
 	"utils"
 )
 
+//网关直接调用
+func GetCurrency(ctos *pb.CGetCurrency, p *data.User) (stoc *pb.SGetCurrency) {
+	stoc = new(pb.SGetCurrency)
+	if p == nil {
+		return
+	}
+	stoc.Coin = p.GetCoin()
+	stoc.Diamond = p.GetDiamond()
+	stoc.Roomcard = p.GetRoomCard()
+	return
+}
+
+func Ping(ctos *pb.CPing) (stoc *pb.SPing) {
+	stoc = new(pb.SPing)
+	stoc.Time = ctos.GetTime()
+	return
+}
+
+func Config(ctos *pb.CConfig) (stoc *pb.SConfig) {
+	stoc = new(pb.SConfig)
+	return
+}
+
 func VipList(ctos *pb.CVipList) (stoc *pb.SVipList) {
 	stoc = new(pb.SVipList)
 	list := config.GetVipsList()
