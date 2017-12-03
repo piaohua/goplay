@@ -28,6 +28,13 @@ func InitVip() {
 	syncVipList()
 }
 
+// 启动初始化
+func InitVip2() {
+	VipList = new(Vip)
+	VipList.list = make(map[int]data.Vip)
+	VipList.list2 = make([]data.Vip, 0)
+}
+
 func syncVipList() {
 	list2 := make([]data.Vip, 0)
 	for _, v := range VipList.list {

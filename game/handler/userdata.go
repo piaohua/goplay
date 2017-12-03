@@ -1,79 +1,73 @@
 package handler
 
-/*
 import (
 	"math"
-	"niu/data"
-	"niu/images"
-	"niu/inter"
-	"niu/pb"
-	"niu/players"
-	"niu/protocol"
-	"utils"
 
-	"github.com/golang/protobuf/proto"
+	"goplay/data"
+	"goplay/game/config"
+	"goplay/pb"
+	"niu/players"
+	"utils"
 )
 
-func vipList(ctos *protocol.CVipList, p inter.IPlayer) {
-	stoc := &protocol.SVipList{Error: proto.Uint32(0)}
-	list := images.GetVipsList()
+func VipList(ctos *pb.CVipList) (stoc *pb.SVipList) {
+	stoc = new(pb.SVipList)
+	list := config.GetVipsList()
 	for _, v := range list {
-		s := &protocol.Vip{
-			Level:  proto.Uint32(uint32(v.Level)),
-			Number: proto.Uint32(uint32(v.Number) / 100),
-			Pay:    proto.Uint32(v.Pay),
-			Prize:  proto.Uint32(v.Prize),
-			Kick:   proto.Uint32(uint32(v.Kick)),
+		s := &pb.Vip{
+			Level:  uint32(v.Level),
+			Number: uint32(v.Number) / 100,
+			Pay:    v.Pay,
+			Prize:  v.Prize,
+			Kick:   uint32(v.Kick),
 		}
 		stoc.List = append(stoc.List, s)
 	}
-	p.Send(stoc)
+	return
 }
 
-func classicList(ctos *protocol.CClassicList, p inter.IPlayer) {
-	stoc := &protocol.SClassicList{Error: proto.Uint32(0)}
-	list := images.GetClassics()
+func ClassicList(ctos *pb.CClassicList) (stoc *pb.SClassicList) {
+	stoc = new(pb.SClassicList)
+	list := config.GetClassics()
 	for _, v := range list {
-		s := &protocol.Classic{
-			Id:      proto.String(v.Id),
-			Ptype:   proto.Uint32(uint32(v.Ptype)),
-			Rtype:   proto.Uint32(uint32(v.Rtype)),
-			Ante:    proto.Uint32(v.Ante),
-			Minimum: proto.Uint32(v.Minimum),
-			Maximum: proto.Uint32(v.Maximum),
+		s := &pb.Classic{
+			Id:      v.Id,
+			Ptype:   uint32(v.Ptype),
+			Rtype:   uint32(v.Rtype),
+			Ante:    v.Ante,
+			Minimum: v.Minimum,
+			Maximum: v.Maximum,
 		}
 		stoc.List = append(stoc.List, s)
 	}
-	p.Send(stoc)
+	return
 }
 
-func prizeBox(ctos *protocol.CPrizeBox, p inter.IPlayer) {
-	stoc := &protocol.SPrizeBox{}
+func PrizeBox(ctos *pb.CPrizeBox, p *data.User) (stoc *pb.SPrizeBox) {
+	stoc = new(pb.SPrizeBox)
 	state := ctos.GetState()
 	id := p.GetBox()
 	num := p.GetDuration()
-	d := images.GetBox(id)
+	d := config.GetBox(id)
 	boxstate := p.GetBoxState()
 	if d.Id == "" { //不存在或全部完成
-		stoc.Error = proto.Uint32(pb.NotBox)
-		p.Send(stoc)
+		stoc.Error = pb.NotBox
 		return
 	}
 	if boxstate == 1 {
-		stoc.State = proto.Uint32(2)
-		p.Send(stoc)
+		stoc.State = 2
 		return
 	}
 	if state == 2 && d.Duration <= num { //领取
-		l := &protocol.Prize{
-			Id:     proto.String(d.Id),
-			Rtype:  proto.Uint32(uint32(d.Rtype)),
-			Number: proto.Uint32(uint32(d.Amount)),
+		l := &pb.Prize{
+			Id:     d.Id,
+			Rtype:  uint32(d.Rtype),
+			Number: uint32(d.Amount),
 		}
 		stoc.List = append(stoc.List, l)
 		addPrize(p, d.Rtype, data.LogType22, d.Amount)
 		//下一个宝箱
-		d = images.NextBox(d.Duration)
+		d = config.NextBox(d.Duration)
 		if d.Id == "" {
 			p.SetBox(d.Id, 1)
 		} else {
@@ -82,144 +76,103 @@ func prizeBox(ctos *protocol.CPrizeBox, p inter.IPlayer) {
 		p.SetDuration()
 	}
 	if d.Id == "" {
-		stoc.State = proto.Uint32(2)
-		p.Send(stoc)
+		stoc.State = 2
 		return
 	}
-	n := &protocol.Prize{
-		Id:     proto.String(d.Id),
-		Rtype:  proto.Uint32(uint32(d.Rtype)),
-		Number: proto.Uint32(uint32(d.Amount)),
+	n := &pb.Prize{
+		Id:     d.Id,
+		Rtype:  uint32(d.Rtype),
+		Number: uint32(d.Amount),
 	}
 	stoc.Next = append(stoc.Next, n)
 	num = p.GetDuration()
-	stoc.Duration = proto.Uint32(d.Duration)
-	stoc.Time = proto.Uint32(num)
+	stoc.Duration = d.Duration
+	stoc.Time = num
 	if d.Duration <= num {
-		stoc.State = proto.Uint32(1)
+		stoc.State = 1
 	}
-	p.Send(stoc)
+	return
 }
 
-func prizeDraw(ctos *protocol.CPrizeDraw, p inter.IPlayer) {
-	stoc := &protocol.SPrizeDraw{}
-	var num int32
-	if images.CheckEnv("prizedraw") {
-		num = images.GetEnv("prizedraw").(int32)
-	}
+func PrizeDraw(ctos *pb.CPrizeDraw, p *data.User) {
+	stoc := new(pb.SPrizeDraw)
+	var num int32 = config.GetEnv(data.ENV7)
 	//vip
-	vip := images.GetVip(p.GetVipLevel())
+	vip := config.GetVip(p.GetVipLevel())
 	num += int32(vip.Prize) //vip赠送
 	draw := p.GetPrizeDraw()
 	if int32(draw) >= num {
-		stoc.Error = proto.Uint32(pb.NotPrizeDraw)
-		p.Send(stoc)
+		stoc.Error = pb.NotPrizeDraw
 		return
 	}
-	rate := images.GetPrizeRate()
+	rate := config.GetPrizeRate()
 	var n uint32
 	if rate > 0 {
 		n = uint32(utils.RandInt64N(int64(rate)))
 	}
-	list := images.GetPrizes()
+	list := config.GetPrizes()
 	for _, v := range list {
 		if n > v.Rate {
-			l := &protocol.Prize{
-				Id:     proto.String(v.Id),
-				Rtype:  proto.Uint32(uint32(v.Rtype)),
-				Number: proto.Uint32(uint32(v.Amount)),
+			l := &pb.Prize{
+				Id:     v.Id,
+				Rtype:  uint32(v.Rtype),
+				Number: uint32(v.Amount),
 			}
 			left := num - int32(draw) - 1
 			if left < 0 {
 				left = 0
 			}
-			stoc.Leftdraw = proto.Uint32(uint32(left))
-			stoc.Prizedraw = proto.Uint32(draw + 1)
+			stoc.Leftdraw = uint32(left)
+			stoc.Prizedraw = draw + 1
 			stoc.List = append(stoc.List, l)
 			p.SetPrizeDraw()
-			p.Send(stoc)
 			addPrize(p, v.Rtype, data.LogType21, v.Amount)
 			return
 		}
 	}
-	stoc.Error = proto.Uint32(pb.NotGotPrizeDraw)
-	p.Send(stoc)
+	stoc.Error = pb.NotGotPrizeDraw
+	return
 }
 
-func addPrize(p inter.IPlayer, rtype, ltype int, amount int32) {
-	switch uint32(rtype) {
-	case data.DIAMOND:
-		p.AddDiamond(amount)
-		//日志
-		data.DiamondRecord(p.GetUserid(), ltype, p.GetDiamond(), amount)
-		pushCurrency(p, ltype, 0, amount)
-	case data.COIN:
-		p.AddCoin(amount)
-		//日志
-		data.CoinRecord(p.GetUserid(), ltype, p.GetCoin(), amount)
-		pushCurrency(p, ltype, amount, 0)
-	}
-}
-
-func pushCurrency(p inter.IPlayer, rtype int, coin, diamond int32) {
-	msg := &protocol.SPushCurrency{
-		Rtype:   proto.Uint32(uint32(rtype)),
-		Diamond: proto.Int32(int32(diamond)),
-		Coin:    proto.Int32(int32(coin)),
-	}
-	p.Send(msg)
-}
-
-func prizeList(ctos *protocol.CPrizeList, p inter.IPlayer) {
-	stoc := &protocol.SPrizeList{}
-	list := images.GetPrizes()
+func PrizeList(ctos *pb.CPrizeList) (stoc *pb.SPrizeList) {
+	stoc = new(pb.SPrizeList)
+	list := config.GetPrizes()
 	for _, v := range list {
-		l := &protocol.Prize{
-			Id:     proto.String(v.Id),
-			Rtype:  proto.Uint32(uint32(v.Rtype)),
-			Number: proto.Uint32(uint32(v.Amount)),
+		l := &pb.Prize{
+			Id:     v.Id,
+			Rtype:  uint32(v.Rtype),
+			Number: uint32(v.Amount),
 		}
 		stoc.List = append(stoc.List, l)
 	}
-	p.Send(stoc)
+	return
 }
 
-func bankrupt(ctos *protocol.CBankrupts, p inter.IPlayer) {
-	stoc := &protocol.SBankrupts{}
-	var coin1 int32
-	if images.CheckEnv("bankrupt_coin") {
-		coin1 = images.GetEnv("bankrupt_coin").(int32)
-	}
+func bankrupt(ctos *pb.CBankrupts, p *data.User) {
+	stoc := &pb.SBankrupts{}
+	var coin1 int32 = config.GetEnv(data.ENV8)
 	if int32(p.GetCoin()) >= coin1 {
-		stoc.Error = proto.Uint32(pb.NotBankrupt)
-		p.Send(stoc)
+		stoc.Error = pb.NotBankrupt
 		return
 	}
-	var num int32
-	if images.CheckEnv("relieve") {
-		num = images.GetEnv("relieve").(int32)
-	}
+	var num int32 = config.GetEnv(data.ENV6)
 	num2 := p.GetBankrupts()
 	if int32(num2) > num {
-		stoc.Error = proto.Uint32(pb.NotRelieves)
-		p.Send(stoc)
+		stoc.Error = pb.NotRelieves
 		return
 	}
-	var coin int32
-	if images.CheckEnv("relieve_coin") {
-		coin = images.GetEnv("relieve_coin").(int32)
-	}
+	var coin int32 = config.GetEnv(data.ENV9)
 	if coin > 0 {
-		l := &protocol.Prize{
-			Rtype:  proto.Uint32(uint32(data.COIN)),
-			Number: proto.Uint32(uint32(coin)),
+		l := &pb.Prize{
+			Rtype:  uint32(data.COIN),
+			Number: uint32(coin),
 		}
 		left := num - (int32(num2) + 1)
 		if left < 0 {
 			left = 0
 		}
-		stoc.Relieve = proto.Uint32(uint32(left))
-		stoc.Bankrupt = proto.Uint32(num2 + 1)
+		stoc.Relieve = uint32(left)
+		stoc.Bankrupt = num2 + 1
 		stoc.List = append(stoc.List, l)
 		p.AddCoin(coin)
 		//日志
@@ -227,96 +180,60 @@ func bankrupt(ctos *protocol.CBankrupts, p inter.IPlayer) {
 		p.SetBankrupts()
 		pushCurrency(p, data.LogType11, coin, 0)
 	}
-	p.Send(stoc)
+	return
 }
 
-func ping(ctos *protocol.CPing, p inter.IPlayer) {
-	stoc := &protocol.SPing{}
-	stoc.Time = proto.Uint32(ctos.GetTime())
-	p.Send(stoc)
-}
-
-func config(ctos *protocol.CConfig, c inter.IConn) {
-	stoc := &protocol.SConfig{}
-	url := "https://" + data.Conf.ServerHost + ":" + data.Conf.ServerPort + data.Conf.ImagePattern
-	stoc.Imageurl = proto.String(url)
-	stoc.Version = proto.String(data.Conf.Version)
-	c.Send(stoc)
-}
-
-func getUserDataHdr(ctos *protocol.CUserData, p inter.IPlayer) {
-	stoc := &protocol.SUserData{}
-	stoc.Data = &protocol.UserData{}
+func GetUserData(ctos *pb.CUserData, p *data.User) (stoc *pb.SUserData) {
+	stoc = new(pb.SUserData)
+	stoc.Data = new(pb.UserData)
 	userid := ctos.GetUserid()
 	if userid == "" {
-		stoc.Error = proto.Uint32(pb.UsernameEmpty)
-		p.Send(stoc)
+		stoc.Error = pb.UsernameEmpty
 		return
 	}
-	user := &data.User{Userid: userid}
 	// 获取玩家自己的详细资料
 	if userid == p.GetUserid() {
-		stoc.Data.Give = proto.Uint32(p.GetGive())
-		stoc.Data.Bank = proto.Uint32(p.GetBank())
-		user = p.GetUser().(*data.User)
-		iroom := p.GetRoom()
-		if iroom != nil {
-			rdata := iroom.GetData().(*data.DeskData)
-			stoc.Data.Roomtype = proto.Uint32(rdata.Rtype)
-			stoc.Data.Invitecode = proto.String(rdata.Code)
-			stoc.Data.Roomid = proto.String(rdata.Rid)
+		stoc.Data.Bank = p.GetBank()
+		first, relieve, bankrupt, prizedraw,
+			leftdraw, kicktimes := getActivity(p)
+		stoc.Data.Data = &pb.Activity{
+			Firstpay:  first,
+			Relieve:   relieve,
+			Bankrupt:  bankrupt,
+			Prizedraw: prizedraw,
+			Leftdraw:  leftdraw,
+			Kicktimes: kicktimes,
 		}
-		first, relieve, bankrupt, prizedraw, leftdraw, kicktimes := getActivity(p)
-		stoc.Data.Data = &protocol.Activity{
-			Firstpay:  proto.Uint32(first),
-			Relieve:   proto.Uint32(relieve),
-			Bankrupt:  proto.Uint32(bankrupt),
-			Prizedraw: proto.Uint32(prizedraw),
-			Leftdraw:  proto.Uint32(leftdraw),
-			Kicktimes: proto.Uint32(kicktimes),
-		}
-		stoc.Data.Vip = &protocol.VipInfo{
-			Level:  proto.Uint32(uint32(p.GetVipLevel())),
-			Number: proto.Uint32(p.GetVip() / 100),
-		}
-	} else {
-		player := players.Get(userid) //在线列表中取
-		if player != nil {
-			user = player.GetUser().(*data.User)
-			stoc.Data.Give = proto.Uint32(player.GetGive())
-		} else {
-			user.Get() //数据库中取
+		stoc.Data.Vip = &pb.VipInfo{
+			Level:  uint32(p.GetVipLevel()),
+			Number: p.GetVip() / 100,
 		}
 	}
-	stoc.Data.Agent = proto.String(user.Agent)
-	stoc.Data.Userid = proto.String(userid)
-	stoc.Data.Photo = proto.String(user.Photo)
-	stoc.Data.Nickname = proto.String(user.Nickname)
-	stoc.Data.Sex = proto.Uint32(user.Sex)
-	stoc.Data.Phone = proto.String(user.Phone)
-	stoc.Data.Coin = proto.Uint32(user.Coin)
-	stoc.Data.Diamond = proto.Uint32(user.Diamond)
-	p.Send(stoc)
+	stoc.Data.Give = p.GetGive()
+	stoc.Data.Agent = user.Agent
+	stoc.Data.Userid = userid
+	stoc.Data.Photo = user.Photo
+	stoc.Data.Nickname = user.Nickname
+	stoc.Data.Sex = user.Sex
+	stoc.Data.Phone = user.Phone
+	stoc.Data.Coin = user.Coin
+	stoc.Data.Diamond = user.Diamond
+	return
 }
 
-func getActivity(p inter.IPlayer) (first, relieve, bankrupt, prizedraw, leftdraw, kicktimes uint32) {
+func getActivity(p *data.User) (first, relieve, bankrupt,
+	prizedraw, leftdraw, kicktimes uint32) {
 	if p.GetMoney() == 0 {
 		first = 1
 	}
 	//vip
-	vip := images.GetVip(p.GetVipLevel())
+	vip := config.GetVip(p.GetVipLevel())
 	//
 	bankrupt = p.GetBankrupts()
 	prizedraw = p.GetPrizeDraw()
-	var num1 int32
-	if images.CheckEnv("prizedraw") {
-		num1 = images.GetEnv("prizedraw").(int32)
-	}
+	var num1 int32 = config.GetEnv(data.ENV7)
 	num1 += int32(vip.Prize) //vip赠送
-	var num2 int32
-	if images.CheckEnv("relieve") {
-		num2 = images.GetEnv("relieve").(int32)
-	}
+	var num2 int32 = config.GetEnv(data.ENV6)
 	num2 = num2 - int32(bankrupt)
 	if num2 < 0 {
 		num2 = 0
@@ -328,7 +245,7 @@ func getActivity(p inter.IPlayer) (first, relieve, bankrupt, prizedraw, leftdraw
 	relieve = uint32(num2)
 	leftdraw = uint32(num1)
 	//vip
-	//vip := images.GetVip(p.GetVipLevel())
+	//vip := config.GetVip(p.GetVipLevel())
 	kick_times := vip.Kick - p.GetKickTimes()
 	if kick_times < 0 {
 		kicktimes = 0
@@ -338,60 +255,50 @@ func getActivity(p inter.IPlayer) (first, relieve, bankrupt, prizedraw, leftdraw
 	return
 }
 
-func buildAgent(ctos *protocol.CBuildAgent, p inter.IPlayer) {
-	stoc := &protocol.SBuildAgent{}
+func buildAgent(ctos *pb.CBuildAgent, p *data.User) (stoc *pb.SBuildAgent) {
+	stoc = new(pb.SBuildAgent)
 	userid := ctos.GetUserid()
 	agent := p.GetAgent()
 	if agent == userid {
-		stoc.Result = proto.Uint32(1)
-	} else if agent != "" {
-		stoc.Result = proto.Uint32(2)
-	} else {
-		agency := new(data.Agency)
-		agency.Get(userid)
-		if agency.Agent == "" || agency.Status != 0 || userid == "" {
-			stoc.Result = proto.Uint32(5)
-		} else {
-			agencySelf := new(data.Agency)
-			agencySelf.Get(p.GetUserid())
-			if agencySelf.Agent != "" {
-				stoc.Result = proto.Uint32(4) //已经是代理商不能绑定
-			} else {
-				p.SetAgent(userid)
-				stoc.Result = proto.Uint32(0)
-				//日志
-				data.BuildRecord(p.GetUserid(), userid)
-				//赠送
-				var num int32 = 30
-				if images.CheckEnv("build") {
-					num = images.GetEnv("build").(int32)
-				}
-				p.AddDiamond(num)
-				//消息
-				msg := &protocol.SPushCurrency{
-					Rtype:   proto.Uint32(uint32(data.LogType19)),
-					Diamond: proto.Int32(int32(num)),
-				}
-				p.Send(msg)
-				//日志
-				data.DiamondRecord(p.GetUserid(), data.LogType19, p.GetDiamond(), num)
-			}
-		}
+		stoc.Result = 1
+		return
 	}
-	p.Send(stoc)
-}
-
-func getCurrency(ctos *protocol.CGetCurrency, p inter.IPlayer) {
-	stoc := &protocol.SGetCurrency{}
-	stoc.Coin = proto.Uint32(p.GetCoin())
-	stoc.Diamond = proto.Uint32(p.GetDiamond())
-	stoc.Roomcard = proto.Uint32(p.GetRoomCard())
-	p.Send(stoc)
+	if agent != "" {
+		stoc.Result = 2
+		return
+	}
+	agency := new(data.Agency)
+	agency.Get(userid)
+	if agency.Agent == "" || agency.Status != 0 || userid == "" {
+		stoc.Result = 5
+		return
+	}
+	agencySelf := new(data.Agency)
+	agencySelf.Get(p.GetUserid())
+	if agencySelf.Agent != "" {
+		stoc.Result = 4 //已经是代理商不能绑定
+		return
+	}
+	p.SetAgent(userid)
+	stoc.Result = 0
+	//日志
+	data.BuildRecord(p.GetUserid(), userid)
+	//赠送
+	var num2 int32 = config.GetEnv(data.ENV3)
+	p.AddDiamond(num)
+	//消息
+	msg := &pb.SPushCurrency{
+		Rtype:   uint32(data.LogType19),
+		Diamond: int32(num),
+	}
+	//日志
+	data.DiamondRecord(p.GetUserid(), data.LogType19, p.GetDiamond(), num)
+	return
 }
 
 //1存入,2取出,3赠送
-func bank(ctos *protocol.CBank, p inter.IPlayer) {
-	stoc := &protocol.SBank{}
+func bank(ctos *pb.CBank, p *data.User) {
+	stoc := &pb.SBank{}
 	rtype := ctos.GetRtype()
 	amount := ctos.GetAmount()
 	userid := ctos.GetUserid()
@@ -401,9 +308,9 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 	case 1: //存入
 		if int32(coin-amount) < int32(data.BANKRUPT) {
 			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
-			stoc.Error = proto.Uint32(pb.NotEnoughCoin)
+			stoc.Error = pb.NotEnoughCoin
 		} else if int32(amount) <= 0 {
-			stoc.Error = proto.Uint32(pb.DepositNumberError)
+			stoc.Error = pb.DepositNumberError
 			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
 		} else {
 			num := -1 * int32(amount)
@@ -415,7 +322,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 		}
 	case 2: //取出
 		if amount < data.DRAW_MONEY || amount > p.GetBank() {
-			stoc.Error = proto.Uint32(pb.DrawMoneyNumberError)
+			stoc.Error = pb.DrawMoneyNumberError
 		} else {
 			var tax uint32
 			if amount < data.TAX_NUMBER {
@@ -434,11 +341,11 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 		}
 	case 3: //赠送
 		if amount+p.GetGive() > data.GIVE_LIMIT {
-			stoc.Error = proto.Uint32(pb.GiveTooMuch)
+			stoc.Error = pb.GiveTooMuch
 		} else if amount < data.DRAW_MONEY || amount > p.GetBank() {
-			stoc.Error = proto.Uint32(pb.GiveNumberError)
+			stoc.Error = pb.GiveNumberError
 		} else if userid == "" {
-			stoc.Error = proto.Uint32(pb.GiveUseridError)
+			stoc.Error = pb.GiveUseridError
 		} else {
 			var tax uint32
 			if amount < data.TAX_NUMBER {
@@ -455,7 +362,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 				user := new(data.User)
 				user.GetById(userid)
 				if user.Userid == "" || coin <= 0 {
-					stoc.Error = proto.Uint32(pb.GiveUseridError)
+					stoc.Error = pb.GiveUseridError
 				} else {
 					if user.UpdateCoin(uint32(coin)) {
 						p.AddGive(amount)
@@ -466,7 +373,7 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 						//日志
 						data.CoinRecord(p.GetUserid(), data.LogType16, p.GetBank(), int32(tax))
 					} else {
-						stoc.Error = proto.Uint32(pb.GiveUseridError)
+						stoc.Error = pb.GiveUseridError
 					}
 				}
 			} else {
@@ -485,10 +392,9 @@ func bank(ctos *protocol.CBank, p inter.IPlayer) {
 	case 4: //查询
 	}
 	//glog.Infof("rtype %d, bank %d", rtype, p.GetBank())
-	stoc.Rtype = proto.Uint32(rtype)
-	stoc.Amount = proto.Uint32(amount)
-	stoc.Userid = proto.String(userid)
-	stoc.Balance = proto.Uint32(p.GetBank())
-	p.Send(stoc)
+	stoc.Rtype = rtype
+	stoc.Amount = amount
+	stoc.Userid = userid
+	stoc.Balance = p.GetBank()
+	return
 }
-*/

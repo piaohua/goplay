@@ -24,8 +24,14 @@ func InitBox() {
 	sortBox()
 }
 
+// 启动初始化
+func InitBox2() {
+	BoxList = new(Box)
+	BoxList.list = make([]data.Box, 0)
+}
+
 // 获取列表
-func GetBoxs(atype uint32) []data.Box {
+func GetBoxs() []data.Box {
 	BoxList.RLock()
 	defer BoxList.RUnlock()
 	return BoxList.list

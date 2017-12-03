@@ -60,6 +60,12 @@ func InitNotice() {
 	}
 }
 
+// 启动初始化
+func InitNotice2() {
+	NoticeList = new(Notice)
+	NoticeList.list = make(map[string]data.Notice)
+}
+
 // 获取消息列表
 func GetNotices(atype uint32) []data.Notice {
 	NoticeList.RLock()

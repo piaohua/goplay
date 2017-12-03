@@ -38,13 +38,7 @@ func main() {
 	dbname := cfg.Section("mongod").Key("name").Value()
 	data.InitMgo(host, port, user, passwd, dbname)
 	//配置初始化
-	appid := cfg.Section("weixin").Key("appid").Value()
-	appsecret := cfg.Section("weixin").Key("appsecret").Value()
-	appkey := cfg.Section("weixin").Key("appkey").Value()
-	mchid := cfg.Section("weixin").Key("mchid").Value()
-	pattern := cfg.Section("weixin").Key("notifyPattern").Value()
-	notifyUrl := cfg.Section("weixin").Key("notifyUrl").Value()
-	config.ConfigInit(appid, appsecret, appkey, mchid, pattern, notifyUrl)
+	config.ConfigInit()
 	//启动服务
 	bind := cfg.Section("dbms").Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()

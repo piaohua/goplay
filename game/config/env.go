@@ -17,6 +17,11 @@ func InitEnv() {
 	}
 }
 
+// 启动初始化
+func InitEnv2() {
+	EnvMap = utils.NewBeeMap()
+}
+
 // 获取元素
 func GetEnv2(k interface{}) interface{} {
 	return EnvMap.Get(k)
@@ -26,6 +31,11 @@ func GetEnv2(k interface{}) interface{} {
 func SetEnv(k interface{}, v interface{}) bool {
 	e := data.Env{Key: k.(string), Value: v.(int32)}
 	e.SetEnv()
+	return EnvMap.Set(k, v)
+}
+
+// 设置元素,不操作数据库
+func SetEnv2(k interface{}, v interface{}) bool {
 	return EnvMap.Set(k, v)
 }
 
@@ -44,6 +54,15 @@ func CheckEnv(k interface{}) bool {
 // 全部元素
 func ItemsEnv() map[interface{}]interface{} {
 	return EnvMap.Items()
+}
+
+// 全部元素
+func GetEnvs() map[string]int32 {
+	m := make(map[string]int32)
+	for k, v := range ItemsEnv() {
+		m[k.(string)] = v.(int32)
+	}
+	return m
 }
 
 //获取变量,变量默认值设置

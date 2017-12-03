@@ -25,6 +25,12 @@ func InitLottery() {
 	}
 }
 
+// 启动初始化
+func InitLottery2() {
+	LotteryList = new(Lottery)
+	LotteryList.prize = make(map[uint32]uint32)
+}
+
 // 获取列表
 func GetLotterys() map[uint32]uint32 {
 	LotteryList.RLock()

@@ -88,8 +88,20 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.Send(arg)
 		//断开连接
 		ws.Close()
-	case *pb.CBuy, *pb.CShop:
+	case *pb.SUserData:
+		//TODO 添加房间数据
+		//重置同步
+		ws.User.GetBankrupts()
+		ws.User.GetPrizeDraw()
+		ws.User.GetKickTimes()
+	case *pb.CBuy, *pb.CShop, *pb.CBank,
+		*pb.CPrizeList, *pb.CVipList,
+		*pb.CPrizeDraw, *pb.CBankrupts,
+		*pb.CUserData, *pb.CBuildAgent,
+		*pb.CClassicList, *pb.CPrizeBox:
 		ws.rolePid.Request(msg, ctx.Self())
+	case *pb.CGetCurrency:
+		ws.Send(arg)
 	case proto.Message:
 		//响应消息
 		ws.Send(msg)

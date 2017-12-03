@@ -4,13 +4,13 @@ import "time"
 
 //经典
 type Classic struct {
-	Id      string    `bson:"_id"`     //id
-	Ptype   int       `bson:"ptype"`   //玩法类型1看牌抢庄,3通比牛牛4牛牛坐庄
-	Rtype   int       `bson:"rtype"`   //房间类型1初级,2中级,3高级,4大师
-	Ante    uint32    `bson:"ante"`    //房间底分
-	Minimum uint32    `bson:"minimum"` //房间最低
-	Maximum uint32    `bson:"maximum"` //房间最高0表示没限制
-	Ctime   time.Time `bson:"ctime"`   //
+	Id      string    `bson:"_id" json:"id"`          //id
+	Ptype   int       `bson:"ptype" json:"ptype"`     //玩法类型1看牌抢庄,3通比牛牛4牛牛坐庄
+	Rtype   int       `bson:"rtype" json:"rtype"`     //房间类型1初级,2中级,3高级,4大师
+	Ante    uint32    `bson:"ante" json:"ante"`       //房间底分
+	Minimum uint32    `bson:"minimum" json:"minimum"` //房间最低
+	Maximum uint32    `bson:"maximum" json:"maximum"` //房间最高0表示没限制
+	Ctime   time.Time `bson:"ctime" json:"ctime"`     //
 }
 
 func GetClassicList() []Classic {

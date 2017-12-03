@@ -88,6 +88,18 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ChangeCurrency:
 		arg := msg.(*pb.ChangeCurrency)
 		a.respCurrency(arg, ctx)
+	case *pb.GetUserid:
+		arg := msg.(*pb.GetUserid)
+		//响应登录
+		rsp := new(pb.GotUserid)
+		rsp.Userid = a.router[arg.Sender.String()]
+		ctx.Respond(rsp)
+	case *pb.CUserData:
+		arg := msg.(*pb.CUserData)
+		userid := ctos.GetUserid()
+		user := a.getUserByid(userid)
+		rsp := handler.GetUserData(arg, user)
+		ctx.Respond(rsp)
 	case *pb.CBuy:
 		arg := msg.(*pb.CBuy)
 		user := a.getUser(ctx)
@@ -103,12 +115,6 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应
 		rsp := handler.Shop(arg, user)
 		ctx.Respond(rsp)
-	case *pb.GetUserid:
-		arg := msg.(*pb.GetUserid)
-		//响应登录
-		rsp := new(pb.GotUserid)
-		rsp.Userid = a.router[arg.Sender.String()]
-		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
@@ -117,6 +123,19 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 func (a *RoleActor) getUser(ctx actor.Context) *data.User {
 	userid := a.router[ctx.Sender().String()]
 	user := a.roles[userid]
+	return user
+}
+
+func (a *RoleActor) getUserByid(userid string) *data.User {
+	if user, ok := a.roles[userid]; ok {
+		return user
+	}
+	if user, ok := a.offline[userid]; ok {
+		return user
+	}
+	user := new(data.User)
+	user.Userid = userid
+	user.Get() //数据库中取
 	return user
 }
 

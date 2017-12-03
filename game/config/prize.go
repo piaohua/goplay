@@ -26,6 +26,12 @@ func InitPrize() {
 	ratePrize()
 }
 
+// 启动初始化
+func InitPrize2() {
+	PrizeList = new(Prize)
+	PrizeList.list = make([]data.Prize, 0)
+}
+
 // 获取列表
 func GetPrizes() []data.Prize {
 	PrizeList.RLock()

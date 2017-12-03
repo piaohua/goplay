@@ -88,11 +88,12 @@ func (a *MailActor) HandlerStop(ctx actor.Context) {
 	}
 	for k, _ := range a.mails {
 		glog.Debugf("Stop Mail: %s", k)
-		//TODO
+		//TODO 缓存
 		//v.Save()
 	}
 }
 
+//TODO 优化
 func (a *MailActor) getUserid(ctx actor.Context) (userid string) {
 	timeout := 1 * time.Second
 	req := new(pb.GetUserid)

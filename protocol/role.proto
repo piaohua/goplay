@@ -72,13 +72,6 @@ message SyncUser {
     string Data = 2;
 }
 
-//同步货币数据
-message SyncCurrency {
-    string Userid = 1;
-    uint32 Coin = 2;//金币数量
-    uint32 Diamond = 3;//钻石数量
-}
-
 //同步变动货币数据
 message ChangeCurrency {
     string Userid = 1;
@@ -106,17 +99,20 @@ message NewMail {
 // 新邮件列表
 message NewMailList
 {
-    string maxid = 1;//邮件缓存中的最大邮件ID
+    string Maxid = 1;//邮件缓存中的最大邮件ID
+    string Userid = 2;
 }
 
 // 删除邮件
 message DeleteMail
 {
-    string id   = 1;//邮件ID
+    string Id   = 1;//邮件ID
+    string Userid = 2;
 }
 
 // 收取附件
 message GetMailItem
 {
-    string id   = 1; //邮件ID
+    string Id   = 1; //邮件ID
+    string Userid = 2;
 }

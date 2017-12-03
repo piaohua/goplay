@@ -28,6 +28,13 @@ func InitClassic() {
 	syncList()
 }
 
+// 启动初始化
+func InitClassic2() {
+	ClassicList = new(Classic)
+	ClassicList.list = make(map[string]data.Classic)
+	ClassicList.list2 = make([]data.Classic, 0)
+}
+
 func syncList() {
 	list2 := make([]data.Classic, 0)
 	for _, v := range ClassicList.list {

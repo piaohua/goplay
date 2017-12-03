@@ -24,8 +24,8 @@ const (
 )
 
 type Env struct {
-	Key   string `bson:"_id"`   //key
-	Value int32  `bson:"value"` //value
+	Key   string `bson:"_id" json:"key"`     //key
+	Value int32  `bson:"value" json:"value"` //value
 }
 
 func GetEnvList() []Env {

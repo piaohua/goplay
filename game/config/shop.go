@@ -26,6 +26,18 @@ func InitShop() {
 	}
 }
 
+// 启动初始化
+func InitShop2() {
+	ShopList = new(Shop)
+	ShopList.list = make(map[string]data.Shop)
+}
+
+func GetShops2() map[string]data.Shop {
+	ShopList.RLock()
+	defer ShopList.RUnlock()
+	return ShopList.list
+}
+
 // 获取商品列表
 func GetShops(atype uint32) []data.Shop {
 	ShopList.RLock()

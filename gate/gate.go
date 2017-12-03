@@ -7,6 +7,7 @@ import (
 	"time"
 	"utils"
 
+	"goplay/game/config"
 	"goplay/glog"
 
 	ini "gopkg.in/ini.v1"
@@ -37,6 +38,14 @@ func main() {
 	bind := cfg.Section("gate.node1").Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()
 	NewRemote(bind, name)
+	//配置初始化
+	appid := cfg.Section("weixin").Key("appid").Value()
+	appsecret := cfg.Section("weixin").Key("appsecret").Value()
+	appkey := cfg.Section("weixin").Key("appkey").Value()
+	mchid := cfg.Section("weixin").Key("mchid").Value()
+	pattern := cfg.Section("weixin").Key("notifyPattern").Value()
+	notifyUrl := cfg.Section("weixin").Key("notifyUrl").Value()
+	config.Init2Gate(appid, appsecret, appkey, mchid, pattern, notifyUrl)
 	//wsServer
 	addr := cfg.Section("gate.node1").Key("addr").Value()
 	wsServer := new(WSServer)
