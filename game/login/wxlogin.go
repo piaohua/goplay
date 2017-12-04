@@ -1,8 +1,9 @@
 package login
 
 import (
-	"api/wxapi"
 	"encoding/json"
+
+	"api/wxapi"
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/glog"

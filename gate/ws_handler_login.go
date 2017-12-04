@@ -14,7 +14,7 @@ import (
 )
 
 //玩家数据请求处理
-func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
+func (ws *WSConn) HandlerLogin(msg interface{}, ctx actor.Context) {
 	switch msg.(type) {
 	case *pb.CRegist:
 		//注册消息
