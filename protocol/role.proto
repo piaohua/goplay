@@ -40,7 +40,9 @@ message LoginedHall {
 
 //登录成功
 message Login {
-    string Userid = 1;
+    actor.PID Sender = 1;
+    string Userid = 2;
+    string Data = 3;
 }
 
 message Logined {
@@ -60,10 +62,11 @@ message LoginedElse {
 message Logout {
     actor.PID Sender = 1;
     string Userid = 2;
+    string Data = 3;
 }
 
 message Logouted {
-    actor.PID Sender = 1;
+    string Message = 1;
 }
 
 //同步数据,(登录时,变更时)
