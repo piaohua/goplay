@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"goplay/data"
 	"goplay/game/handler"
@@ -41,3 +42,4 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		glog.Errorf("unknown message %v", msg)
 	}
 }
+*/

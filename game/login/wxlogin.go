@@ -2,6 +2,7 @@ package login
 
 import (
 	"api/wxapi"
+	"encoding/json"
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/glog"
@@ -9,14 +10,77 @@ import (
 	"utils"
 )
 
-func WxLogin(ctos *pb.CWxLogin, genid *data.IDGen) (stoc *pb.SWxLogin, user *data.User) {
+//微信登录
+func WxLogin(ctos *pb.WxLogin, user *data.User,
+	genid *data.IDGen) (stoc *pb.WxLogined) {
+	stoc = new(pb.WxLogined)
+	var wxuid string = ctos.GetWxuid()
+	var nickname string = ctos.GetNickname()
+	var photo string = ctos.GetPhoto()
+	var sex uint32 = ctos.GetSex()
+	var atype uint32 = ctos.GetType()
+	//已经在线
+	if user.GetUserid() != "" {
+		user.Wxuid = wxuid
+		user.Nickname = nickname
+		user.Photo = photo
+		user.Sex = sex
+		user.Atype = atype
+		result, err := json.Marshal(user)
+		if err != nil {
+			glog.Errorf("user Marshal err %v", err)
+			stoc.Error = pb.GetWechatUserInfoFail
+			return
+		}
+		stoc.Data = string(result)
+		return
+	}
+	//离线
+	user.Wxuid = wxuid
+	user.GetByWechat()
+	if user.Userid != "" {
+		//登录
+		result, err := json.Marshal(user)
+		if err != nil {
+			glog.Errorf("user Marshal err %v", err)
+			stoc.Error = pb.GetWechatUserInfoFail
+			return
+		}
+		stoc.Data = string(result)
+		return
+	}
+	//注册
+	userid := genid.GenID()
+	user.Userid = userid
+	user.Wxuid = wxuid
+	user.Nickname = nickname
+	user.Photo = photo
+	user.Sex = sex
+	user.Atype = atype
+	user.Ctime = utils.BsonNow()
+	if !user.Save() {
+		glog.Errorf("WxLogin failed : %s", userid)
+		stoc.Error = pb.GetWechatUserInfoFail
+		return
+	}
+	result, err := json.Marshal(user)
+	if err != nil {
+		glog.Errorf("user Marshal err %v", err)
+		stoc.Error = pb.GetWechatUserInfoFail
+		return
+	}
+	stoc.Data = string(result)
+	stoc.IsRegist = true
+	return
+}
+
+//微信登录验证
+func WxLoginCheck(ctos *pb.CWxLogin) (stoc *pb.SWxLogin,
+	wxdata *data.WxLoginData) {
 	var wxcode string = ctos.GetWxcode()
 	var token string = ctos.GetToken()
-	var ipaddr string = ctos.GetIpaddr()
-	var atype uint32 = ctos.GetType()
 	//glog.Infof("weixinLogin wxcode:%s, token:%s", wxcode, token)
-	var isRegist bool
-	wxdata := new(data.WxLoginData)
+	wxdata = new(data.WxLoginData)
 	//token登录
 	if token != "" {
 		err := loginByToken(token, wxdata)
@@ -25,11 +89,6 @@ func WxLogin(ctos *pb.CWxLogin, genid *data.IDGen) (stoc *pb.SWxLogin, user *dat
 			stoc.Error = pb.WechatLoingFailReAuth
 			token = "" //重置为空，重新授权
 		} else {
-			user, isRegist = wxLogin2(wxdata, ipaddr, genid)
-			if user == nil {
-				glog.Errorf("weixinLogin err : %v", err)
-				stoc.Error = pb.GetWechatUserInfoFail
-			}
 			token = wxdata.RefreshToken
 		}
 	} else if wxcode != "" { //wxcode登录
@@ -38,11 +97,6 @@ func WxLogin(ctos *pb.CWxLogin, genid *data.IDGen) (stoc *pb.SWxLogin, user *dat
 			glog.Errorf("weixinLogin err : %v", err)
 			stoc.Error = pb.WechatLoingFailReAuth
 		} else {
-			user, isRegist = wxLogin2(wxdata, ipaddr, genid)
-			if user == nil {
-				glog.Errorf("weixinLogin err : %v", err)
-				stoc.Error = pb.GetWechatUserInfoFail
-			}
 			token = wxdata.RefreshToken
 		}
 	} else {
@@ -51,34 +105,8 @@ func WxLogin(ctos *pb.CWxLogin, genid *data.IDGen) (stoc *pb.SWxLogin, user *dat
 	if stoc.Error != pb.OK {
 		return
 	}
-	user.Atype = atype
-	stoc.Userid = user.Userid
 	stoc.Token = token
-	stoc.Isreg = isRegist
 	return
-}
-
-func wxLogin2(wxdata *data.WxLoginData,
-	ipaddr string, genid *data.IDGen) (*data.User, bool) {
-	//TODO 在线表中查找
-	user := &data.User{Wxuid: wxdata.OpenId}
-	user.GetByWechat()
-	if user.Userid != "" {
-		return user, false
-	}
-	//isregist
-	userid := genid.GenID()
-	user.Wxuid = wxdata.OpenId
-	user.Nickname = wxdata.Nickname
-	user.Photo = wxdata.HeadImagUrl
-	user.Sex = uint32(wxdata.Sex)
-	user.Userid = userid
-	user.RegIp = ipaddr
-	user.Ctime = utils.BsonNow()
-	if !user.Save() {
-		return nil, false
-	}
-	return user, true
 }
 
 //直接使用refresh_token

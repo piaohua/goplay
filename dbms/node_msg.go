@@ -94,11 +94,11 @@ func (a *DBMSActor) syncConfigMsg(ctype pb.ConfigType,
 
 //同步配置
 func (a *DBMSActor) syncConfig(key string) {
-	if _, ok := t.gates[key]; !ok {
+	if _, ok := a.gates[key]; !ok {
 		glog.Errorf("gate not exists: %s", key)
 		return
 	}
-	pid := t.gates[key]
+	pid := a.gates[key]
 	msg1 := a.syncConfigMsg(pb.CONFIG_BOX, config.GetBoxs())
 	pid.Tell(msg1)
 	msg2 := a.syncConfigMsg(pb.CONFIG_ENV, config.GetEnvs())

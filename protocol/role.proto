@@ -1,6 +1,7 @@
 syntax = "proto3";
 package pb;
 import "github.com/AsynkronIT/protoactor-go/actor/protos.proto";
+import "code.proto";
 
 //玩家行为操作
 
@@ -137,7 +138,8 @@ message WxLogin {
 
 message WxLogined {
     string Data = 1;
-    ErrCode error  = 2 ;// 错误码
+    bool IsRegist = 2;
+    ErrCode error  = 3 ;// 错误码
 }
 
 // 新邮件

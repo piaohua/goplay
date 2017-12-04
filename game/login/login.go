@@ -24,7 +24,7 @@ func LoginCheck(ctos *pb.CLogin) (stoc *pb.SLogin) {
 }
 
 //登录
-func Login(arg *pb.RoleLogin, user *data.User) (stoc *pb.SLogin) {
+func Login(ctos *pb.RoleLogin, user *data.User) (stoc *pb.RoleLogined) {
 	stoc = new(pb.RoleLogined)
 	var phone string = ctos.GetPhone()
 	var passwd string = ctos.GetPassword()

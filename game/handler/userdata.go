@@ -1,5 +1,6 @@
 package handler
 
+/*
 import (
 	"math"
 
@@ -421,3 +422,4 @@ func bank(ctos *pb.CBank, p *data.User) {
 	stoc.Balance = p.GetBank()
 	return
 }
+*/

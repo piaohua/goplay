@@ -35,7 +35,7 @@ func Regist(arg *pb.RoleRegist, genid *data.IDGen) (stoc *pb.RoleRegisted) {
 	var nickname string = arg.GetNickname()
 	var phone string = arg.GetPhone()
 	var passwd string = arg.GetPassword()
-	var atype uint32 = ctos.GetType()
+	var atype uint32 = arg.GetType()
 	stoc = new(pb.RoleRegisted)
 	user := new(data.User)
 	user.Phone = phone

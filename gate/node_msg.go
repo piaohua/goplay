@@ -159,7 +159,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 	switch arg.Type {
 	case pb.CONFIG_BOX: //宝箱
 		b := make([]data.Box, 0)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -169,7 +169,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_ENV: //变量
 		b := make(map[string]int32)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -179,7 +179,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_LOTTERY: //全民刮奖
 		b := make(map[uint32]uint32)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -189,7 +189,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_NOTICE: //公告
 		b := make([]data.Notice, 0)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -199,7 +199,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_PRIZE: //抽奖
 		b := make([]data.Prize, 0)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -209,7 +209,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_SHOP: //商城
 		b := make(map[string]data.Shop)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -219,7 +219,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_VIP: //VIP
 		b := make(map[int]data.Vip)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -229,7 +229,7 @@ func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_CLASSIC: //经典
 		b := make(map[string]data.Classic)
-		err = json.Unmarshal(arg.Data, &b)
+		err = json.Unmarshal([]byte(arg.Data), &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return

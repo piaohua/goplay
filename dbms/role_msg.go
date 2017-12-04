@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"goplay/data"
-	"goplay/game/config"
 	"goplay/game/login"
 	"goplay/glog"
 	"goplay/pb"
@@ -42,10 +41,18 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		ctx.Respond(rsp)
 	case *pb.SyncUser:
 		arg := msg.(*pb.SyncUser)
-		a.respUser(arg, ctx)
+		a.syncUser(arg, ctx)
 	case *pb.ChangeCurrency:
 		arg := msg.(*pb.ChangeCurrency)
-		a.respCurrency(arg, ctx)
+		a.changeCurrency(arg, ctx)
+	case *pb.Login:
+		//登录成功
+		arg := msg.(*pb.Login)
+		a.logined(arg, ctx)
+	case *pb.Logout:
+		//登出成功
+		arg := msg.(*pb.Logout)
+		a.logouted(arg, ctx)
 	case *pb.GetUserid:
 		arg := msg.(*pb.GetUserid)
 		//响应登录
@@ -58,11 +65,12 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		var phone string = arg.GetPhone()
 		//在线表中查找
 		if _, ok := a.players[phone]; ok {
-			rsp = new(pb.RoleRegisted)
+			rsp := new(pb.RoleRegisted)
 			rsp.Error = pb.PhoneRegisted
 			ctx.Respond(rsp)
 			return
 		}
+		//数据库中查找
 		rsp := login.Regist(arg, a.uniqueid)
 		ctx.Respond(rsp)
 	case *pb.RoleLogin:
@@ -70,50 +78,19 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		glog.Debugf("RoleLogin %#v", arg)
 		var phone string = arg.GetPhone()
 		//在线表中查找
-		user := new(data.User)
-		if v, ok := a.players[phone]; ok {
-			if v2, ok := a.roles[v]; ok {
-				user = v2
-			} else if v2, ok := a.offline[v]; ok {
-				user = v2
-			}
-		}
+		user := a.getUser(phone)
+		//数据库中查找
 		rsp := login.Login(arg, user)
 		ctx.Respond(rsp)
 	case *pb.WxLogin:
 		arg := msg.(*pb.WxLogin)
 		glog.Debugf("WxLogin %#v", arg)
+		var wxuid string = arg.GetWxuid()
 		//在线表中查找
-		user := new(data.User)
-		if v, ok := a.players[phone]; ok {
-			if v2, ok := a.roles[v]; ok {
-				user = v2
-			} else if v2, ok := a.offline[v]; ok {
-				user = v2
-			}
-		}
-		rsp := login.WxLogin(arg, a.uniqueid)
+		user := a.getUser(wxuid)
+		//数据库中查找
+		rsp := login.WxLogin(arg, user, a.uniqueid)
 		ctx.Respond(rsp)
-		//顺序不能错
-		//a.handlerLogin(user, isRegist, ctx)
-	case *pb.Login:
-		//登录成功
-		arg := msg.(*pb.Login)
-		a.router[ctx.Sender().String()] = arg.Userid
-		//响应登录
-		rsp := new(pb.Logined)
-		ctx.Respond(rsp)
-	case *pb.Logout:
-		//登出成功
-		arg := msg.(*pb.Logout)
-		glog.Debugf("Logout userid: %s", arg.Userid)
-		userid := arg.GetUserid()
-		if v, ok := a.roles[userid]; ok {
-			a.offline[userid] = v
-			//移除
-			delete(a.roles, userid)
-		}
-		delete(a.router, arg.Sender.String())
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
@@ -135,93 +112,108 @@ func (a *RoleActor) handlerStop(ctx actor.Context) {
 	}
 }
 
-func (a *RoleActor) getUserByPid(ctx actor.Context) *data.User {
-	userid := a.router[ctx.Sender().String()]
-	user := a.roles[userid]
-	return user
-}
+//在线表中查找,不存在时离线表中获取
+//func (a *RoleActor) getUserById(userid string) *data.User {
+//	if user, ok := a.roles[userid]; ok {
+//		return user
+//	}
+//	if user, ok := a.offline[userid]; ok {
+//		return user
+//	}
+//	user := new(data.User)
+//	user.Userid = userid
+//	user.Get() //数据库中取
+//	return user
+//}
 
-func (a *RoleActor) getUserById(userid string) *data.User {
-	if user, ok := a.roles[userid]; ok {
-		return user
-	}
-	if user, ok := a.offline[userid]; ok {
-		return user
-	}
+//在线表中查找
+func (a *RoleActor) getUser(account string) *data.User {
 	user := new(data.User)
-	user.Userid = userid
-	user.Get() //数据库中取
+	if v, ok := a.players[account]; ok {
+		if v2, ok := a.roles[v]; ok {
+			user = v2
+		} else if v2, ok := a.offline[v]; ok {
+			user = v2
+		}
+	}
 	return user
 }
 
 //登录处理
-func (a *RoleActor) handlerLogin(user *data.User,
-	isRegist bool, ctx actor.Context) {
-	if user == nil {
-		//登录失败
-		return
-	}
-	a.logined(user)
-	a.sendUser(user, ctx)
-	glog.Debugf("user %#v", user)
-	if isRegist {
-		//注册奖励发放
-		var diamond int32 = config.GetEnv(data.ENV1)
-		var coin int32 = config.GetEnv(data.ENV2)
-		a.sendCurrency(user, diamond, coin, data.LogType1, ctx)
-	}
-}
-
-func (a *RoleActor) logined(user *data.User) {
+func (a *RoleActor) logined(arg *pb.Login, ctx actor.Context) {
+	user := new(data.User)
+	//进程id映射
+	a.router[ctx.Sender().String()] = arg.Userid
 	//已经在线,用在线数据
-	if v, ok := a.roles[user.Userid]; ok && v != nil {
+	if v, ok := a.roles[arg.Userid]; ok {
 		user = v
 		return
 	}
 	//已经离线,用离线数据
-	if v, ok := a.offline[user.Userid]; ok && v != nil {
+	if v, ok := a.offline[arg.Userid]; ok {
 		user = v
-		delete(a.offline, user.Userid)
+		delete(a.offline, arg.Userid)
 	}
-	//登录成功
-	a.roles[user.Userid] = user
-	glog.Debugf("login userid: %s", user.Userid)
-	glog.Debugf("roles len: %d", len(a.roles))
-	glog.Debugf("offline len: %d", len(a.offline))
-	//router 可直接在这里处理
-}
-
-func (a *RoleActor) sendUser(user *data.User, ctx actor.Context) {
-	//同步数据,只有登录时才向节点同步数据
-	//其它时候为节点向role同步,避免数据覆盖
-	msg3 := new(pb.SyncUser)
-	msg3.Userid = user.Userid
-	result, err := json.Marshal(user)
+	//解析
+	err := json.Unmarshal([]byte(arg.Data), user)
 	if err != nil {
-		glog.Errorf("user Marshal err %v", err)
+		glog.Errorf("user %s Unmarshal err %v", arg.Userid, err)
 		return
 	}
-	msg3.Data = string(result)
-	ctx.Sender().Tell(msg3)
+	//映射
+	if user.Wxuid != "" {
+		a.players[user.Wxuid] = arg.Userid
+	} else if user.Phone != "" {
+		a.players[user.Phone] = arg.Userid
+	}
+	//登录成功
+	a.roles[arg.Userid] = user
+	glog.Debugf("login userid: %s", arg.Userid)
+	glog.Debugf("roles len: %d", len(a.roles))
+	glog.Debugf("offline len: %d", len(a.offline))
+	//响应登录
+	rsp := new(pb.Logined)
+	ctx.Respond(rsp)
 }
 
-func (a *RoleActor) respUser(arg *pb.SyncUser, ctx actor.Context) {
+//登出处理
+func (a *RoleActor) logouted(arg *pb.Logout, ctx actor.Context) {
+	glog.Debugf("Logout userid: %s", arg.Userid)
+	if v, ok := a.roles[arg.Userid]; ok {
+		//离线
+		a.offline[arg.Userid] = v
+		//移除
+		delete(a.roles, arg.Userid)
+		//TODO 定期离线数据清理,移除,存储
+		//if v.Wxuid != "" {
+		//	delete(a.players, v.Wxuid)
+		//} else if user.Phone != "" {
+		//	delete(a.players, v.Phone)
+		//}
+	}
+	delete(a.router, arg.Sender.String())
+}
+
+//在线同步数据
+func (a *RoleActor) syncUser(arg *pb.SyncUser, ctx actor.Context) {
 	glog.Debugf("SyncUser %#v", arg.Userid)
 	user := a.roles[arg.Userid]
 	if user == nil {
-		glog.Errorf("respUser user empty %s", arg.Userid)
+		glog.Errorf("syncUser user empty %s", arg.Userid)
 		return
 	}
 	err := json.Unmarshal([]byte(arg.Data), user)
 	if err != nil {
-		glog.Errorf("user Unmarshal err %v", err)
+		glog.Errorf("user %s Unmarshal err %v", arg.Userid, err)
+		return
 	}
 	glog.Debugf("user %#v", user)
-	//定时回存数据
+	//TODO 定时回存数据
 	user.Save()
 }
 
-func (a *RoleActor) respCurrency(arg *pb.ChangeCurrency,
+//更新货币
+func (a *RoleActor) changeCurrency(arg *pb.ChangeCurrency,
 	ctx actor.Context) {
 	userid := arg.Userid
 	diamond := arg.Diamond
@@ -229,7 +221,7 @@ func (a *RoleActor) respCurrency(arg *pb.ChangeCurrency,
 	ltype := int(arg.Type)
 	user := a.roles[userid]
 	if user == nil {
-		glog.Errorf("respCurrency user empty %s, type %d", userid, ltype)
+		glog.Errorf("changeCurrency user empty %s, type %d", userid, ltype)
 		return
 	}
 	user.AddDiamond(diamond)

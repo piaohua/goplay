@@ -53,25 +53,6 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
-//同步数据
-func (ws *WSConn) syncUser() {
-	if ws.User == nil {
-		return
-	}
-	if ws.rolePid == nil {
-		return
-	}
-	msg := new(pb.SyncUser)
-	msg.Userid = ws.User.GetUserid()
-	result, err := json.Marshal(ws.User)
-	if err != nil {
-		glog.Errorf("user Marshal err %v", err)
-		return
-	}
-	msg.Data = string(result)
-	ws.rolePid.Tell(msg)
-}
-
 func (ws *WSConn) loginElse() {
 	arg := new(pb.SLoginOut)
 	glog.Debugf("SLoginOut %s", ws.User.Userid)
@@ -92,9 +73,9 @@ func (ws *WSConn) loginElse() {
 func (ws *WSConn) addPrize(rtype, ltype int, amount int32) {
 	switch uint32(rtype) {
 	case data.DIAMOND:
-		a.sendCurrency(amount, 0, ltype)
+		ws.addCurrency(amount, 0, ltype)
 	case data.COIN:
-		a.addCurrency(0, amount, ltype)
+		ws.addCurrency(0, amount, ltype)
 	}
 }
 
@@ -132,4 +113,23 @@ func (ws *WSConn) addCurrency(diamond, coin int32, ltype int) {
 		}
 		ws.dbmsPid.Tell(msg1)
 	}
+}
+
+//同步数据
+func (ws *WSConn) syncUser() {
+	if ws.User == nil {
+		return
+	}
+	if ws.rolePid == nil {
+		return
+	}
+	msg := new(pb.SyncUser)
+	msg.Userid = ws.User.GetUserid()
+	result, err := json.Marshal(ws.User)
+	if err != nil {
+		glog.Errorf("user %s Marshal err %v", ws.User.GetUserid(), err)
+		return
+	}
+	msg.Data = string(result)
+	ws.rolePid.Tell(msg)
 }

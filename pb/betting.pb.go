@@ -28,6 +28,7 @@
 		room.proto
 		user.proto
 		vo.proto
+		web.proto
 
 	It has these top-level messages:
 		CBettingInfo
@@ -207,10 +208,17 @@
 		Logout
 		Logouted
 		SyncUser
-		SyncCurrency
 		ChangeCurrency
 		GetUserid
 		GotUserid
+		GetUniqueid
+		GotUniqueid
+		RoleLogin
+		RoleLogined
+		RoleRegist
+		RoleRegisted
+		WxLogin
+		WxLogined
 		NewMail
 		NewMailList
 		DeleteMail
@@ -270,6 +278,7 @@
 		ZiRoomRound
 		ZiRecordList
 		ZiRoomInfo
+		SyncConfig
 */
 package pb
 
