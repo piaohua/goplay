@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"goplay/data"
+	"goplay/game/handler"
 	"goplay/game/login"
 	"goplay/glog"
 	"goplay/pb"
@@ -89,6 +90,10 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		user := a.getUser(wxuid)
 		//数据库中查找
 		rsp := login.WxLogin(arg, user, a.uniqueid)
+		ctx.Respond(rsp)
+	case *pb.BuildAgent:
+		arg := msg.(*pb.BuildAgent)
+		rsp := handler.BuildAgent(arg)
 		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)

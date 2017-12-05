@@ -1,13 +1,11 @@
 package handler
 
-/*
 import (
 	"math"
 
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/pb"
-	"niu/players"
 	"utils"
 )
 
@@ -67,7 +65,8 @@ func ClassicList(ctos *pb.CClassicList) (stoc *pb.SClassicList) {
 	return
 }
 
-func PrizeBox(ctos *pb.CPrizeBox, p *data.User) (stoc *pb.SPrizeBox) {
+func PrizeBox(ctos *pb.CPrizeBox, p *data.User) (stoc *pb.SPrizeBox,
+	rtype int, amount int32) {
 	stoc = new(pb.SPrizeBox)
 	state := ctos.GetState()
 	id := p.GetBox()
@@ -89,7 +88,8 @@ func PrizeBox(ctos *pb.CPrizeBox, p *data.User) (stoc *pb.SPrizeBox) {
 			Number: uint32(d.Amount),
 		}
 		stoc.List = append(stoc.List, l)
-		addPrize(p, d.Rtype, data.LogType22, d.Amount)
+		rtype = d.Rtype
+		amount = d.Amount
 		//下一个宝箱
 		d = config.NextBox(d.Duration)
 		if d.Id == "" {
@@ -118,8 +118,9 @@ func PrizeBox(ctos *pb.CPrizeBox, p *data.User) (stoc *pb.SPrizeBox) {
 	return
 }
 
-func PrizeDraw(ctos *pb.CPrizeDraw, p *data.User) {
-	stoc := new(pb.SPrizeDraw)
+func PrizeDraw(ctos *pb.CPrizeDraw, p *data.User) (stoc *pb.SPrizeDraw,
+	rtype int, amount int32) {
+	stoc = new(pb.SPrizeDraw)
 	var num int32 = config.GetEnv(data.ENV7)
 	//vip
 	vip := config.GetVip(p.GetVipLevel())
@@ -150,7 +151,8 @@ func PrizeDraw(ctos *pb.CPrizeDraw, p *data.User) {
 			stoc.Prizedraw = draw + 1
 			stoc.List = append(stoc.List, l)
 			p.SetPrizeDraw()
-			addPrize(p, v.Rtype, data.LogType21, v.Amount)
+			rtype = v.Rtype
+			amount = v.Amount
 			return
 		}
 	}
@@ -172,8 +174,9 @@ func PrizeList(ctos *pb.CPrizeList) (stoc *pb.SPrizeList) {
 	return
 }
 
-func bankrupt(ctos *pb.CBankrupts, p *data.User) {
-	stoc := &pb.SBankrupts{}
+func Bankrupt(ctos *pb.CBankrupts, p *data.User) (stoc *pb.SBankrupts,
+	coin int32) {
+	stoc = new(pb.SBankrupts)
 	var coin1 int32 = config.GetEnv(data.ENV8)
 	if int32(p.GetCoin()) >= coin1 {
 		stoc.Error = pb.NotBankrupt
@@ -185,7 +188,7 @@ func bankrupt(ctos *pb.CBankrupts, p *data.User) {
 		stoc.Error = pb.NotRelieves
 		return
 	}
-	var coin int32 = config.GetEnv(data.ENV9)
+	coin = config.GetEnv(data.ENV9)
 	if coin > 0 {
 		l := &pb.Prize{
 			Rtype:  uint32(data.COIN),
@@ -198,11 +201,7 @@ func bankrupt(ctos *pb.CBankrupts, p *data.User) {
 		stoc.Relieve = uint32(left)
 		stoc.Bankrupt = num2 + 1
 		stoc.List = append(stoc.List, l)
-		p.AddCoin(coin)
-		//日志
-		data.CoinRecord(p.GetUserid(), data.LogType11, p.GetCoin(), coin)
 		p.SetBankrupts()
-		pushCurrency(p, data.LogType11, coin, 0)
 	}
 	return
 }
@@ -234,14 +233,14 @@ func GetUserData(ctos *pb.CUserData, p *data.User) (stoc *pb.SUserData) {
 		}
 	}
 	stoc.Data.Give = p.GetGive()
-	stoc.Data.Agent = user.Agent
+	stoc.Data.Agent = p.GetAgent()
 	stoc.Data.Userid = userid
-	stoc.Data.Photo = user.Photo
-	stoc.Data.Nickname = user.Nickname
-	stoc.Data.Sex = user.Sex
-	stoc.Data.Phone = user.Phone
-	stoc.Data.Coin = user.Coin
-	stoc.Data.Diamond = user.Diamond
+	stoc.Data.Photo = p.GetPhoto()
+	stoc.Data.Nickname = p.GetName()
+	stoc.Data.Sex = p.GetSex()
+	stoc.Data.Phone = p.GetPhone()
+	stoc.Data.Coin = p.GetCoin()
+	stoc.Data.Diamond = p.GetDiamond()
 	return
 }
 
@@ -279,11 +278,12 @@ func getActivity(p *data.User) (first, relieve, bankrupt,
 	return
 }
 
-func buildAgent(ctos *pb.CBuildAgent, p *data.User) (stoc *pb.SBuildAgent) {
-	stoc = new(pb.SBuildAgent)
+func BuildAgent(ctos *pb.BuildAgent) (stoc *pb.BuiltAgent) {
+	stoc = new(pb.BuiltAgent)
 	userid := ctos.GetUserid()
-	agent := p.GetAgent()
-	if agent == userid {
+	agent := ctos.GetAgent()
+	uid := ctos.GetUid()
+	if uid == userid {
 		stoc.Result = 1
 		return
 	}
@@ -298,71 +298,58 @@ func buildAgent(ctos *pb.CBuildAgent, p *data.User) (stoc *pb.SBuildAgent) {
 		return
 	}
 	agencySelf := new(data.Agency)
-	agencySelf.Get(p.GetUserid())
+	agencySelf.Get(uid)
 	if agencySelf.Agent != "" {
 		stoc.Result = 4 //已经是代理商不能绑定
 		return
 	}
-	p.SetAgent(userid)
 	stoc.Result = 0
-	//日志
-	data.BuildRecord(p.GetUserid(), userid)
-	//赠送
-	var num2 int32 = config.GetEnv(data.ENV3)
-	p.AddDiamond(num)
-	//消息
-	msg := &pb.SPushCurrency{
-		Rtype:   uint32(data.LogType19),
-		Diamond: int32(num),
-	}
-	//日志
-	data.DiamondRecord(p.GetUserid(), data.LogType19, p.GetDiamond(), num)
+	stoc.Agent = userid
 	return
 }
 
 //1存入,2取出,3赠送
-func bank(ctos *pb.CBank, p *data.User) {
-	stoc := &pb.SBank{}
+func Bank(ctos *pb.CBank, p *data.User) (stoc *pb.SBank, coin, tax int32) {
+	stoc = new(pb.SBank)
 	rtype := ctos.GetRtype()
 	amount := ctos.GetAmount()
 	userid := ctos.GetUserid()
-	coin := p.GetCoin()
-	//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
 	switch rtype {
 	case 1: //存入
-		if int32(coin-amount) < int32(data.BANKRUPT) {
-			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
+		if int32(p.GetCoin()-amount) < int32(data.BANKRUPT) {
 			stoc.Error = pb.NotEnoughCoin
 		} else if int32(amount) <= 0 {
 			stoc.Error = pb.DepositNumberError
-			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
 		} else {
-			num := -1 * int32(amount)
-			p.AddCoin(num)
+			coin = -1 * int32(amount)
 			p.AddBank(int32(amount))
-			//日志
-			data.CoinRecord(p.GetUserid(), data.LogType12, p.GetCoin(), num)
-			//glog.Infof("coin %d, userid %s, rtype %d, amount %d", coin, userid, rtype, amount)
 		}
 	case 2: //取出
 		if amount < data.DRAW_MONEY || amount > p.GetBank() {
 			stoc.Error = pb.DrawMoneyNumberError
 		} else {
-			var tax uint32
 			if amount < data.TAX_NUMBER {
-				tax = 1
+				tax = -1
 			} else {
-				tax = uint32(math.Trunc(float64(amount) * data.GIVE_PERCENT))
+				tax = 0 - int32(math.Trunc(float64(amount)*data.GIVE_PERCENT))
 			}
-			num := -1 * int32(amount)
-			coin := int32(amount - tax)
-			p.AddCoin(coin)
-			p.AddBank(num)
-			//日志
-			data.CoinRecord(p.GetUserid(), data.LogType14, p.GetCoin(), int32(tax))
-			//日志
-			data.CoinRecord(p.GetUserid(), data.LogType13, p.GetCoin(), coin)
+			coin = int32(amount)
+			p.AddBank(-1 * int32(amount))
 		}
+	case 4: //查询
+	}
+	stoc.Rtype = rtype
+	stoc.Amount = amount
+	stoc.Userid = userid
+	stoc.Balance = p.GetBank()
+	return
+}
+
+/*
+func BankGive(ctos *pb.CBank, p *data.User) (stoc *pb.SBank) {
+	stoc = new(pb.SBank)
+	rtype := ctos.GetRtype()
+	switch rtype {
 	case 3: //赠送
 		if amount+p.GetGive() > data.GIVE_LIMIT {
 			stoc.Error = pb.GiveTooMuch
@@ -415,11 +402,6 @@ func bank(ctos *pb.CBank, p *data.User) {
 		}
 	case 4: //查询
 	}
-	//glog.Infof("rtype %d, bank %d", rtype, p.GetBank())
-	stoc.Rtype = rtype
-	stoc.Amount = amount
-	stoc.Userid = userid
-	stoc.Balance = p.GetBank()
 	return
 }
 */

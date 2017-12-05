@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"time"
 
 	"goplay/data"
 	"goplay/game/config"
@@ -87,7 +86,7 @@ func (a *GateActor) init(ctx actor.Context) {
 	name := cfg.Section("cookie").Key("name").Value()
 	room := cfg.Section("cookie").Key("room").Value()
 	role := cfg.Section("cookie").Key("role").Value()
-	timeout := 3 * time.Second
+	//timeout := 3 * time.Second
 	//a.dbmsPid, err = remote.SpawnNamed(bind, a.Name, name, timeout)
 	//if err != nil {
 	//	glog.Fatalf("remote dbms err %v", err)

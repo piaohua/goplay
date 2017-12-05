@@ -223,6 +223,8 @@
 		NewMailList
 		DeleteMail
 		GetMailItem
+		BuildAgent
+		BuiltAgent
 		CLeave
 		SLeave
 		CKick

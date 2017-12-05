@@ -169,3 +169,17 @@ message GetMailItem
     string Id   = 1; //邮件ID
     string Userid = 2;
 }
+
+// 绑定代理id
+message BuildAgent
+{
+    string Userid = 1;//绑定代理id
+    string Agent = 2;//已经绑定id
+    string Uid = 3;//玩家id
+}
+
+message BuiltAgent
+{
+    uint32 Result = 1;//结果
+    string Agent = 2;//绑定id
+}
