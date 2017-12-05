@@ -10,7 +10,6 @@ import (
 	"goplay/pb"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
-	"github.com/AsynkronIT/protoactor-go/remote"
 )
 
 func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
@@ -115,12 +114,13 @@ func (a *GateActor) init(ctx actor.Context) {
 	//	Wait()
 	//hall
 	bind = cfg.Section("hall").Key("bind").Value()
-	//name
-	hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
-	if err != nil {
-		glog.Fatalf("remote hall err %v", err)
-	}
-	a.hallPid = hallPid.Pid
+	////name
+	//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
+	//if err != nil {
+	//	glog.Fatalf("remote hall err %v", err)
+	//}
+	//a.hallPid = hallPid.Pid
+	a.hallPid = actor.NewPID(bind, name)
 	glog.Infof("a.hallPid: %s", a.hallPid.String())
 	connect := &pb.GateConnect{
 		Sender: ctx.Self(),

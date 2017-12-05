@@ -3,10 +3,15 @@ package main
 import (
 	"goplay/glog"
 	"goplay/pb"
+	"time"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
 	"github.com/AsynkronIT/protoactor-go/remote"
 	"github.com/gogo/protobuf/proto"
+)
+
+var (
+	nodePid *actor.PID
 )
 
 //大厅服务
@@ -28,7 +33,6 @@ func (a *HallActor) Receive(ctx actor.Context) {
 		ctx.Respond(&pb.Response{})
 	case *actor.Started:
 		glog.Notice("Starting, initialize actor here")
-		glog.Errorf("name %s", a.Name)
 	case *actor.Stopping:
 		glog.Notice("Stopping, actor is about to shut down")
 	case *actor.Stopped:
@@ -58,4 +62,25 @@ func newHallActor() actor.Actor {
 func NewRemote(bind, name string) {
 	remote.Start(bind)
 	remote.Register(name, actor.FromProducer(newHallActor))
+	hallProps := actor.
+		FromInstance(newHallActor())
+	nodePid, err = actor.SpawnNamed(hallProps, name)
+	if err != nil {
+		glog.Fatalf("nodePid err %v", err)
+	}
+}
+
+//关闭
+func Stop() {
+	timeout := 3 * time.Second
+	msg := new(pb.ServeStop)
+	if nodePid != nil {
+		res1, err1 := nodePid.RequestFuture(msg, timeout).Result()
+		if err1 != nil {
+			glog.Errorf("nodePid Stop err: %v", err1)
+		}
+		response1 := res1.(*pb.ServeStoped)
+		glog.Debugf("response1: %#v", response1)
+		nodePid.Stop()
+	}
 }

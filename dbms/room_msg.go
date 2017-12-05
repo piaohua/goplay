@@ -3,10 +3,8 @@ package main
 import (
 	"goplay/glog"
 	"goplay/pb"
-	"time"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
-	"github.com/AsynkronIT/protoactor-go/remote"
 )
 
 func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
@@ -17,13 +15,14 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 		//连接
 		bind := cfg.Section("hall").Key("bind").Value()
 		name := cfg.Section("cookie").Key("name").Value()
-		timeout := 3 * time.Second
-		hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
+		//timeout := 3 * time.Second
+		//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
+		//if err != nil {
+		//	glog.Fatalf("remote hall err %v", err)
+		//}
+		//a.hallPid = hallPid.Pid
+		a.hallPid = actor.NewPID(bind, name)
 		glog.Infof("a.hallPid: %s", a.hallPid.String())
-		if err != nil {
-			glog.Fatalf("remote hall err %v", err)
-		}
-		a.hallPid = hallPid.Pid
 		connect := &pb.HallConnect{
 			Sender: ctx.Self(),
 			Name:   a.Name,

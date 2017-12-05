@@ -40,8 +40,9 @@ message HallConnect {
 }
 
 message HallConnected {
-    string Message = 1;
-    string Name = 2;
+    actor.PID HallPid = 1;
+    string Message = 2;
+    string Name = 3;
 }
 
 message ServeStop {

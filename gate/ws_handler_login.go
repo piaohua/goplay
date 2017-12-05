@@ -238,10 +238,10 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	}
 	response4 := res4.(*pb.Logined)
 	glog.Debugf("response4: %#v", response4)
-	//同步数据
-	ws.syncUser()
 	//日志
 	ws.logined2(isRegist)
+	//同步数据
+	ws.syncUser()
 }
 
 //登录处理

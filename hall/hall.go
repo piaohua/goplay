@@ -33,8 +33,7 @@ func main() {
 	NewRemote(bind, name)
 	signalListen()
 	//关闭服务
-	//TODO
-	//Stop()
+	Stop()
 	//延迟等待
 	<-time.After(3 * time.Second) //延迟关闭
 }
