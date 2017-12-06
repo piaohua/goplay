@@ -95,6 +95,22 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		arg := msg.(*pb.BuildAgent)
 		rsp := handler.BuildAgent(arg)
 		ctx.Respond(rsp)
+	case *pb.BankGive:
+		arg := msg.(*pb.BankGive)
+		user := a.getUserById(arg.Userid)
+		rsp := new(pb.BankGave)
+		if user == nil || user.Userid == "" {
+			rsp.Error = pb.GiveUseridError
+		} else if user != nil {
+			rsp.Userid = user.GetUserid()
+			rsp.Coin = user.GetCoin()
+		}
+		ctx.Respond(rsp)
+	case *pb.GetUserData:
+		arg := msg.(*pb.GetUserData)
+		user := a.getUserById(arg.Userid)
+		rsp := handler.GetUserData1(user)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
@@ -117,18 +133,17 @@ func (a *RoleActor) handlerStop(ctx actor.Context) {
 }
 
 //在线表中查找,不存在时离线表中获取
-//func (a *RoleActor) getUserById(userid string) *data.User {
-//	if user, ok := a.roles[userid]; ok {
-//		return user
-//	}
-//	if user, ok := a.offline[userid]; ok {
-//		return user
-//	}
-//	user := new(data.User)
-//	user.Userid = userid
-//	user.Get() //数据库中取
-//	return user
-//}
+func (a *RoleActor) getUserById(userid string) *data.User {
+	if user, ok := a.roles[userid]; ok {
+		return user
+	}
+	if user, ok := a.offline[userid]; ok {
+		return user
+	}
+	user := new(data.User)
+	user.GetById(userid) //数据库中取
+	return user
+}
 
 //在线表中查找
 func (a *RoleActor) getUser(account string) *data.User {
@@ -222,12 +237,27 @@ func (a *RoleActor) changeCurrency(arg *pb.ChangeCurrency,
 	userid := arg.Userid
 	diamond := arg.Diamond
 	coin := arg.Coin
+	bank := arg.Bank
+	upsert := arg.Upsert
 	ltype := int(arg.Type)
-	user := a.roles[userid]
-	if user == nil {
+	user := a.getUser(userid)
+	if user != nil {
+		user.AddDiamond(diamond)
+		user.AddCoin(coin)
+		user.AddBank(bank)
+		return
+	}
+	if !upsert {
 		glog.Errorf("changeCurrency user empty %s, type %d", userid, ltype)
 		return
 	}
-	user.AddDiamond(diamond)
-	user.AddCoin(coin)
+	//离线更新
+	user = a.getUserById(userid)
+	if user == nil || user.Userid == "" {
+		glog.Errorf("changeCurrency user empty %s, type %d", userid, ltype)
+		return
+	}
+	user.UpdateDiamond(diamond)
+	user.UpdateCoin(coin)
+	user.UpdateBank(bank)
 }

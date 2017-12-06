@@ -55,7 +55,7 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 			Agent:  ws.User.GetAgent(),
 			Uid:    ws.User.GetUserid(),
 		}
-		ws.rolePid.Tell(msg1)
+		ws.rolePid.Request(msg1, ctx.Self())
 	case *pb.BuiltAgent:
 		arg := msg.(*pb.BuiltAgent)
 		if arg.Result == 0 {
@@ -88,8 +88,22 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 			ws.addCurrency(0, tax, data.LogType14)
 			ws.Send(rsp)
 		case 3:
+			res := handler.BankGive(arg, ws.User)
+			if res.Error != pb.OK {
+				ws.Send(res)
+				return
+			}
+			msg2 := new(pb.BankGive)
+			msg2.Userid = arg.Userid
+			msg2.Amount = arg.Amount
+			ws.rolePid.Request(msg2, ctx.Self())
 		case 4:
 		}
+	case *pb.BankGave:
+		arg := msg.(*pb.BankGave)
+		rsp, coin, tax := handler.BankGave(arg, ws.User)
+		ws.bank(arg, coin, tax)
+		ws.Send(rsp)
 	case *pb.CGetCurrency:
 		arg := msg.(*pb.CGetCurrency)
 		//响应
@@ -110,12 +124,56 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		ws.Send(rsp)
 	case *pb.CUserData:
 		arg := msg.(*pb.CUserData)
-		//userid := arg.GetUserid()
-		//TODO userid != ws.GetUserid()
-		//TODO room data
-		rsp := handler.GetUserData(arg, ws.User)
-		ctx.Respond(rsp)
+		userid := arg.GetUserid()
+		if userid != ws.User.GetUserid() && userid != "" {
+			msg1 := new(pb.GetUserData)
+			msg1.Userid = userid
+			ws.rolePid.Request(msg1, ctx.Self())
+		} else {
+			//TODO 添加房间数据返回
+			rsp := handler.GetUserData3(arg, ws.User)
+			ws.Send(rsp)
+		}
+	case *pb.GotUserData:
+		arg := msg.(*pb.GotUserData)
+		rsp := handler.GetUserData2(arg)
+		ws.Send(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (ws *WSConn) bank(arg *pb.BankGave, coin, tax int32) {
+	//受赠者货币变更, TODO 在线更新消息
+	msg4 := &pb.ChangeCurrency{
+		Userid: arg.Userid,
+		Coin:   coin,
+		Type:   int32(data.LogType15),
+		Upsert: true,
+	}
+	ws.rolePid.Tell(msg4)
+	//受赠者日志
+	msg3 := &pb.LogCoin{
+		Userid: arg.Userid,
+		Type:   int32(data.LogType15),
+		Num:    coin,
+		Rest:   arg.Coin + uint32(coin),
+	}
+	ws.dbmsPid.Tell(msg3)
+	//赠送者日志
+	msg1 := &pb.LogCoin{
+		Userid: ws.User.GetUserid(),
+		Type:   int32(data.LogType15),
+		Num:    (-1 * coin),
+		Rest:   ws.User.GetCoin(),
+	}
+	ws.dbmsPid.Tell(msg1)
+	//扣税日志
+	msg2 := &pb.LogCoin{
+		Userid: ws.User.GetUserid(),
+		Type:   int32(data.LogType16),
+		Num:    tax,
+		Rest:   ws.User.GetBank(),
+	}
+	ws.dbmsPid.Tell(msg2)
 }

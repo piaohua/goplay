@@ -206,7 +206,47 @@ func Bankrupt(ctos *pb.CBankrupts, p *data.User) (stoc *pb.SBankrupts,
 	return
 }
 
-func GetUserData(ctos *pb.CUserData, p *data.User) (stoc *pb.SUserData) {
+func GetUserData1(p *data.User) (stoc *pb.GotUserData) {
+	stoc = new(pb.GotUserData)
+	if p == nil || p.Userid == "" {
+		stoc.Error = pb.UsernameEmpty
+	}
+	//基本数据
+	stoc.Agent = p.GetAgent()
+	stoc.Userid = p.GetUserid()
+	stoc.Photo = p.GetPhoto()
+	stoc.Nickname = p.GetName()
+	stoc.Sex = p.GetSex()
+	stoc.Phone = p.GetPhone()
+	stoc.Coin = p.GetCoin()
+	stoc.Diamond = p.GetDiamond()
+	return
+}
+
+func GetUserData2(p *pb.GotUserData) (stoc *pb.SUserData) {
+	stoc = new(pb.SUserData)
+	if p == nil {
+		stoc.Error = pb.UsernameEmpty
+		return
+	}
+	if p.Error != pb.OK {
+		stoc.Error = p.Error
+		return
+	}
+	stoc.Data = new(pb.UserData)
+	//基本数据
+	stoc.Data.Agent = p.GetAgent()
+	stoc.Data.Userid = p.GetUserid()
+	stoc.Data.Photo = p.GetPhoto()
+	stoc.Data.Nickname = p.GetNickname()
+	stoc.Data.Sex = p.GetSex()
+	stoc.Data.Phone = p.GetPhone()
+	stoc.Data.Coin = p.GetCoin()
+	stoc.Data.Diamond = p.GetDiamond()
+	return
+}
+
+func GetUserData3(ctos *pb.CUserData, p *data.User) (stoc *pb.SUserData) {
 	stoc = new(pb.SUserData)
 	stoc.Data = new(pb.UserData)
 	userid := ctos.GetUserid()
@@ -214,27 +254,26 @@ func GetUserData(ctos *pb.CUserData, p *data.User) (stoc *pb.SUserData) {
 		stoc.Error = pb.UsernameEmpty
 		return
 	}
-	// 获取玩家自己的详细资料
-	if userid == p.GetUserid() {
-		stoc.Data.Bank = p.GetBank()
-		first, relieve, bankrupt, prizedraw,
-			leftdraw, kicktimes := getActivity(p)
-		stoc.Data.Data = &pb.Activity{
-			Firstpay:  first,
-			Relieve:   relieve,
-			Bankrupt:  bankrupt,
-			Prizedraw: prizedraw,
-			Leftdraw:  leftdraw,
-			Kicktimes: kicktimes,
-		}
-		stoc.Data.Vip = &pb.VipInfo{
-			Level:  uint32(p.GetVipLevel()),
-			Number: p.GetVip() / 100,
-		}
-	}
+	//获取玩家自己的详细资料
+	stoc.Data.Bank = p.GetBank()
 	stoc.Data.Give = p.GetGive()
+	first, relieve, bankrupt, prizedraw,
+		leftdraw, kicktimes := getActivity(p)
+	stoc.Data.Data = &pb.Activity{
+		Firstpay:  first,
+		Relieve:   relieve,
+		Bankrupt:  bankrupt,
+		Prizedraw: prizedraw,
+		Leftdraw:  leftdraw,
+		Kicktimes: kicktimes,
+	}
+	stoc.Data.Vip = &pb.VipInfo{
+		Level:  uint32(p.GetVipLevel()),
+		Number: p.GetVip() / 100,
+	}
+	//基本数据
 	stoc.Data.Agent = p.GetAgent()
-	stoc.Data.Userid = userid
+	stoc.Data.Userid = p.GetUserid()
 	stoc.Data.Photo = p.GetPhoto()
 	stoc.Data.Nickname = p.GetName()
 	stoc.Data.Sex = p.GetSex()
@@ -278,6 +317,7 @@ func getActivity(p *data.User) (first, relieve, bankrupt,
 	return
 }
 
+//dbms
 func BuildAgent(ctos *pb.BuildAgent) (stoc *pb.BuiltAgent) {
 	stoc = new(pb.BuiltAgent)
 	userid := ctos.GetUserid()
@@ -345,63 +385,49 @@ func Bank(ctos *pb.CBank, p *data.User) (stoc *pb.SBank, coin, tax int32) {
 	return
 }
 
-/*
+//赠送
 func BankGive(ctos *pb.CBank, p *data.User) (stoc *pb.SBank) {
 	stoc = new(pb.SBank)
-	rtype := ctos.GetRtype()
-	switch rtype {
-	case 3: //赠送
-		if amount+p.GetGive() > data.GIVE_LIMIT {
-			stoc.Error = pb.GiveTooMuch
-		} else if amount < data.DRAW_MONEY || amount > p.GetBank() {
-			stoc.Error = pb.GiveNumberError
-		} else if userid == "" {
-			stoc.Error = pb.GiveUseridError
+	amount := ctos.GetAmount()
+	userid := ctos.GetUserid()
+	if (amount + p.GetGive()) > data.GIVE_LIMIT {
+		stoc.Error = pb.GiveTooMuch
+	} else if amount < data.DRAW_MONEY || amount > p.GetBank() {
+		stoc.Error = pb.GiveNumberError
+	} else if userid == "" {
+		stoc.Error = pb.GiveUseridError
+	} else {
+		var tax uint32
+		if amount < data.TAX_NUMBER {
+			tax = 1
 		} else {
-			var tax uint32
-			if amount < data.TAX_NUMBER {
-				tax = 1
-			} else {
-				tax = uint32(math.Trunc(float64(amount) * data.GIVE_PERCENT))
-			}
-			num := -1 * int32(amount)
-			coin := int32(amount - tax) //实际获得
-			//glog.Infof("bank %d", p.GetBank())
-			//glog.Infof("userid %s, amount %d, num %d, tax %d, coin %d", userid, amount, num, tax, coin)
-			player := players.Get(userid)
-			if player == nil {
-				user := new(data.User)
-				user.GetById(userid)
-				if user.Userid == "" || coin <= 0 {
-					stoc.Error = pb.GiveUseridError
-				} else {
-					if user.UpdateCoin(uint32(coin)) {
-						p.AddGive(amount)
-						p.AddBank(num)
-						//日志
-						data.CoinRecord(userid, data.LogType15, user.Coin+uint32(coin), coin)
-						data.CoinRecord(p.GetUserid(), data.LogType15, p.GetCoin(), (-1 * coin))
-						//日志
-						data.CoinRecord(p.GetUserid(), data.LogType16, p.GetBank(), int32(tax))
-					} else {
-						stoc.Error = pb.GiveUseridError
-					}
-				}
-			} else {
-				player.AddCoin(coin)
-				p.AddGive(amount)
-				p.AddBank(num)
-				//glog.Infof("userid %s, amount %d, num %d, tax %d, coin %d", userid, amount, num, tax, coin)
-				//日志
-				data.CoinRecord(userid, data.LogType15, player.GetCoin(), coin)
-				data.CoinRecord(p.GetUserid(), data.LogType15, p.GetCoin(), (-1 * coin))
-				//日志
-				data.CoinRecord(p.GetUserid(), data.LogType16, p.GetBank(), int32(tax))
-				//glog.Infof("bank %d", p.GetBank())
-			}
+			tax = uint32(math.Trunc(float64(amount) * data.GIVE_PERCENT))
 		}
-	case 4: //查询
+		coin := int32(amount - tax) //实际获得
+		if coin <= 0 {
+			stoc.Error = pb.GiveUseridError
+		}
 	}
 	return
 }
-*/
+
+func BankGave(arg *pb.BankGave, p *data.User) (stoc *pb.SBank,
+	coin, tax int32) {
+	stoc = new(pb.SBank)
+	if arg.Error != pb.OK {
+		stoc.Error = arg.Error
+		return
+	}
+	amount := arg.GetAmount()
+	//赠送
+	if amount < data.TAX_NUMBER {
+		tax = 1
+	} else {
+		tax = int32(math.Trunc(float64(amount) * data.GIVE_PERCENT))
+	}
+	num := -1 * int32(amount)
+	coin = int32(amount) - tax //实际获得
+	p.AddGive(amount)
+	p.AddBank(num)
+	return
+}

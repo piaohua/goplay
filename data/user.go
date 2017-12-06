@@ -80,12 +80,16 @@ func (this *User) UpdateAgent(agent string) bool {
 	return Update(PlayerUsers, bson.M{"_id": this.Userid}, bson.M{"$set": bson.M{"agent": agent}})
 }
 
-func (this *User) UpdateDiamond(num uint32) bool {
+func (this *User) UpdateDiamond(num int32) bool {
 	return Update(PlayerUsers, bson.M{"_id": this.Userid}, bson.M{"$inc": bson.M{"diamond": num}})
 }
 
-func (this *User) UpdateCoin(num uint32) bool {
+func (this *User) UpdateCoin(num int32) bool {
 	return Update(PlayerUsers, bson.M{"_id": this.Userid}, bson.M{"$inc": bson.M{"coin": num}})
+}
+
+func (this *User) UpdateBank(num int32) bool {
+	return Update(PlayerUsers, bson.M{"_id": this.Userid}, bson.M{"$inc": bson.M{"bank": num}})
 }
 
 func (this *User) UpdatePay(diamond, money, coin uint32) bool {

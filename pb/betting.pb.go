@@ -225,6 +225,10 @@
 		GetMailItem
 		BuildAgent
 		BuiltAgent
+		BankGive
+		BankGave
+		GetUserData
+		GotUserData
 		CLeave
 		SLeave
 		CKick

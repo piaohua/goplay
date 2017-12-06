@@ -82,6 +82,8 @@ message ChangeCurrency {
     int32 Type = 2;//变动类型
     int32 Coin = 3;//变动金币数量
     int32 Diamond = 4;//变动钻石数量
+    int32 Bank = 5;//变动银行账号数量
+    bool Upsert = 6;//离线也变更数据
 }
 
 //获取数据
@@ -182,4 +184,34 @@ message BuiltAgent
 {
     uint32 Result = 1;//结果
     string Agent = 2;//绑定id
+}
+
+//银行操作
+message BankGive {
+    string Userid = 1;//赠送对象
+    uint32 Amount = 2;//赠送金额数量
+}
+
+message BankGave {
+    string Userid = 1;//赠送对象
+    uint32 Amount = 2;//赠送金额数量
+    uint32 Coin = 3;//赠送对象自身金额数量
+    ErrCode error  = 4 ;// 错误码
+}
+
+//玩家信息
+message GetUserData {
+    string Userid = 1;
+}
+
+message GotUserData {
+	string Agent = 1;
+	string Userid = 2;
+	string Photo = 3;
+	string Nickname = 4;
+	uint32 Sex = 5;
+	string Phone = 6;
+	uint32 Coin = 7;
+	uint32 Diamond = 8;
+    ErrCode error  = 9 ;// 错误码
 }

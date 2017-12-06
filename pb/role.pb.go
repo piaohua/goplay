@@ -323,6 +323,8 @@ type ChangeCurrency struct {
 	Type    int32  `protobuf:"varint,2,opt,name=Type,proto3" json:"Type,omitempty"`
 	Coin    int32  `protobuf:"varint,3,opt,name=Coin,proto3" json:"Coin,omitempty"`
 	Diamond int32  `protobuf:"varint,4,opt,name=Diamond,proto3" json:"Diamond,omitempty"`
+	Bank    int32  `protobuf:"varint,5,opt,name=Bank,proto3" json:"Bank,omitempty"`
+	Upsert  bool   `protobuf:"varint,6,opt,name=Upsert,proto3" json:"Upsert,omitempty"`
 }
 
 func (m *ChangeCurrency) Reset()                    { *m = ChangeCurrency{} }
@@ -355,6 +357,20 @@ func (m *ChangeCurrency) GetDiamond() int32 {
 		return m.Diamond
 	}
 	return 0
+}
+
+func (m *ChangeCurrency) GetBank() int32 {
+	if m != nil {
+		return m.Bank
+	}
+	return 0
+}
+
+func (m *ChangeCurrency) GetUpsert() bool {
+	if m != nil {
+		return m.Upsert
+	}
+	return false
 }
 
 // 获取数据
@@ -775,6 +791,164 @@ func (m *BuiltAgent) GetAgent() string {
 	return ""
 }
 
+// 银行操作
+type BankGive struct {
+	Userid string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Amount uint32 `protobuf:"varint,2,opt,name=Amount,proto3" json:"Amount,omitempty"`
+}
+
+func (m *BankGive) Reset()                    { *m = BankGive{} }
+func (*BankGive) ProtoMessage()               {}
+func (*BankGive) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{30} }
+
+func (m *BankGive) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *BankGive) GetAmount() uint32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+type BankGave struct {
+	Userid string  `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Amount uint32  `protobuf:"varint,2,opt,name=Amount,proto3" json:"Amount,omitempty"`
+	Coin   uint32  `protobuf:"varint,3,opt,name=Coin,proto3" json:"Coin,omitempty"`
+	Error  ErrCode `protobuf:"varint,4,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *BankGave) Reset()                    { *m = BankGave{} }
+func (*BankGave) ProtoMessage()               {}
+func (*BankGave) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{31} }
+
+func (m *BankGave) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *BankGave) GetAmount() uint32 {
+	if m != nil {
+		return m.Amount
+	}
+	return 0
+}
+
+func (m *BankGave) GetCoin() uint32 {
+	if m != nil {
+		return m.Coin
+	}
+	return 0
+}
+
+func (m *BankGave) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
+// 玩家信息
+type GetUserData struct {
+	Userid string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+}
+
+func (m *GetUserData) Reset()                    { *m = GetUserData{} }
+func (*GetUserData) ProtoMessage()               {}
+func (*GetUserData) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{32} }
+
+func (m *GetUserData) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+type GotUserData struct {
+	Agent    string  `protobuf:"bytes,1,opt,name=Agent,proto3" json:"Agent,omitempty"`
+	Userid   string  `protobuf:"bytes,2,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Photo    string  `protobuf:"bytes,3,opt,name=Photo,proto3" json:"Photo,omitempty"`
+	Nickname string  `protobuf:"bytes,4,opt,name=Nickname,proto3" json:"Nickname,omitempty"`
+	Sex      uint32  `protobuf:"varint,5,opt,name=Sex,proto3" json:"Sex,omitempty"`
+	Phone    string  `protobuf:"bytes,6,opt,name=Phone,proto3" json:"Phone,omitempty"`
+	Coin     uint32  `protobuf:"varint,7,opt,name=Coin,proto3" json:"Coin,omitempty"`
+	Diamond  uint32  `protobuf:"varint,8,opt,name=Diamond,proto3" json:"Diamond,omitempty"`
+	Error    ErrCode `protobuf:"varint,9,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *GotUserData) Reset()                    { *m = GotUserData{} }
+func (*GotUserData) ProtoMessage()               {}
+func (*GotUserData) Descriptor() ([]byte, []int) { return fileDescriptorRole, []int{33} }
+
+func (m *GotUserData) GetAgent() string {
+	if m != nil {
+		return m.Agent
+	}
+	return ""
+}
+
+func (m *GotUserData) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *GotUserData) GetPhoto() string {
+	if m != nil {
+		return m.Photo
+	}
+	return ""
+}
+
+func (m *GotUserData) GetNickname() string {
+	if m != nil {
+		return m.Nickname
+	}
+	return ""
+}
+
+func (m *GotUserData) GetSex() uint32 {
+	if m != nil {
+		return m.Sex
+	}
+	return 0
+}
+
+func (m *GotUserData) GetPhone() string {
+	if m != nil {
+		return m.Phone
+	}
+	return ""
+}
+
+func (m *GotUserData) GetCoin() uint32 {
+	if m != nil {
+		return m.Coin
+	}
+	return 0
+}
+
+func (m *GotUserData) GetDiamond() uint32 {
+	if m != nil {
+		return m.Diamond
+	}
+	return 0
+}
+
+func (m *GotUserData) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
 func init() {
 	proto.RegisterType((*SetLogin)(nil), "pb.SetLogin")
 	proto.RegisterType((*SetLogined)(nil), "pb.SetLogined")
@@ -806,6 +980,10 @@ func init() {
 	proto.RegisterType((*GetMailItem)(nil), "pb.GetMailItem")
 	proto.RegisterType((*BuildAgent)(nil), "pb.BuildAgent")
 	proto.RegisterType((*BuiltAgent)(nil), "pb.BuiltAgent")
+	proto.RegisterType((*BankGive)(nil), "pb.BankGive")
+	proto.RegisterType((*BankGave)(nil), "pb.BankGave")
+	proto.RegisterType((*GetUserData)(nil), "pb.GetUserData")
+	proto.RegisterType((*GotUserData)(nil), "pb.GotUserData")
 }
 func (this *SetLogin) Equal(that interface{}) bool {
 	if that == nil {
@@ -1268,6 +1446,12 @@ func (this *ChangeCurrency) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Diamond != that1.Diamond {
+		return false
+	}
+	if this.Bank != that1.Bank {
+		return false
+	}
+	if this.Upsert != that1.Upsert {
 		return false
 	}
 	return true
@@ -1815,6 +1999,162 @@ func (this *BuiltAgent) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *BankGive) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*BankGive)
+	if !ok {
+		that2, ok := that.(BankGive)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	return true
+}
+func (this *BankGave) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*BankGave)
+	if !ok {
+		that2, ok := that.(BankGave)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Amount != that1.Amount {
+		return false
+	}
+	if this.Coin != that1.Coin {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
+func (this *GetUserData) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*GetUserData)
+	if !ok {
+		that2, ok := that.(GetUserData)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	return true
+}
+func (this *GotUserData) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*GotUserData)
+	if !ok {
+		that2, ok := that.(GotUserData)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Agent != that1.Agent {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Photo != that1.Photo {
+		return false
+	}
+	if this.Nickname != that1.Nickname {
+		return false
+	}
+	if this.Sex != that1.Sex {
+		return false
+	}
+	if this.Phone != that1.Phone {
+		return false
+	}
+	if this.Coin != that1.Coin {
+		return false
+	}
+	if this.Diamond != that1.Diamond {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
 func (this *SetLogin) GoString() string {
 	if this == nil {
 		return "nil"
@@ -1979,12 +2319,14 @@ func (this *ChangeCurrency) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 8)
+	s := make([]string, 0, 10)
 	s = append(s, "&pb.ChangeCurrency{")
 	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
 	s = append(s, "Type: "+fmt.Sprintf("%#v", this.Type)+",\n")
 	s = append(s, "Coin: "+fmt.Sprintf("%#v", this.Coin)+",\n")
 	s = append(s, "Diamond: "+fmt.Sprintf("%#v", this.Diamond)+",\n")
+	s = append(s, "Bank: "+fmt.Sprintf("%#v", this.Bank)+",\n")
+	s = append(s, "Upsert: "+fmt.Sprintf("%#v", this.Upsert)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2170,6 +2512,58 @@ func (this *BuiltAgent) GoString() string {
 	s = append(s, "&pb.BuiltAgent{")
 	s = append(s, "Result: "+fmt.Sprintf("%#v", this.Result)+",\n")
 	s = append(s, "Agent: "+fmt.Sprintf("%#v", this.Agent)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *BankGive) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&pb.BankGive{")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *BankGave) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&pb.BankGave{")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Amount: "+fmt.Sprintf("%#v", this.Amount)+",\n")
+	s = append(s, "Coin: "+fmt.Sprintf("%#v", this.Coin)+",\n")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GetUserData) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.GetUserData{")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GotUserData) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 13)
+	s = append(s, "&pb.GotUserData{")
+	s = append(s, "Agent: "+fmt.Sprintf("%#v", this.Agent)+",\n")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Photo: "+fmt.Sprintf("%#v", this.Photo)+",\n")
+	s = append(s, "Nickname: "+fmt.Sprintf("%#v", this.Nickname)+",\n")
+	s = append(s, "Sex: "+fmt.Sprintf("%#v", this.Sex)+",\n")
+	s = append(s, "Phone: "+fmt.Sprintf("%#v", this.Phone)+",\n")
+	s = append(s, "Coin: "+fmt.Sprintf("%#v", this.Coin)+",\n")
+	s = append(s, "Diamond: "+fmt.Sprintf("%#v", this.Diamond)+",\n")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -2636,6 +3030,21 @@ func (m *ChangeCurrency) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x20
 		i++
 		i = encodeVarintRole(dAtA, i, uint64(m.Diamond))
+	}
+	if m.Bank != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Bank))
+	}
+	if m.Upsert {
+		dAtA[i] = 0x30
+		i++
+		if m.Upsert {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i++
 	}
 	return i, nil
 }
@@ -3154,6 +3563,166 @@ func (m *BuiltAgent) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *BankGive) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BankGive) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if m.Amount != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Amount))
+	}
+	return i, nil
+}
+
+func (m *BankGave) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *BankGave) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if m.Amount != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Amount))
+	}
+	if m.Coin != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Coin))
+	}
+	if m.Error != 0 {
+		dAtA[i] = 0x20
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
+func (m *GetUserData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetUserData) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	return i, nil
+}
+
+func (m *GotUserData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GotUserData) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Agent) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Agent)))
+		i += copy(dAtA[i:], m.Agent)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Photo) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Photo)))
+		i += copy(dAtA[i:], m.Photo)
+	}
+	if len(m.Nickname) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Nickname)))
+		i += copy(dAtA[i:], m.Nickname)
+	}
+	if m.Sex != 0 {
+		dAtA[i] = 0x28
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Sex))
+	}
+	if len(m.Phone) > 0 {
+		dAtA[i] = 0x32
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(len(m.Phone)))
+		i += copy(dAtA[i:], m.Phone)
+	}
+	if m.Coin != 0 {
+		dAtA[i] = 0x38
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		dAtA[i] = 0x40
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Diamond))
+	}
+	if m.Error != 0 {
+		dAtA[i] = 0x48
+		i++
+		i = encodeVarintRole(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
 func encodeFixed64Role(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	dAtA[offset+1] = uint8(v >> 8)
@@ -3374,6 +3943,12 @@ func (m *ChangeCurrency) Size() (n int) {
 	}
 	if m.Diamond != 0 {
 		n += 1 + sovRole(uint64(m.Diamond))
+	}
+	if m.Bank != 0 {
+		n += 1 + sovRole(uint64(m.Bank))
+	}
+	if m.Upsert {
+		n += 2
 	}
 	return n
 }
@@ -3613,6 +4188,86 @@ func (m *BuiltAgent) Size() (n int) {
 	return n
 }
 
+func (m *BankGive) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovRole(uint64(m.Amount))
+	}
+	return n
+}
+
+func (m *BankGave) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	if m.Amount != 0 {
+		n += 1 + sovRole(uint64(m.Amount))
+	}
+	if m.Coin != 0 {
+		n += 1 + sovRole(uint64(m.Coin))
+	}
+	if m.Error != 0 {
+		n += 1 + sovRole(uint64(m.Error))
+	}
+	return n
+}
+
+func (m *GetUserData) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	return n
+}
+
+func (m *GotUserData) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Agent)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	l = len(m.Photo)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	l = len(m.Nickname)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	if m.Sex != 0 {
+		n += 1 + sovRole(uint64(m.Sex))
+	}
+	l = len(m.Phone)
+	if l > 0 {
+		n += 1 + l + sovRole(uint64(l))
+	}
+	if m.Coin != 0 {
+		n += 1 + sovRole(uint64(m.Coin))
+	}
+	if m.Diamond != 0 {
+		n += 1 + sovRole(uint64(m.Diamond))
+	}
+	if m.Error != 0 {
+		n += 1 + sovRole(uint64(m.Error))
+	}
+	return n
+}
+
 func sovRole(x uint64) (n int) {
 	for {
 		n++
@@ -3777,6 +4432,8 @@ func (this *ChangeCurrency) String() string {
 		`Type:` + fmt.Sprintf("%v", this.Type) + `,`,
 		`Coin:` + fmt.Sprintf("%v", this.Coin) + `,`,
 		`Diamond:` + fmt.Sprintf("%v", this.Diamond) + `,`,
+		`Bank:` + fmt.Sprintf("%v", this.Bank) + `,`,
+		`Upsert:` + fmt.Sprintf("%v", this.Upsert) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -3958,6 +4615,58 @@ func (this *BuiltAgent) String() string {
 	s := strings.Join([]string{`&BuiltAgent{`,
 		`Result:` + fmt.Sprintf("%v", this.Result) + `,`,
 		`Agent:` + fmt.Sprintf("%v", this.Agent) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *BankGive) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&BankGive{`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *BankGave) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&BankGave{`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Amount:` + fmt.Sprintf("%v", this.Amount) + `,`,
+		`Coin:` + fmt.Sprintf("%v", this.Coin) + `,`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GetUserData) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GetUserData{`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GotUserData) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GotUserData{`,
+		`Agent:` + fmt.Sprintf("%v", this.Agent) + `,`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Photo:` + fmt.Sprintf("%v", this.Photo) + `,`,
+		`Nickname:` + fmt.Sprintf("%v", this.Nickname) + `,`,
+		`Sex:` + fmt.Sprintf("%v", this.Sex) + `,`,
+		`Phone:` + fmt.Sprintf("%v", this.Phone) + `,`,
+		`Coin:` + fmt.Sprintf("%v", this.Coin) + `,`,
+		`Diamond:` + fmt.Sprintf("%v", this.Diamond) + `,`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -5496,6 +6205,45 @@ func (m *ChangeCurrency) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Bank", wireType)
+			}
+			m.Bank = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Bank |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Upsert", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Upsert = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRole(dAtA[iNdEx:])
@@ -7309,6 +8057,590 @@ func (m *BuiltAgent) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *BankGive) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BankGive: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BankGive: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *BankGave) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: BankGave: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: BankGave: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			}
+			m.Amount = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Amount |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
+			}
+			m.Coin = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Coin |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetUserData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetUserData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetUserData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GotUserData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowRole
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GotUserData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GotUserData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Agent", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Agent = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Photo", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Photo = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Nickname", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Nickname = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sex", wireType)
+			}
+			m.Sex = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Sex |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Phone", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRole
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Phone = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Coin", wireType)
+			}
+			m.Coin = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Coin |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Diamond", wireType)
+			}
+			m.Diamond = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Diamond |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 9:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRole
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipRole(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthRole
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func skipRole(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
@@ -7417,56 +8749,64 @@ var (
 func init() { proto.RegisterFile("role.proto", fileDescriptorRole) }
 
 var fileDescriptorRole = []byte{
-	// 806 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0x41, 0x6f, 0xda, 0x48,
-	0x14, 0xc6, 0x26, 0x06, 0xfc, 0xd8, 0xa0, 0xc8, 0x8a, 0x56, 0x11, 0x07, 0x6b, 0xd7, 0xc9, 0x6a,
-	0x77, 0xa5, 0x5d, 0x50, 0xd3, 0x36, 0x87, 0xf6, 0x94, 0x00, 0xa5, 0x48, 0x24, 0xa2, 0x86, 0x28,
-	0x3d, 0x55, 0x32, 0xf0, 0xe4, 0xb8, 0x31, 0x33, 0xd4, 0x1e, 0x14, 0xb8, 0xf5, 0x27, 0xf4, 0x67,
-	0xf4, 0x57, 0xf4, 0xdc, 0x63, 0x8e, 0x3d, 0x36, 0xf4, 0xd2, 0x63, 0x7e, 0x42, 0x35, 0xe3, 0xb1,
-	0x21, 0x0a, 0x4e, 0x51, 0xdb, 0xdb, 0xfb, 0x3c, 0xef, 0x7d, 0xef, 0xfb, 0xde, 0xcc, 0x4b, 0x00,
-	0x08, 0xa8, 0x8f, 0x95, 0x71, 0x40, 0x19, 0x35, 0xd4, 0x71, 0xbf, 0x7c, 0xe0, 0x7a, 0xec, 0x7c,
-	0xd2, 0xaf, 0x0c, 0xe8, 0xa8, 0x7a, 0x18, 0xce, 0xc8, 0x45, 0x40, 0x49, 0xab, 0x57, 0x15, 0x09,
-	0xce, 0x80, 0xd1, 0xe0, 0x7f, 0x97, 0x56, 0x45, 0x10, 0x7d, 0x0b, 0xa3, 0xda, 0x32, 0x0c, 0xe8,
-	0x50, 0xf2, 0x58, 0x15, 0x28, 0x74, 0x91, 0xb5, 0xa9, 0xeb, 0x11, 0xc3, 0x82, 0x5c, 0x17, 0xc9,
-	0x10, 0x83, 0x1d, 0xe5, 0x0f, 0xe5, 0x9f, 0xe2, 0x3e, 0x54, 0x44, 0x71, 0xa5, 0xd3, 0xaa, 0xdb,
-	0xf2, 0xc4, 0xfa, 0xa0, 0x00, 0xc4, 0x05, 0x38, 0x34, 0x76, 0x20, 0x7f, 0x8c, 0x61, 0xe8, 0xb8,
-	0x28, 0x6a, 0x74, 0x3b, 0x86, 0xc6, 0x1e, 0xe4, 0xeb, 0xfd, 0x51, 0xd8, 0xf1, 0x86, 0x3b, 0xea,
-	0x1d, 0xb6, 0xf8, 0x88, 0x67, 0xd9, 0x94, 0x8e, 0x78, 0x56, 0xf6, 0x6e, 0x96, 0x3c, 0x8a, 0xb2,
-	0x7c, 0xe4, 0x59, 0x1b, 0xab, 0xb2, 0xc4, 0x11, 0xcf, 0x7a, 0xee, 0xf8, 0x3e, 0xcf, 0xd2, 0xee,
-	0x66, 0xc9, 0x23, 0xab, 0x09, 0xba, 0x10, 0xdf, 0x74, 0x18, 0xae, 0xe3, 0xd8, 0xf8, 0x1d, 0x72,
-	0xa7, 0x21, 0x06, 0xd2, 0x87, 0x6e, 0x4b, 0x64, 0xfd, 0x0d, 0x45, 0x39, 0x05, 0x41, 0x95, 0x3a,
-	0x09, 0x6b, 0x20, 0x3b, 0x72, 0x05, 0x3f, 0xd3, 0xd1, 0x28, 0x43, 0xe1, 0x84, 0x0e, 0xf1, 0xc4,
-	0x19, 0xa1, 0x98, 0x96, 0x6e, 0x27, 0x78, 0x49, 0x8d, 0x68, 0x93, 0xae, 0xe6, 0x0c, 0xb4, 0xb5,
-	0x6f, 0x3b, 0x55, 0x89, 0x01, 0x1b, 0x75, 0x87, 0x39, 0x52, 0x85, 0x88, 0xad, 0x5d, 0xc8, 0x7f,
-	0xf7, 0x55, 0x58, 0xbb, 0x72, 0x16, 0x0d, 0x3f, 0xc4, 0x25, 0x76, 0xe5, 0xd6, 0x64, 0xff, 0x4a,
-	0xbc, 0xdc, 0x9b, 0xf6, 0x12, 0x72, 0x6d, 0xea, 0xd2, 0x09, 0xfb, 0xe5, 0x56, 0xf6, 0xa0, 0x10,
-	0x31, 0xdf, 0xeb, 0xe5, 0x00, 0x0a, 0xdd, 0x19, 0x19, 0x70, 0x9e, 0x34, 0x8d, 0x09, 0xbb, 0xba,
-	0xc4, 0xfe, 0x1a, 0x4a, 0xb5, 0x73, 0x87, 0xb8, 0x58, 0x9b, 0x04, 0x01, 0x92, 0xc1, 0xec, 0xbe,
-	0xea, 0xde, 0x6c, 0x8c, 0xa2, 0x5a, 0xb3, 0x45, 0xcc, 0xbf, 0xd5, 0xa8, 0x47, 0x84, 0x5e, 0xcd,
-	0x16, 0x31, 0xd7, 0x58, 0xf7, 0x9c, 0x11, 0x25, 0xd1, 0x7e, 0x68, 0x76, 0x0c, 0xad, 0x2a, 0xe8,
-	0x4d, 0x64, 0x92, 0x6e, 0x9d, 0xfd, 0xde, 0x05, 0xbd, 0x49, 0xe3, 0x82, 0xb4, 0xc9, 0x3f, 0x80,
-	0x22, 0x67, 0x25, 0xde, 0x9b, 0x09, 0xae, 0xc9, 0xfb, 0x2f, 0x14, 0x39, 0x6f, 0x5c, 0x52, 0x86,
-	0x42, 0x1c, 0x4b, 0xee, 0x04, 0x5b, 0x2f, 0x40, 0xe7, 0x2b, 0x1d, 0xbd, 0xd2, 0x6d, 0xd0, 0x3a,
-	0xe7, 0x94, 0xc4, 0xc3, 0x8f, 0x00, 0x2f, 0xef, 0x38, 0x61, 0x78, 0x49, 0x83, 0xf8, 0x3a, 0x13,
-	0x9c, 0x0c, 0x8d, 0x0f, 0x68, 0x33, 0x1a, 0x9a, 0x55, 0x87, 0x62, 0x42, 0x89, 0x8b, 0x5b, 0x51,
-	0x16, 0xb7, 0x62, 0xfc, 0x09, 0x5a, 0x23, 0x08, 0x68, 0x20, 0xf8, 0x4a, 0xfb, 0xc5, 0xca, 0xb8,
-	0x5f, 0x69, 0x04, 0x41, 0x8d, 0x0e, 0xd1, 0x8e, 0x4e, 0x2c, 0x02, 0xc0, 0x59, 0x6c, 0x74, 0xbd,
-	0x90, 0x89, 0x6d, 0xf4, 0x06, 0x17, 0x84, 0x6f, 0xa3, 0xb4, 0x10, 0xe3, 0x85, 0x6a, 0x35, 0x4d,
-	0x75, 0x36, 0x45, 0xf5, 0xc6, 0x92, 0xea, 0x06, 0xfc, 0xb6, 0xe8, 0xf7, 0xe3, 0xb2, 0x2f, 0x21,
-	0x7f, 0x36, 0x4d, 0xa6, 0x79, 0x36, 0x9d, 0x24, 0x33, 0x8f, 0xc0, 0x2d, 0x27, 0xea, 0x4a, 0x27,
-	0x8c, 0x4a, 0xc1, 0x11, 0x30, 0xb6, 0x20, 0xdb, 0xc5, 0xa9, 0x14, 0xcb, 0xc3, 0x44, 0xbf, 0xb6,
-	0xa4, 0xff, 0x15, 0xe8, 0xb2, 0x71, 0x8a, 0xf8, 0x32, 0x14, 0x5a, 0x61, 0x64, 0x4f, 0x34, 0x2e,
-	0xd8, 0x09, 0xe6, 0xc6, 0x50, 0x18, 0xcb, 0xae, 0x30, 0x26, 0x4e, 0xac, 0x26, 0xe4, 0x4f, 0xf0,
-	0xf2, 0xd8, 0xf1, 0x7c, 0xce, 0xfe, 0x2c, 0xa0, 0xa3, 0x98, 0x9d, 0xc7, 0x46, 0x09, 0xd4, 0x1e,
-	0x95, 0x86, 0xd4, 0x1e, 0xe5, 0x5b, 0x52, 0xa3, 0x84, 0x21, 0x61, 0xd2, 0x4c, 0x0c, 0xad, 0xa7,
-	0x50, 0x94, 0x44, 0x6d, 0xde, 0x7a, 0x1b, 0xb4, 0x63, 0x67, 0xba, 0x98, 0x92, 0x00, 0xa9, 0xff,
-	0x07, 0x1e, 0x01, 0xd4, 0xd1, 0x47, 0x86, 0x42, 0x48, 0x09, 0xd4, 0x56, 0x5c, 0xa8, 0xb6, 0xd2,
-	0xab, 0x1e, 0x8b, 0x15, 0xe2, 0x25, 0x2d, 0x86, 0xa3, 0xb5, 0xcb, 0xda, 0x00, 0x47, 0x13, 0xcf,
-	0x1f, 0x1e, 0xba, 0x48, 0x58, 0xea, 0xdf, 0x8d, 0x6d, 0xd0, 0x44, 0x42, 0xfc, 0xfc, 0xa2, 0xec,
-	0x2d, 0xc8, 0x9e, 0x7a, 0xf1, 0xcb, 0xe3, 0xa1, 0xf5, 0x24, 0x62, 0x63, 0x09, 0x9b, 0x8d, 0xe1,
-	0xc4, 0x67, 0x82, 0x6d, 0xd3, 0x96, 0x68, 0x35, 0xdb, 0xd1, 0x7f, 0x57, 0xd7, 0x66, 0xe6, 0xd3,
-	0xb5, 0x99, 0xb9, 0xb9, 0x36, 0x95, 0xb7, 0x73, 0x53, 0x79, 0x3f, 0x37, 0x95, 0x8f, 0x73, 0x53,
-	0xb9, 0x9a, 0x9b, 0xca, 0xe7, 0xb9, 0xa9, 0x7c, 0x9d, 0x9b, 0x99, 0x9b, 0xb9, 0xa9, 0xbc, 0xfb,
-	0x62, 0x66, 0xfa, 0x39, 0xf1, 0x6b, 0xe3, 0xe1, 0xb7, 0x00, 0x00, 0x00, 0xff, 0xff, 0xf3, 0x33,
-	0x5f, 0x36, 0xc3, 0x08, 0x00, 0x00,
+	// 936 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xcd, 0x6e, 0x23, 0x45,
+	0x10, 0xce, 0x4c, 0x3c, 0xf6, 0x4c, 0x99, 0x44, 0xab, 0x51, 0x84, 0x22, 0x1f, 0x46, 0x4b, 0x67,
+	0x57, 0x2c, 0x12, 0x38, 0x62, 0x81, 0x3d, 0x2c, 0xa7, 0xc4, 0x0e, 0xc6, 0x52, 0x12, 0x85, 0x49,
+	0x56, 0xe1, 0x84, 0x34, 0xb6, 0x4b, 0xce, 0x28, 0xe3, 0x6e, 0x6f, 0x4f, 0x9b, 0x24, 0x37, 0x1e,
+	0x81, 0x13, 0xcf, 0xc0, 0x53, 0x70, 0xe6, 0xb8, 0x47, 0x8e, 0xc4, 0x48, 0x88, 0xe3, 0x3e, 0x02,
+	0xea, 0x9e, 0xee, 0xf6, 0x84, 0x78, 0x82, 0xf9, 0xb9, 0x55, 0xb9, 0xab, 0xbe, 0xfa, 0xbe, 0xea,
+	0xae, 0x1a, 0x03, 0x70, 0x96, 0x61, 0x7b, 0xca, 0x99, 0x60, 0xa1, 0x3b, 0x1d, 0xb4, 0x5e, 0x8c,
+	0x53, 0x71, 0x31, 0x1b, 0xb4, 0x87, 0x6c, 0xb2, 0xbb, 0x97, 0xdf, 0xd0, 0x4b, 0xce, 0x68, 0xff,
+	0x6c, 0x57, 0x05, 0x24, 0x43, 0xc1, 0xf8, 0x47, 0x63, 0xb6, 0xab, 0x8c, 0xe2, 0xb7, 0xbc, 0xc8,
+	0x6d, 0xc1, 0x90, 0x8d, 0x34, 0x0e, 0x69, 0x83, 0x7f, 0x8a, 0xe2, 0x90, 0x8d, 0x53, 0x1a, 0x12,
+	0xa8, 0x9f, 0x22, 0x1d, 0x21, 0xdf, 0x76, 0x1e, 0x3b, 0xcf, 0x9a, 0xcf, 0xa1, 0xad, 0x92, 0xdb,
+	0x27, 0xfd, 0x6e, 0xac, 0x4f, 0xc8, 0x4f, 0x0e, 0x80, 0x49, 0xc0, 0x51, 0xb8, 0x0d, 0x8d, 0x23,
+	0xcc, 0xf3, 0x64, 0x8c, 0x2a, 0x27, 0x88, 0x8d, 0x1b, 0x3e, 0x81, 0x46, 0x77, 0x30, 0xc9, 0x4f,
+	0xd2, 0xd1, 0xb6, 0x7b, 0x0f, 0xcd, 0x1c, 0xc9, 0xa8, 0x98, 0xb1, 0x89, 0x8c, 0x5a, 0xbf, 0x1f,
+	0xa5, 0x8f, 0x8a, 0xa8, 0x0c, 0x65, 0x54, 0x6d, 0x59, 0x94, 0x3a, 0x92, 0x51, 0x5f, 0x26, 0x59,
+	0x26, 0xa3, 0xbc, 0xfb, 0x51, 0xfa, 0x88, 0xf4, 0x20, 0x50, 0xe4, 0x7b, 0x89, 0xc0, 0x55, 0x14,
+	0x87, 0xef, 0x42, 0xfd, 0x55, 0x8e, 0x5c, 0xeb, 0x08, 0x62, 0xed, 0x91, 0xf7, 0xa1, 0xa9, 0xbb,
+	0xa0, 0xa0, 0x2a, 0x3b, 0x41, 0x86, 0xba, 0xa2, 0x64, 0xf0, 0x5f, 0x2a, 0x86, 0x2d, 0xf0, 0x8f,
+	0xd9, 0x08, 0x8f, 0x93, 0x09, 0xaa, 0x6e, 0x05, 0xb1, 0xf5, 0x4b, 0x6c, 0x54, 0x99, 0x6a, 0x36,
+	0xe7, 0xe0, 0xad, 0x7c, 0xdb, 0x95, 0x4c, 0x42, 0xa8, 0x75, 0x13, 0x91, 0x68, 0x16, 0xca, 0x26,
+	0x3b, 0xd0, 0xf8, 0xdb, 0x57, 0x41, 0x76, 0x74, 0x2f, 0x0e, 0xb2, 0x1c, 0x4b, 0xe8, 0xce, 0x9d,
+	0xce, 0x3e, 0xb5, 0x5a, 0x1e, 0x0c, 0xfb, 0x1a, 0xea, 0x87, 0x6c, 0xcc, 0x66, 0xe2, 0x7f, 0x97,
+	0xf2, 0x04, 0xfc, 0x02, 0xf9, 0x41, 0x2d, 0x2f, 0xc0, 0x3f, 0xbd, 0xa1, 0x43, 0x89, 0x53, 0xc5,
+	0xd1, 0xa2, 0xbb, 0x25, 0xf4, 0x1f, 0x1c, 0xd8, 0xec, 0x5c, 0x24, 0x74, 0x8c, 0x9d, 0x19, 0xe7,
+	0x48, 0x87, 0x37, 0x0f, 0xa5, 0x9f, 0xdd, 0x4c, 0x51, 0xa5, 0x7b, 0xb1, 0xb2, 0xe5, 0x6f, 0x1d,
+	0x96, 0x52, 0x45, 0xd8, 0x8b, 0x95, 0x2d, 0x49, 0x76, 0xd3, 0x64, 0xc2, 0x68, 0x31, 0x20, 0x5e,
+	0x6c, 0x5c, 0x19, 0xbd, 0x9f, 0xd0, 0x4b, 0x35, 0x11, 0x5e, 0xac, 0x6c, 0x55, 0x6d, 0x9a, 0x23,
+	0x17, 0xdb, 0xf5, 0xc7, 0xce, 0x33, 0x3f, 0xd6, 0x1e, 0xd9, 0x85, 0xa0, 0x87, 0x42, 0x97, 0x5e,
+	0x65, 0x19, 0xec, 0x40, 0xd0, 0x63, 0x26, 0xa1, 0xea, 0x9a, 0x3e, 0x86, 0xa6, 0x44, 0xa5, 0xe9,
+	0xeb, 0x19, 0xae, 0x88, 0xfb, 0x01, 0x34, 0x25, 0xae, 0x49, 0x69, 0x81, 0x6f, 0x6c, 0x8d, 0x6d,
+	0x7d, 0xf2, 0x15, 0x04, 0x72, 0xfe, 0x8b, 0x27, 0xbd, 0x05, 0xde, 0xc9, 0x05, 0xa3, 0xe6, 0xa6,
+	0x0a, 0x47, 0xa6, 0x9f, 0x24, 0x79, 0x7e, 0xc5, 0xb8, 0xb9, 0x7b, 0xeb, 0xdb, 0x06, 0xcb, 0x66,
+	0x6e, 0x14, 0x0d, 0x26, 0x5d, 0x68, 0x5a, 0x48, 0x5c, 0x5c, 0xa1, 0xb3, 0xb8, 0xc2, 0xf0, 0x3d,
+	0xf0, 0x0e, 0x38, 0x67, 0x5c, 0xe1, 0x6d, 0x3e, 0x6f, 0xb6, 0xa7, 0x83, 0xf6, 0x01, 0xe7, 0x1d,
+	0x36, 0xc2, 0xb8, 0x38, 0x21, 0x14, 0x40, 0xa2, 0xc4, 0x38, 0x4e, 0x73, 0xa1, 0x46, 0x37, 0x1d,
+	0x5e, 0x52, 0x39, 0xba, 0x5a, 0x82, 0xf1, 0x17, 0xac, 0xdd, 0x2a, 0xd6, 0xeb, 0x15, 0xac, 0x6b,
+	0x25, 0xd6, 0x07, 0xf0, 0xce, 0xa2, 0xde, 0xbf, 0xa7, 0x7d, 0x05, 0x8d, 0xf3, 0x6b, 0xdb, 0xcd,
+	0xf3, 0xeb, 0x99, 0xed, 0x79, 0xe1, 0xdc, 0x51, 0xe2, 0x2e, 0x55, 0x22, 0x98, 0x26, 0x5c, 0x38,
+	0xe1, 0x23, 0x58, 0x3f, 0xc5, 0x6b, 0x4d, 0x56, 0x9a, 0x96, 0xbf, 0x57, 0xe2, 0xff, 0x0d, 0x04,
+	0xba, 0x70, 0x05, 0xf9, 0x16, 0xf8, 0xfd, 0xbc, 0x90, 0xa7, 0x0a, 0xfb, 0xb1, 0xf5, 0xa5, 0x30,
+	0x54, 0xc2, 0xd6, 0x97, 0x08, 0x53, 0x27, 0xa4, 0x07, 0x8d, 0x63, 0xbc, 0x3a, 0x4a, 0xd2, 0x4c,
+	0xa2, 0x7f, 0xc1, 0xd9, 0xc4, 0xa0, 0x4b, 0x3b, 0xdc, 0x04, 0xf7, 0x8c, 0x69, 0x41, 0xee, 0x19,
+	0x93, 0x13, 0xd5, 0x61, 0x54, 0x20, 0x15, 0x5a, 0x8c, 0x71, 0xc9, 0xe7, 0xd0, 0xd4, 0x40, 0x87,
+	0xb2, 0xf4, 0x16, 0x78, 0x47, 0xc9, 0xf5, 0xa2, 0x4b, 0xca, 0xa9, 0xfc, 0x68, 0x7c, 0x0a, 0xd0,
+	0xc5, 0x0c, 0x05, 0x2a, 0x22, 0x9b, 0xe0, 0xf6, 0x4d, 0xa2, 0xdb, 0xaf, 0xce, 0xfa, 0x4c, 0x8d,
+	0x90, 0x4c, 0xe9, 0x0b, 0x9c, 0xac, 0x9c, 0x76, 0x08, 0xb0, 0x3f, 0x4b, 0xb3, 0xd1, 0xde, 0x18,
+	0xa9, 0xa8, 0xdc, 0x31, 0x5b, 0xe0, 0xa9, 0x00, 0xf3, 0xfc, 0x8a, 0xe8, 0x47, 0xb0, 0xfe, 0x2a,
+	0x35, 0x2f, 0x4f, 0x9a, 0xe4, 0x65, 0x81, 0x26, 0x2c, 0x5a, 0x8c, 0xf9, 0x2c, 0x13, 0x0a, 0x6d,
+	0x23, 0xd6, 0xde, 0x72, 0x34, 0xf2, 0x12, 0x7c, 0xb9, 0x79, 0x7a, 0xe9, 0xb7, 0x95, 0xeb, 0x5c,
+	0xfe, 0xbe, 0x37, 0x61, 0x33, 0x9d, 0xba, 0x11, 0x6b, 0x8f, 0xbc, 0xd6, 0xb9, 0xc9, 0x3f, 0xcf,
+	0xbd, 0xb3, 0x2b, 0x37, 0xf4, 0xae, 0xb4, 0x6f, 0xa5, 0x56, 0xf9, 0x56, 0x9e, 0x16, 0x2b, 0x2b,
+	0x47, 0xae, 0x5e, 0x5e, 0xd5, 0x66, 0xfb, 0xdd, 0x29, 0xf6, 0x94, 0x89, 0xb3, 0xda, 0x9d, 0x72,
+	0x27, 0xab, 0x3e, 0x3c, 0xcb, 0x87, 0xa5, 0x3c, 0x5e, 0xb5, 0xbf, 0x8c, 0x97, 0x1e, 0x24, 0x6f,
+	0x31, 0x48, 0x76, 0x75, 0xd4, 0xcb, 0xab, 0xc3, 0xa8, 0x6e, 0x94, 0x54, 0x97, 0xbe, 0x10, 0xbe,
+	0xfa, 0xd9, 0x7e, 0x21, 0x6c, 0x3f, 0x82, 0xaa, 0x7e, 0xec, 0x7f, 0xf8, 0xe6, 0x36, 0x5a, 0xfb,
+	0xe5, 0x36, 0x5a, 0x7b, 0x7b, 0x1b, 0x39, 0xdf, 0xcd, 0x23, 0xe7, 0xc7, 0x79, 0xe4, 0xfc, 0x3c,
+	0x8f, 0x9c, 0x37, 0xf3, 0xc8, 0xf9, 0x75, 0x1e, 0x39, 0x7f, 0xcc, 0xa3, 0xb5, 0xb7, 0xf3, 0xc8,
+	0xf9, 0xfe, 0xb7, 0x68, 0x6d, 0x50, 0x57, 0xff, 0x2c, 0x3f, 0xf9, 0x33, 0x00, 0x00, 0xff, 0xff,
+	0xa9, 0xb8, 0xbb, 0x48, 0xaf, 0x0a, 0x00, 0x00,
 }

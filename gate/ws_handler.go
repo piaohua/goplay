@@ -87,6 +87,14 @@ func (ws *WSConn) addCurrency(diamond, coin int32, ltype int) {
 	}
 	ws.User.AddDiamond(diamond)
 	ws.User.AddCoin(coin)
+	//货币变更及时同步
+	msg2 := &pb.ChangeCurrency{
+		Userid:  ws.User.GetUserid(),
+		Diamond: diamond,
+		Coin:    coin,
+		Type:    int32(ltype),
+	}
+	ws.rolePid.Tell(msg2)
 	//消息
 	msg := &pb.SPushCurrency{
 		Rtype:   uint32(ltype),
