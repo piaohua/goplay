@@ -47,7 +47,8 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.addCurrency(diamond, coin, ltype)
 	case proto.Message:
 		//响应消息
-		ws.Send(msg)
+		//ws.Send(msg)
+		ws.HandlerLogin(msg, ctx)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

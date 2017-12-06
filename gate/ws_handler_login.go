@@ -32,7 +32,8 @@ func (ws *WSConn) HandlerLogin(msg interface{}, ctx actor.Context) {
 		glog.Debugf("CWxLogin %#v", arg)
 		ws.wxlogin(arg, ctx)
 	default:
-		glog.Errorf("unknown message %v", msg)
+		//glog.Errorf("unknown message %v", msg)
+		ws.HandlerUser(msg, ctx)
 	}
 }
 
