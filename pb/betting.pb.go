@@ -229,6 +229,8 @@
 		BankGave
 		GetUserData
 		GotUserData
+		ApplePay
+		ApplePaid
 		CLeave
 		SLeave
 		CKick

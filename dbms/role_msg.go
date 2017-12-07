@@ -111,6 +111,10 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		user := a.getUserById(arg.Userid)
 		rsp := handler.GetUserData1(user)
 		ctx.Respond(rsp)
+	case *pb.ApplePay:
+		arg := msg.(*pb.ApplePay)
+		rsp := handler.AppleVerify(arg)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

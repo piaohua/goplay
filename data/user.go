@@ -24,6 +24,7 @@ type User struct {
 	Auth         string     `bson:"auth" json:"auth"`                   // 密码验证码
 	Pwd          string     `bson:"pwd" json:"pwd"`                     // MD5密码
 	RegIp        string     `bson:"regist_ip" json:"reg_ip"`            // 注册账户时的IP地址
+	LoginIp      string     `bson:"login_ip" json:"login_ip"`           // 登录账户时的IP地址
 	Coin         uint32     `bson:"coin" json:"coin"`                   // 金币
 	Diamond      uint32     `bson:"diamond" json:"diamond"`             // 钻石
 	RoomCard     uint32     `bson:"room_card" json:"room_card"`         // 房卡

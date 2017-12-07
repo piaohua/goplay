@@ -215,3 +215,12 @@ message GotUserData {
 	uint32 Diamond = 8;
     ErrCode error  = 9 ;// 错误码
 }
+
+//苹果支付
+message ApplePay {
+    string Trade = 1;//交易订单数据
+}
+
+message ApplePaid {
+    bool Result = 1;//赠送对象
+}

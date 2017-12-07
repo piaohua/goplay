@@ -93,7 +93,7 @@ func logHandler(ctx *fasthttp.RequestCtx) {
 	glog.Debugf("Request has been started at %s\n", ctx.Time())
 	glog.Debugf("Serial request number for the current connection is %d\n", ctx.ConnRequestNum())
 	glog.Debugf("Your ip is %q\n\n", ctx.RemoteIP())
-	//glog.Debugf("Raw request is:\n---CUT---\n%s\n---CUT---", &ctx.Request)
+	glog.Debugf("Raw request is:\n---CUT---\n%s\n---CUT---", &ctx.Request)
 }
 
 //TODO version rule

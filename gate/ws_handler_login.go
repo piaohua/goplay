@@ -247,6 +247,7 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 
 //登录处理
 func (ws *WSConn) logined2(isRegist bool) {
+	ws.User.LoginIp = ws.GetIPAddr()
 	if isRegist {
 		//注册ip
 		ws.User.RegIp = ws.GetIPAddr()

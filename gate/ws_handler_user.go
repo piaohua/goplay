@@ -124,6 +124,7 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		ws.Send(rsp)
 	case *pb.CUserData:
 		arg := msg.(*pb.CUserData)
+		glog.Debugf("CUserData %#v", arg)
 		userid := arg.GetUserid()
 		if userid != ws.User.GetUserid() && userid != "" {
 			msg1 := new(pb.GetUserData)
@@ -136,10 +137,12 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		}
 	case *pb.GotUserData:
 		arg := msg.(*pb.GotUserData)
+		glog.Debugf("GotUserData %#v", arg)
 		rsp := handler.GetUserData2(arg)
 		ws.Send(rsp)
 	default:
-		glog.Errorf("unknown message %v", msg)
+		//glog.Errorf("unknown message %v", msg)
+		ws.HandlerPay(msg, ctx)
 	}
 }
 
