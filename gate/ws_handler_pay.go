@@ -23,7 +23,9 @@ func (ws *WSConn) HandlerPay(msg interface{}, ctx actor.Context) {
 	case *pb.CWxpayOrder:
 		arg := msg.(*pb.CWxpayOrder)
 		glog.Debugf("CWxpayOrder %#v", arg)
-		ws.wxOrder(arg, ctx)
+		//TODO
+		//var ip string = ws.GetIPAddr()
+		//ws.WxOrder(arg, ws.User, ip)
 	case *pb.CWxpayQuery:
 		arg := msg.(*pb.CWxpayQuery)
 		glog.Debugf("CWxpayQuery %#v", arg)
