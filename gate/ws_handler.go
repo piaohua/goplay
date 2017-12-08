@@ -124,6 +124,12 @@ func (ws *WSConn) addCurrency(diamond, coin int32, ltype int) {
 	}
 }
 
+//消耗钻石
+func (ws *WSConn) expend(cost uint32, ltype int) {
+	diamond := -1 * int32(cost)
+	ws.addCurrency(diamond, 0, ltype)
+}
+
 //同步数据
 func (ws *WSConn) syncUser() {
 	if ws.User == nil {

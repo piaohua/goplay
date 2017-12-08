@@ -20,18 +20,18 @@ func (ws *WSConn) HandlerPay(msg interface{}, ctx actor.Context) {
 		arg := msg.(*pb.CApplePay)
 		glog.Debugf("CApplePay %#v", arg)
 		ws.applePay(arg, ctx)
-	case *pb.CLogin:
-		//登录消息
-		arg := msg.(*pb.CLogin)
-		glog.Debugf("CLogin %#v", arg)
-		ws.login(arg, ctx)
-	case *pb.CWxLogin:
-		//登录消息
-		arg := msg.(*pb.CWxLogin)
-		glog.Debugf("CWxLogin %#v", arg)
-		ws.wxlogin(arg, ctx)
+	case *pb.CWxpayOrder:
+		arg := msg.(*pb.CWxpayOrder)
+		glog.Debugf("CWxpayOrder %#v", arg)
+		ws.wxOrder(arg, ctx)
+	case *pb.CWxpayQuery:
+		arg := msg.(*pb.CWxpayQuery)
+		glog.Debugf("CWxpayQuery %#v", arg)
+		rsp := handler.wxQuery(arg, ctx)
+		ws.Send(rsp)
 	default:
-		glog.Errorf("unknown message %v", msg)
+		//glog.Errorf("unknown message %v", msg)
+		ws.HandlerAct(msg, ctx)
 	}
 }
 
