@@ -40,8 +40,10 @@ type WSConn struct {
 	hallPid *actor.PID // 大厅服务
 	gamePid *actor.PID // 游戏逻辑
 
-	//TODO
 	*data.User //玩家在线数据
+
+	online bool //在线状态
+	status bool //更新状态
 }
 
 //创建连接

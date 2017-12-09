@@ -13,6 +13,7 @@ import (
 
 var (
 	nodePid *actor.PID
+	loop    = 30 * time.Second
 )
 
 //数据库操作服务
@@ -45,6 +46,17 @@ func (a *DBMSActor) Receive(ctx actor.Context) {
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (a *DBMSActor) init(ctx actor.Context) {
+	glog.Infof("ws init: %v", ctx.Self().String())
+	ctx.SetReceiveTimeout(loop) //timeout set
+}
+
+func (a *DBMSActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(0) //timeout off
+	//TODO
 }
 
 func newDBMSActor() actor.Actor {

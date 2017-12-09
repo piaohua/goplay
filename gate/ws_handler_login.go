@@ -33,6 +33,10 @@ func (ws *WSConn) HandlerLogin(msg interface{}, ctx actor.Context) {
 		ws.wxlogin(arg, ctx)
 	default:
 		//glog.Errorf("unknown message %v", msg)
+		if ws.User == nil {
+			glog.Errorf("user empty message %v", msg)
+			return
+		}
 		ws.HandlerUser(msg, ctx)
 	}
 }
@@ -85,7 +89,7 @@ func (ws *WSConn) regist(arg *pb.CRegist, ctx actor.Context) {
 		return
 	}
 	//成功
-	ctx.SetReceiveTimeout(0) //login Successfully, timeout off
+	//ctx.SetReceiveTimeout(0) //login Successfully, timeout off
 	stoc.Userid = ws.User.GetUserid()
 	ws.Send(stoc)
 	//成功后处理
@@ -139,7 +143,7 @@ func (ws *WSConn) login(arg *pb.CLogin, ctx actor.Context) {
 		return
 	}
 	//成功
-	ctx.SetReceiveTimeout(0) //login Successfully, timeout off
+	//ctx.SetReceiveTimeout(0) //login Successfully, timeout off
 	stoc.Userid = ws.User.GetUserid()
 	ws.Send(stoc)
 	//成功后处理
@@ -195,7 +199,7 @@ func (ws *WSConn) wxlogin(arg *pb.CWxLogin, ctx actor.Context) {
 		return
 	}
 	//成功
-	ctx.SetReceiveTimeout(0) //login Successfully, timeout off
+	//ctx.SetReceiveTimeout(0) //login Successfully, timeout off
 	stoc.Userid = ws.User.GetUserid()
 	ws.Send(stoc)
 	//成功后处理
@@ -243,6 +247,8 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	ws.logined2(isRegist)
 	//同步数据
 	ws.syncUser()
+	//登录成功
+	ws.online = true
 }
 
 //登录处理

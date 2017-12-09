@@ -33,6 +33,7 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 			Name:   a.Name,
 		}
 		a.hallPid.Tell(connect)
+		ctx.SetReceiveTimeout(loop) //timeout set
 	case *pb.ServeStop:
 		//关闭服务
 		a.handlerStop(ctx)

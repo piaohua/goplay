@@ -25,8 +25,7 @@ func (ws *WSConn) Receive(ctx actor.Context) {
 		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
-		//断开连接
-		ws.Close()
+		ws.timeout(ctx)
 	case *testWs:
 		glog.Infof("self %s\n", ctx.Self().String())
 		glog.Infof("msg.Who %v\n", msg.Who)
@@ -71,6 +70,19 @@ func (ws *WSConn) disc(ctx actor.Context) {
 		Userid: ws.User.Userid,
 	}
 	nodePid.Tell(msg)
+}
+
+func (ws *WSConn) timeout(ctx actor.Context) {
+	if !ws.online {
+		//断开连接
+		ws.Close()
+		return
+	}
+	if ws.status {
+		//同步数据
+		ws.syncUser()
+		ws.status = false
+	}
 }
 
 //初始化

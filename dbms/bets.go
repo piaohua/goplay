@@ -43,6 +43,17 @@ func (a *BetsActor) Receive(ctx actor.Context) {
 	}
 }
 
+func (a *BetsActor) init(ctx actor.Context) {
+	glog.Infof("ws init: %v", ctx.Self().String())
+	ctx.SetReceiveTimeout(loop) //timeout set
+}
+
+func (a *BetsActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(0) //timeout off
+	//TODO
+}
+
 func newBetsActor() actor.Actor {
 	a := new(BetsActor)
 	a.Name = cfg.Section("bets").Name()
