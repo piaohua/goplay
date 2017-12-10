@@ -64,6 +64,12 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.SPushNewBetting,
+		*pb.SPushJackpot,
+		*pb.BetsResult:
+		for _, v := range a.gates {
+			v.Tell(msg)
+		}
 	default:
 		if a.logger == nil {
 			glog.Errorf("unknown message %v", msg)

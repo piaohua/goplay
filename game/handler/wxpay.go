@@ -64,7 +64,7 @@ func WxOrder(ctos *pb.CWxpayOrder, p *data.User,
 	stoc.Orderid = orderid
 	stoc.Payreq = string(payReqJson)
 	//glog.Info("orderid ", orderid, " transid ", transid)
-	go wxpayQuery(orderid) //查询
+	//go wxpayQuery(orderid) //查询
 	stoc.Id = waresid
 	return
 }
@@ -80,7 +80,7 @@ func wxpayOrder(waresid uint32, userid, agent, ip,
 	var price uint32 = uint32(d.Price * 100) //转换为分
 	var itemid string = utils.String(d.Propid)
 	//var orderid string = data.GenCporderid(userid)
-	var orderid string = data.GenOrderid()
+	orderid = data.GenOrderid()
 	transid, err := config.Apppay.Submit(orderid, float64(price), body, ip)
 	glog.Debugf("orderid %s, transid %s, err %v", orderid, transid, err)
 	if err != nil {
@@ -88,7 +88,7 @@ func wxpayOrder(waresid uint32, userid, agent, ip,
 		return
 	}
 	//transid,下单记录
-	t := &data.TradeRecord{
+	t = &data.TradeRecord{
 		Id:       orderid,
 		Transid:  transid,
 		Userid:   userid,
@@ -109,6 +109,7 @@ func wxpayOrder(waresid uint32, userid, agent, ip,
 	return
 }
 
+/*
 //主动查询发货
 func wxpayQuery(orderid string) {
 	utils.Sleep(120)
@@ -120,3 +121,4 @@ func wxpayQuery(orderid string) {
 	//主动查询发货
 	config.WxpayQuery(queryResult)
 }
+*/

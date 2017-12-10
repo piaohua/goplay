@@ -22,7 +22,7 @@ func (ws *WSConn) HandlerAct(msg interface{}, ctx actor.Context) {
 		glog.Debugf("CLottery %#v", arg)
 		rsp, number, prize, ok := handler.Lottery(arg, ws.User)
 		if rsp.Error != pb.OK {
-			ws.Send(res)
+			ws.Send(rsp)
 			return
 		}
 		ws.expend(number, data.LogType37)
@@ -33,14 +33,36 @@ func (ws *WSConn) HandlerAct(msg interface{}, ctx actor.Context) {
 	case *pb.CBettingInfo:
 		arg := msg.(*pb.CBettingInfo)
 		glog.Debugf("CBettingInfo %#v", arg)
-		//rsp := betting.GetInfo()
-		//ws.Send(rsp)
+		ws.rolePid.Request(arg, ctx.Self())
 	case *pb.CBetting:
 		arg := msg.(*pb.CBetting)
+		number := arg.GetNumber()
 		glog.Debugf("CBetting %#v", arg)
+		if ws.User.GetDiamond() < number {
+			msg1 := new(pb.SBetting)
+			msg1.Error = pb.NotEnoughDiamond
+			ws.Send(msg1)
+			return
+		}
+		msg2 := new(pb.BetsOn)
+		msg2.Userid = ws.User.GetUserid()
+		msg2.Seat = arg.GetSeat()
+		msg2.Number = arg.GetNumber()
+		ws.rolePid.Request(msg2, ctx.Self())
+	case *pb.SBetting:
+		arg := msg.(*pb.SBetting)
+		glog.Debugf("SBetting %#v", arg)
+		if arg.Error == pb.OK {
+			ws.expend(arg.Number, data.LogType36)
+		}
+		ws.Send(arg)
 	case *pb.CBettingRecord:
 		arg := msg.(*pb.CBettingRecord)
 		glog.Debugf("CBettingRecord %#v", arg)
+		msg2 := new(pb.BetsRecord)
+		msg2.Userid = ws.User.GetUserid()
+		msg2.Page = arg.GetPage()
+		ws.rolePid.Request(msg2, ctx.Self())
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

@@ -52,6 +52,11 @@ func (a *RoleActor) Receive(ctx actor.Context) {
 	}
 }
 
+func (a *RoleActor) init(ctx actor.Context) {
+	glog.Infof("ws init: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(loop) //timeout set
+}
+
 func (a *RoleActor) timeout(ctx actor.Context) {
 	glog.Debugf("timeout: %v", ctx.Self().String())
 	//ctx.SetReceiveTimeout(waitForLogin) //timeout set

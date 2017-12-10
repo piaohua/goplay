@@ -29,7 +29,7 @@ func (ws *WSConn) HandlerPay(msg interface{}, ctx actor.Context) {
 	case *pb.CWxpayQuery:
 		arg := msg.(*pb.CWxpayQuery)
 		glog.Debugf("CWxpayQuery %#v", arg)
-		rsp := handler.wxQuery(arg, ctx)
+		rsp := handler.WxQuery(arg)
 		ws.Send(rsp)
 	default:
 		//glog.Errorf("unknown message %v", msg)

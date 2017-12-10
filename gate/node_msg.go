@@ -74,6 +74,31 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		//同步配置
 		arg := msg.(*pb.SyncConfig)
 		a.syncConfig(arg)
+	case *pb.SPushNewBetting,
+		*pb.SPushJackpot:
+		for _, v := range a.roles {
+			v.Tell(msg)
+		}
+	case *pb.BetsResult:
+		arg := msg.(*pb.BetsResult)
+		userid := arg.Userid
+		if v, ok := a.roles[userid]; ok {
+			msg1 := new(pb.SPushBetting)
+			err1 := msg1.Unmarshal([]byte(arg.Message))
+			if err1 != nil {
+				glog.Errorf("BetsResult k %s err1 %v", userid, err1)
+			}
+			v.Tell(msg1)
+		}
+	case *pb.ChangeCurrency:
+		arg := msg.(*pb.ChangeCurrency)
+		userid := arg.Userid
+		if v, ok := a.roles[userid]; ok {
+			v.Tell(msg)
+		} else {
+			//离线
+			a.rolePid.Tell(msg)
+		}
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

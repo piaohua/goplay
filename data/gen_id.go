@@ -33,6 +33,10 @@ func (this *IDGen) GenID() string {
 	return this.Value
 }
 
+func (this *IDGen) Index() string {
+	return this.Value
+}
+
 //初始化
 func InitIDGen(key string) (r *IDGen) {
 	r = new(IDGen)

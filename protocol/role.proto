@@ -144,61 +144,6 @@ message WxLogined {
     ErrCode error  = 3 ;// 错误码
 }
 
-// 新邮件
-message NewMail {
-    string From = 1;
-    string To = 2;
-    string Content = 3;
-}
-
-// 新邮件列表
-message NewMailList
-{
-    string Maxid = 1;//邮件缓存中的最大邮件ID
-    string Userid = 2;
-}
-
-// 删除邮件
-message DeleteMail
-{
-    string Id   = 1;//邮件ID
-    string Userid = 2;
-}
-
-// 收取附件
-message GetMailItem
-{
-    string Id   = 1; //邮件ID
-    string Userid = 2;
-}
-
-// 绑定代理id
-message BuildAgent
-{
-    string Userid = 1;//绑定代理id
-    string Agent = 2;//已经绑定id
-    string Uid = 3;//玩家id
-}
-
-message BuiltAgent
-{
-    uint32 Result = 1;//结果
-    string Agent = 2;//绑定id
-}
-
-//银行操作
-message BankGive {
-    string Userid = 1;//赠送对象
-    uint32 Amount = 2;//赠送金额数量
-}
-
-message BankGave {
-    string Userid = 1;//赠送对象
-    uint32 Amount = 2;//赠送金额数量
-    uint32 Coin = 3;//赠送对象自身金额数量
-    ErrCode error  = 4 ;// 错误码
-}
-
 //玩家信息
 message GetUserData {
     string Userid = 1;

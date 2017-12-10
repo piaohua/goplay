@@ -4,38 +4,10 @@ import (
 	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
-	"niu/betting"
 )
 
-func BettingBet(ctos *pb.CBetting, p *data.User) {
-	stoc := new(pb.SBetting)
-	seat := ctos.GetSeat()
-	number := ctos.GetNumber()
-	stoc.Seat = seat
-	stoc.Number = number
-	if p.GetDiamond() < number {
-		stoc.Error = pb.NotEnoughDiamond
-		p.Send(stoc)
-		return
-	}
-	userid := p.GetUserid()
-	code := betting.Bet(userid, seat, number)
-	glog.Debugf("code %d, userid %s", code, userid)
-	glog.Debugf("seat %d, number %d", seat, number)
-	switch code {
-	case 0:
-		expend(p, number, data.LogType36)
-		p.Send(stoc)
-	case 1:
-		stoc.Error = pb.GameNotStart
-		p.Send(stoc)
-	}
-}
-
-func BettingRecord(ctos *pb.CBettingRecord,
-	userid string) (stoc *pb.SBettingRecord) {
-	stoc := new(pb.SBettingRecord)
-	page := ctos.GetPage()
+func BettingRecord(page uint32, userid string) (stoc *pb.SBettingRecord) {
+	stoc = new(pb.SBettingRecord)
 	list, err := data.GetBettingRecords(userid, int(page))
 	glog.Debugf("getRecord page %d, userid %s", page, userid)
 	glog.Debugf("getRecord err %v, len list %d", err, len(list))

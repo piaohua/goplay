@@ -10,6 +10,8 @@ func main() {
 	Gen()
 }
 
+//TODO 内部协议通信
+
 var (
 	protoPacket = make(map[string]uint32) //响应协议
 	protoUnpack = make(map[string]uint32) //请求协议

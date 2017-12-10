@@ -39,6 +39,8 @@ type WSConn struct {
 	rolePid *actor.PID // 角色服务
 	hallPid *actor.PID // 大厅服务
 	gamePid *actor.PID // 游戏逻辑
+	betsPid *actor.PID // 游戏逻辑
+	mailPid *actor.PID // 游戏逻辑
 
 	*data.User //玩家在线数据
 
