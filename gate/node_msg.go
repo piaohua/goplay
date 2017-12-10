@@ -5,6 +5,7 @@ import (
 
 	"goplay/data"
 	"goplay/game/config"
+	"goplay/game/handler"
 	"goplay/glog"
 	"goplay/pb"
 
@@ -98,6 +99,21 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		} else {
 			//离线
 			a.rolePid.Tell(msg)
+		}
+	case *pb.WxpayCallback:
+		arg := msg.(*pb.WxpayCallback)
+		if !handler.WxpayVerify(arg) {
+			return
+		}
+		a.rolePid.Tell(arg)
+	case *pb.WxpayGoods:
+		arg := msg.(*pb.WxpayGoods)
+		glog.Debugf("WxpayGoods: %v", arg)
+		userid := arg.Userid
+		if v, ok := a.roles[userid]; ok {
+			v.Tell(arg)
+		} else {
+			glog.Errorf("WxpayGoods: %v", arg)
 		}
 	default:
 		glog.Errorf("unknown message %v", msg)

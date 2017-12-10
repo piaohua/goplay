@@ -58,51 +58,14 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		ws.rolePid.Request(msg1, ctx.Self())
 	case *pb.BuiltAgent:
 		arg := msg.(*pb.BuiltAgent)
-		if arg.Result == 0 {
-			//绑定
-			ws.User.SetAgent(arg.Agent)
-			//日志
-			msg2 := &pb.LogBuildAgency{
-				Userid: ws.User.GetUserid(),
-				Agent:  arg.Agent,
-			}
-			ws.dbmsPid.Tell(msg2)
-			//赠送
-			var diamond int32 = config.GetEnv(data.ENV3)
-			ws.addCurrency(diamond, 0, data.LogType19)
-		}
-		rsp := new(pb.SBuildAgent)
-		rsp.Result = arg.Result
-		ws.Send(rsp)
+		ws.built(arg, ctx)
 	case *pb.CBank:
 		arg := msg.(*pb.CBank)
-		rtype := arg.GetRtype()
-		switch rtype {
-		case 1:
-			rsp, coin, _ := handler.Bank(arg, ws.User)
-			ws.addCurrency(0, coin, data.LogType12)
-			ws.Send(rsp)
-		case 2:
-			rsp, coin, tax := handler.Bank(arg, ws.User)
-			ws.addCurrency(0, coin, data.LogType13)
-			ws.addCurrency(0, tax, data.LogType14)
-			ws.Send(rsp)
-		case 3:
-			res := handler.BankGive(arg, ws.User)
-			if res.Error != pb.OK {
-				ws.Send(res)
-				return
-			}
-			msg2 := new(pb.BankGive)
-			msg2.Userid = arg.Userid
-			msg2.Amount = arg.Amount
-			ws.rolePid.Request(msg2, ctx.Self())
-		case 4:
-		}
+		ws.bank(arg, ctx)
 	case *pb.BankGave:
 		arg := msg.(*pb.BankGave)
 		rsp, coin, tax := handler.BankGave(arg, ws.User)
-		ws.bank(arg, coin, tax)
+		ws.bankGive(arg, coin, tax)
 		ws.Send(rsp)
 	case *pb.CGetCurrency:
 		arg := msg.(*pb.CGetCurrency)
@@ -146,7 +109,52 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 	}
 }
 
-func (ws *WSConn) bank(arg *pb.BankGave, coin, tax int32) {
+func (ws *WSConn) built(arg *pb.BuiltAgent, ctx actor.Context) {
+	if arg.Result == 0 {
+		//绑定
+		ws.User.SetAgent(arg.Agent)
+		//日志
+		msg2 := &pb.LogBuildAgency{
+			Userid: ws.User.GetUserid(),
+			Agent:  arg.Agent,
+		}
+		ws.dbmsPid.Tell(msg2)
+		//赠送
+		var diamond int32 = config.GetEnv(data.ENV3)
+		ws.addCurrency(diamond, 0, data.LogType19)
+	}
+	rsp := new(pb.SBuildAgent)
+	rsp.Result = arg.Result
+	ws.Send(rsp)
+}
+
+func (ws *WSConn) bank(arg *pb.CBank, ctx actor.Context) {
+	rtype := arg.GetRtype()
+	switch rtype {
+	case 1:
+		rsp, coin, _ := handler.Bank(arg, ws.User)
+		ws.addCurrency(0, coin, data.LogType12)
+		ws.Send(rsp)
+	case 2:
+		rsp, coin, tax := handler.Bank(arg, ws.User)
+		ws.addCurrency(0, coin, data.LogType13)
+		ws.addCurrency(0, tax, data.LogType14)
+		ws.Send(rsp)
+	case 3:
+		res := handler.BankGive(arg, ws.User)
+		if res.Error != pb.OK {
+			ws.Send(res)
+			return
+		}
+		msg2 := new(pb.BankGive)
+		msg2.Userid = arg.Userid
+		msg2.Amount = arg.Amount
+		ws.rolePid.Request(msg2, ctx.Self())
+	case 4:
+	}
+}
+
+func (ws *WSConn) bankGive(arg *pb.BankGave, coin, tax int32) {
 	//受赠者货币变更, TODO 在线更新消息
 	msg4 := &pb.ChangeCurrency{
 		Userid: arg.Userid,

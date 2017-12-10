@@ -82,6 +82,27 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.WxpayCallback:
+		arg := msg.(*pb.WxpayCallback)
+		glog.Debugf("WxpayCallback: %v", arg)
+		//支付回调
+		for _, v := range a.gates {
+			v.Tell(arg)
+			//TODO 优化
+			//选择一个验证即可,
+			//暂时不知道哪个节点的订单
+			break
+		}
+	case *pb.WxpayGoods:
+		arg := msg.(*pb.WxpayGoods)
+		glog.Debugf("WxpayGoods: %v", arg)
+		userid := arg.Userid
+		gate := a.roles[userid]
+		if v, ok := a.gates[gate]; ok {
+			v.Tell(arg)
+		} else {
+			glog.Errorf("WxpayGoods: %v", arg)
+		}
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

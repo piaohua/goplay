@@ -75,6 +75,7 @@ func tradeVerify(product_id string, tradeRecord *data.TradeRecord,
 	return true
 }
 
+//订单是否存在和订单数据存储
 func AppleVerify(arg *pb.ApplePay) (stoc *pb.ApplePaid) {
 	stoc = new(pb.ApplePaid)
 	tradeRecord := new(data.TradeRecord)

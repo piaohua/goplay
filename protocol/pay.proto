@@ -1,0 +1,27 @@
+syntax = "proto3";
+package pb;
+
+//支付操作
+
+//苹果支付
+message ApplePay {
+    string Trade = 1;//交易订单数据
+}
+
+message ApplePaid {
+    bool Result = 1;//结果
+}
+
+//微信支付主动回调或主动查询发货
+message WxpayCallback {
+    string Result = 1;//交易结果数据
+}
+
+//发货
+message WxpayGoods {
+    string Userid = 1;//玩家id
+    string Orderid = 2;//订单id
+    uint32 Money = 3;//RMB(分)
+    uint32 Diamond = 4;//钻石数量
+    int32 First = 5;//第一次购买
+}

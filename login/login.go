@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"runtime"
 
+	"api/wxpay"
 	"goplay/glog"
 	"utils"
 
@@ -96,6 +97,29 @@ func logHandler(ctx *fasthttp.RequestCtx) {
 	glog.Debugf("Raw request is:\n---CUT---\n%s\n---CUT---", &ctx.Request)
 }
 
+// 接收交易结果通知
+func wxpayHandler(ctx *fasthttp.RequestCtx) {
+	ctx.Response.Header.Set("Content-type", "text/plain;;charset=UTF-8")
+	switch string(ctx.Method()) {
+	case "POST":
+		result := ctx.PostBody()
+		tradeResult, err := wxpay.ParseTradeResult(result)
+		glog.Debugf("result %s, tradeResult %#v, err %v", string(result), tradeResult, err)
+		if err == nil {
+			//TODO 发货
+			//go wxpayCallback(&tradeResult) //发货
+			//msg := new(pb.WxpayCallback)
+			//msg.Result = string(result)
+			//hallPid.Tell(msg)
+		} else {
+			glog.Errorf("trade result err: %v", err)
+		}
+	default:
+		glog.Error("wxpay method err")
+	}
+	fmt.Fprintf(ctx, wxpay.TradeRespXml())
+}
+
 //TODO version rule
 func gateHandler(ctx *fasthttp.RequestCtx) {
 	//TODO hall get gate
@@ -123,6 +147,8 @@ func requestHandler(ctx *fasthttp.RequestCtx) {
 	switch string(ctx.Path()) {
 	case "/gate":
 		gateHandler(ctx)
+	case "/wxpay":
+		wxpayHandler(ctx)
 	case "/foo":
 		fooHandler(ctx)
 	case "/bar":

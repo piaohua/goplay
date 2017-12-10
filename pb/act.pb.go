@@ -20,6 +20,7 @@
 		lottery.proto
 		mail.proto
 		niu.proto
+		pay.proto
 		phz.proto
 		prize.proto
 		protos.proto
@@ -155,6 +156,10 @@
 		SGameover
 		CGameRecord
 		SGameRecord
+		ApplePay
+		ApplePaid
+		WxpayCallback
+		WxpayGoods
 		CEnterZiRoom
 		SEnterZiRoom
 		CCreateZiRoom
@@ -236,8 +241,6 @@
 		WxLogined
 		GetUserData
 		GotUserData
-		ApplePay
-		ApplePaid
 		CLeave
 		SLeave
 		CKick

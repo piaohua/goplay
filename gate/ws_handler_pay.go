@@ -19,25 +19,31 @@ func (ws *WSConn) HandlerPay(msg interface{}, ctx actor.Context) {
 	case *pb.CApplePay:
 		arg := msg.(*pb.CApplePay)
 		glog.Debugf("CApplePay %#v", arg)
-		ws.applePay(arg, ctx)
+		ws.applePay(arg)
 	case *pb.CWxpayOrder:
 		arg := msg.(*pb.CWxpayOrder)
 		glog.Debugf("CWxpayOrder %#v", arg)
-		//TODO
-		//var ip string = ws.GetIPAddr()
-		//ws.WxOrder(arg, ws.User, ip)
+		ws.wxPay(arg)
 	case *pb.CWxpayQuery:
 		arg := msg.(*pb.CWxpayQuery)
 		glog.Debugf("CWxpayQuery %#v", arg)
 		rsp := handler.WxQuery(arg)
 		ws.Send(rsp)
+	case *pb.WxpayGoods:
+		arg := msg.(*pb.WxpayGoods)
+		glog.Debugf("WxpayGoods: %v", arg)
+		//userid := arg.Userid
+		msg2 := new(pb.SWxpayQuery)
+		msg2.Orderid = arg.Orderid
+		ws.Send(msg2)
+		ws.sendGoods(arg.Diamond, arg.Money, int(arg.First))
 	default:
 		//glog.Errorf("unknown message %v", msg)
 		ws.HandlerAct(msg, ctx)
 	}
 }
 
-func (ws *WSConn) applePay(arg *pb.CApplePay, ctx actor.Context) {
+func (ws *WSConn) applePay(arg *pb.CApplePay) {
 	rsp, record, trade := handler.AppleOrder(arg, ws.User)
 	if rsp.Error != pb.OK {
 		ws.Send(rsp)
@@ -69,6 +75,59 @@ func (ws *WSConn) applePay(arg *pb.CApplePay, ctx actor.Context) {
 	}
 	ws.sendGoods(record.Diamond, record.Money, record.First)
 	ws.Send(rsp)
+}
+
+func (ws *WSConn) wxPay(arg *pb.CWxpayOrder) {
+	var ip string = ws.GetIPAddr()
+	rsp, trade := handler.WxOrder(arg, ws.User, ip)
+	if rsp.Error != pb.OK {
+		ws.Send(rsp)
+		return
+	}
+	//验证
+	msg1 := new(pb.ApplePay)
+	msg1.Trade = trade
+	timeout := 3 * time.Second
+	res1, err1 := ws.rolePid.RequestFuture(msg1, timeout).Result()
+	if err1 != nil {
+		glog.Errorf("wxPay err: %v", err1)
+		rsp.Error = pb.PayOrderFail
+		ws.Send(rsp)
+		return
+	}
+	response1 := res1.(*pb.ApplePaid)
+	if response1 == nil {
+		glog.Error("wxPay fail")
+		rsp.Error = pb.PayOrderFail
+		ws.Send(rsp)
+		return
+	}
+	if !response1.Result {
+		glog.Error("wxPay fail")
+		rsp.Error = pb.PayOrderFail
+		ws.Send(rsp)
+		return
+	}
+	//下单成功
+	ws.Send(rsp)
+	//主动查询发货
+	go ws.wxPayQuery(rsp.Orderid)
+}
+
+//主动查询发货
+func (ws *WSConn) wxPayQuery(orderid string) {
+	//查询
+	result := handler.ActWxpayQuery(orderid) //查询
+	if result == "" {
+		return
+	}
+	if ws.rolePid == nil {
+		return
+	}
+	//发货
+	msg2 := new(pb.WxpayCallback)
+	msg2.Result = result
+	ws.rolePid.Tell(msg2)
 }
 
 //发货
