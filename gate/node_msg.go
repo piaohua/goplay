@@ -44,6 +44,8 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 			RoomPid: a.roomPid,
 			RolePid: a.rolePid,
 			HallPid: a.hallPid,
+			BetsPid: a.betsPid,
+			MailPid: a.mailPid,
 		}
 		arg.Sender.Tell(set)
 		glog.Infof("SetLogin %s", arg.Sender.String())
@@ -127,6 +129,8 @@ func (a *GateActor) init(ctx actor.Context) {
 	name := cfg.Section("cookie").Key("name").Value()
 	room := cfg.Section("cookie").Key("room").Value()
 	role := cfg.Section("cookie").Key("role").Value()
+	bets := cfg.Section("cookie").Key("bets").Value()
+	mail := cfg.Section("cookie").Key("mail").Value()
 	//timeout := 3 * time.Second
 	//a.dbmsPid, err = remote.SpawnNamed(bind, a.Name, name, timeout)
 	//if err != nil {
@@ -143,6 +147,8 @@ func (a *GateActor) init(ctx actor.Context) {
 	a.dbmsPid = actor.NewPID(bind, name)
 	a.roomPid = actor.NewPID(bind, room)
 	a.rolePid = actor.NewPID(bind, role)
+	a.betsPid = actor.NewPID(bind, bets)
+	a.mailPid = actor.NewPID(bind, mail)
 	//a.dbmsPid.
 	//	RequestFuture(&pb.Request{}, 2*time.Second).
 	//	Wait()

@@ -16,6 +16,8 @@ message SetLogined {
     actor.PID RoomPid = 3;
     actor.PID RolePid = 4;
     actor.PID HallPid = 5;
+    actor.PID BetsPid = 6;
+    actor.PID MailPid = 7;
 }
 
 //登录网关

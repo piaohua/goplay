@@ -27,6 +27,10 @@ type GateActor struct {
 	roomPid *actor.PID
 	//角色服务
 	rolePid *actor.PID
+	//投注服务
+	betsPid *actor.PID
+	//邮箱服务
+	mailPid *actor.PID
 	//节点角色进程
 	roles map[string]*actor.PID
 }

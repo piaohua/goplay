@@ -20,6 +20,8 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.roomPid = arg.RoomPid
 		ws.rolePid = arg.RolePid
 		ws.hallPid = arg.HallPid
+		ws.betsPid = arg.BetsPid
+		ws.mailPid = arg.MailPid
 		glog.Infof("SetLogined %v", arg.Message)
 	case *pb.ServeStop:
 		arg := new(pb.SLoginOut)

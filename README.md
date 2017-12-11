@@ -3,20 +3,27 @@
 * this sample is a game server
 
 ## Installation
-
 ```
 cd $GOPATH/src
 go clone github.com/piaohua/goplay
 ```
 
 ## Usage:
-
 ```
 cd $GOPATH/bin/ctrl
 ./ctrl
 
 ./ctrl build login
 ./login-bin -log_dir=./logs
+
+./ctrl build dbms
+./dbms-bin -log_dir=./logs
+
+./ctrl build gate
+./gate-bin -log_dir=./logs
+
+./ctrl build hall
+./hall-bin -log_dir=./logs
 ```
 
 ## Document
@@ -32,99 +39,91 @@ import (
 
 src/goplay/
 protocol   协议文件目录 Google Protobuf version 3.0
-pb         生成协议文件目录, pack unpack 文件
+pb         生成协议文件目录, packet unpack 文件
 data       数据结构定义, 数据库连接操作 mongodb
-logger     日志服务,结构可以在protocol协议中注册
-
-test       测试
 tool       生成协议工具
+game       逻辑处理 (niu, kong...),多个子目录
 
-gate       网关, 协议转发, 多个, 处理客户端连接, scoket pack unpack, 版本控制
-core       中心分发器,单个,网关,登录服,逻辑服注册,中心服, 只负责服务的注册和分配处理
-
-room       房间服务,remote获取通信
-game       逻辑服 (niu, kong...),多个,多个子目录,只是桌上操作,拓展多少个牌桌
-hall       中心服,大厅,单个,玩家数据状态缓存,后台配置数据加载,remote获取房间服务
+core       中心服务
+gate       网关, 协议转发, 多个, 处理客户端连接, scoket packet unpack
+hall       大厅服务,单个,处理服务注册
 robot      机器人, 模拟客户端, 请求顺序login-gate
 login      http请求登录,返回网关信息,单个,定时向中心分发器获取可用网关
 
 src/
-admin      后台 web 服务
+admin      后台 web 服务, base on beego
 ```
 
 ## package & program
->protocol</br>
->>协议文件目录</br>
->>Google Protobuf version 3.0</br>
+```
+protocol (proto)
+    协议文件目录
+    Google Protobuf version 3.0
 
->pb</br>
->>生成协议文件目录</br>
->>pack unpack 文件</br>
->>机器人协议文件</br>
->>工具自动生成文件,无需手动修改</br>
+pb  (package)
+    生成协议文件目录
+    packet unpack 文件
+    rpacket runpack 机器人协议文件
+    工具自动生成文件,无需手动修改
 
->data</br>
->>1个端口</br>
->>数据库操作</br>
->>room唯一id,列表管理,房间基础信息</br>
->>logger日志写入记录,pid</br>
->>玩家数据中心</br>
+data (package)
+    数据库操作
+    数据结构
+    参数定义
 
->login</br>
->>2端口,1个rpc,1个http</br>
->>加密返回网关信息</br>
+dbms (program)
+    玩家数据缓存
+    玩家数据中心
+    logger日志中心
+    唯一id管理
+    房间列表管理
+    房间基础信息
+    后台配置数据加载
+    邮箱管理
+    投注活动
 
->gate</br>
->>2个端口,1个rpc,1个websocket</br>
->>处理消息转发</br>
->>消息打包解包</br>
->>各个游戏状态管理</br>
+login (program)
+    http请求节点信息
+    登录节点分配
+    支付回调请求
 
->hall</br>
->>1个端口</br>
->>处理服务注册,连接数</br>
->>玩家数据缓存</br>
->>网关信息</br>
->>处理请求消息</br>
+gate (program)
+    websocket连接
+    处理消息转发
+    消息打包解包
+    处理业务逻辑
+    响应请求结果
 
->game</br>
->>1个端口</br>
->>处理业务逻辑</br>
->>暂时包括排位,排行</br>
->>TODO 支付回调</br>
+hall (program)
+    处理服务注册
+    处理请求转发
+    处理网关信息
 
->web
->>2端口,1个rpc,1个http</br>
+game (package)
+    处理业务逻辑
+```
 
 ## TODO
 * 配置文件动态加载,读取配置服务独立
 * data数据库操作服务独立
 * crontab服务
-* admin修改包依赖, 通信格式json改为pb, 通信方式改为grpc
+* admin修改包依赖,通信格式json改为pb,通信方式改为grpc
 * dockerfile
 * data数据库mgo操作优化
 * dbms数据管理系统,玩家数据中心,优化拆分
-* logging
-
-client -(http)- login -(rpc)- hall
-
-client -(http)- web -(rpc)- hall
-
-gate -(rpc)- game
-gate -(rpc)- hall
-
-game -(rpc)- room
-game -(rpc)- logger
-
-//
-hall |--- web    |---  client
-     |--- login  |---  client
-     |--- gate   |---  client
-                 |---  game  |--- logger
-                 |---        |--- room
+* logging,mail,bets等服务拆分
+* 版本控制
+* game逻辑处理区分dbms,gate操作
+* 返回消息按大小拆分发送,客户端处理粘包获取
 
 ## 启动顺序
     hall
     login
     dbms
     gate
+
+## 停服顺序
+    login
+    gate
+    dbms
+    hall
