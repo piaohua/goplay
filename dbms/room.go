@@ -20,6 +20,10 @@ type RoomActor struct {
 	hallPid *actor.PID
 	//房间列表
 	rooms map[string]*data.DeskData
+	//角色userid-roomid
+	router map[string]string
+	//房间人数roomid-numbers
+	count map[string]int
 	//唯一id生成
 	uniqueid *data.IDGen
 }
