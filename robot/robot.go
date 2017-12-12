@@ -18,11 +18,6 @@ import (
 	ini "gopkg.in/ini.v1"
 )
 
-const (
-	ROBOTS_NAME = "RobotMsg"
-	VERSION     = "0.0.1"
-)
-
 var (
 	cfg *ini.File
 	sec *ini.Section

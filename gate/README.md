@@ -11,7 +11,7 @@ go build
 ## Usage:
 
 ```
-./gate -log_dir=./logs
+./gate -n=1 -log_dir=./logs
 
 ./ctrl start gate
 ./ctrl stop gate
