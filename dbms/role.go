@@ -44,7 +44,6 @@ func (a *RoleActor) Receive(ctx actor.Context) {
 		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
-		a.timeout(ctx)
 	case proto.Message:
 		a.Handler(msg, ctx)
 	default:

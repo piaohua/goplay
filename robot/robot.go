@@ -8,6 +8,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 	"os/signal"
 	"runtime"
@@ -27,6 +28,8 @@ var (
 
 	aesEnc   *utils.AesEncrypt
 	pbAesEnc *utils.AesEncrypt
+
+	node = flag.String("node", "", "If non-empty, start with this node")
 )
 
 func main() {

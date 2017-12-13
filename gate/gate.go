@@ -20,12 +20,13 @@ var (
 	err error
 
 	aesEnc *utils.AesEncrypt
+
+	node = flag.String("node", "", "If non-empty, start with this node")
 )
 
 func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	defer glog.Flush()
-	var n = flag.String("n", "", "If non-empty, start with this node")
 	//日志定义
 	glog.Init()
 	//加载配置
@@ -37,7 +38,7 @@ func main() {
 	//初始化
 	aesInit()
 	//启动服务
-	bind := cfg.Section("gate.node" + n).Key("bind").Value()
+	bind := cfg.Section("gate.node" + *node).Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()
 	NewRemote(bind, name)
 	//配置初始化
@@ -49,7 +50,7 @@ func main() {
 	notifyUrl := cfg.Section("weixin").Key("notifyUrl").Value()
 	config.Init2Gate(appid, appsecret, appkey, mchid, pattern, notifyUrl)
 	//wsServer
-	addr := cfg.Section("gate.node" + n).Key("addr").Value()
+	addr := cfg.Section("gate.node" + *node).Key("addr").Value()
 	wsServer := new(WSServer)
 	wsServer.Addr = addr
 	if wsServer != nil {

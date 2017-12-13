@@ -13,7 +13,7 @@
 ## Usage:
 
 ```
-./login -log_dir=./logs > /dev/null 2&>1 &
+./login-bin -log_dir=./logs > /dev/null 2&>1 &
 
 ./ctrl start login
 ./ctrl stop login

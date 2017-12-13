@@ -49,6 +49,7 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.Login:
 		//登录成功
 		arg := msg.(*pb.Login)
+		glog.Debugf("login : %#v", arg)
 		a.logined(arg, ctx)
 	case *pb.Logout:
 		//登出成功

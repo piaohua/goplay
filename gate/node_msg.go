@@ -70,6 +70,12 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		a.hallPid.Tell(arg)
 		a.rolePid.Tell(arg)
 		a.roomPid.Tell(arg)
+	case *pb.ServeStop:
+		//关闭服务
+		a.HandlerStop(ctx)
+		//响应登录
+		rsp := new(pb.ServeStoped)
+		ctx.Respond(rsp)
 	case *pb.HallConnect:
 		//初始化建立连接
 		a.init(ctx)
@@ -120,6 +126,15 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (a *GateActor) HandlerStop(ctx actor.Context) {
+	glog.Debugf("HandlerStop: %s", a.Name)
+	//msg := new(pb.ServeStop)
+	//for k, v := range a.roles {
+	//	glog.Debugf("Stop role: %s", k)
+	//	v.Tell(msg)
+	//}
 }
 
 func (a *GateActor) init(ctx actor.Context) {

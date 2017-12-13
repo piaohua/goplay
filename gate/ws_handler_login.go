@@ -234,8 +234,13 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	//res3, err3 := ws.roomPid.RequestFuture(msg3, timeout).Result()
 	//response3 := res3.(*pb.LoginedGate)
 	//登录成功响应
+	result4, err4 := json.Marshal(ws.User)
+	if err4 != nil {
+		glog.Errorf("user Marshal err %v", err)
+	}
 	msg4 := new(pb.Login)
 	msg4.Userid = ws.User.GetUserid()
+	msg4.Data = string(result4)
 	res4, err4 := ws.rolePid.RequestFuture(msg4, timeout).Result()
 	if err4 != nil {
 		//TODO 断开
@@ -249,6 +254,8 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	ws.syncUser()
 	//登录成功
 	ws.online = true
+	//成功
+	ctx.SetReceiveTimeout(0) //login Successfully, timeout off
 }
 
 //登录处理

@@ -125,6 +125,7 @@ func gateHandler(ctx *fasthttp.RequestCtx) {
 	//TODO hall get gate
 	r := "gate.node"
 	r += string(ctx.QueryArgs().Peek("version"))
+	glog.Debugf("gate node : %s", r)
 	sec1, err1 := cfg.GetSection(r)
 	if err1 != nil {
 		glog.Error("Unknwon version ", err1)

@@ -116,10 +116,9 @@ func (a *DBMSActor) syncConfig(key string) {
 	pid.Tell(msg2)
 	msg3 := a.syncConfigMsg(pb.CONFIG_LOTTERY, config.GetLotterys())
 	pid.Tell(msg3)
-	msg4 := a.syncConfigMsg(pb.CONFIG_NOTICE,
-		config.GetNotices(data.NOTICE_TYPE1))
+	msg4 := a.syncConfigMsg(pb.CONFIG_NOTICE, config.GetNotices(data.NOTICE_TYPE1))
 	pid.Tell(msg4)
-	msg5 := a.syncConfigMsg(pb.CONFIG_PRIZE, config.GetLotterys())
+	msg5 := a.syncConfigMsg(pb.CONFIG_PRIZE, config.GetPrizes())
 	pid.Tell(msg5)
 	msg6 := a.syncConfigMsg(pb.CONFIG_SHOP, config.GetShops2())
 	pid.Tell(msg6)

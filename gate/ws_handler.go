@@ -2,8 +2,8 @@ package main
 
 import (
 	"encoding/json"
-	"niu/data"
 
+	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
 

@@ -128,7 +128,7 @@ func (server *RobotServer) RunRobot(phone, code string, rtype uint32, regist boo
 //获取网关
 func getHost() (host string) {
 	addr := cfg.Section("login").Key("addr").Value()
-	addr = "http://" + addr + "/gate"
+	addr = "http://" + addr + "/gate?version=" + *node
 	b, err := doHttpPost(addr, []byte{})
 	if err != nil {
 		glog.Errorf("getHost err: %v", err)

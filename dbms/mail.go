@@ -30,7 +30,6 @@ func (a *MailActor) Receive(ctx actor.Context) {
 		ctx.Respond(&pb.Response{})
 	case *actor.Started:
 		glog.Notice("Starting, initialize actor here")
-		a.init(ctx)
 	case *actor.Stopping:
 		glog.Notice("Stopping, actor is about to shut down")
 	case *actor.Stopped:
@@ -39,7 +38,6 @@ func (a *MailActor) Receive(ctx actor.Context) {
 		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
-		a.timeout(ctx)
 	case proto.Message:
 		a.Handler(msg, ctx)
 	default:

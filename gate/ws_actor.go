@@ -25,7 +25,7 @@ func (ws *WSConn) Receive(ctx actor.Context) {
 		glog.Notice("Restarting, actor is about to restart")
 	case *actor.ReceiveTimeout:
 		glog.Infof("ReceiveTimeout: %v", ctx.Self().String())
-		ws.timeout(ctx)
+		//ws.timeout(ctx)
 	case *testWs:
 		glog.Infof("self %s\n", ctx.Self().String())
 		glog.Infof("msg.Who %v\n", msg.Who)
