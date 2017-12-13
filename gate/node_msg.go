@@ -135,6 +135,7 @@ func (a *GateActor) HandlerStop(ctx actor.Context) {
 	//	glog.Debugf("Stop role: %s", k)
 	//	v.Tell(msg)
 	//}
+	a.disc(ctx)
 }
 
 func (a *GateActor) init(ctx actor.Context) {
