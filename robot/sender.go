@@ -25,7 +25,8 @@ func (c *Robot) SendRegist() {
 	ctos.Phone = c.data.Phone
 	ctos.Nickname = c.data.Nickname
 	h := md5.New()
-	h.Write([]byte("piaohua")) // 需要加密的字符串为
+	passwd := cfg.Section("robot").Key("passwd").Value()
+	h.Write([]byte(passwd)) // 需要加密的字符串为
 	pwd := hex.EncodeToString(h.Sum(nil))
 	ctos.Password = pwd
 	c.Sender(ctos)
@@ -36,7 +37,8 @@ func (c *Robot) SendLogin() {
 	ctos := &pb.CLogin{}
 	ctos.Phone = c.data.Phone
 	h := md5.New()
-	h.Write([]byte("piaohua")) // 需要加密的字符串为
+	passwd := cfg.Section("robot").Key("passwd").Value()
+	h.Write([]byte(passwd)) // 需要加密的字符串为
 	pwd := hex.EncodeToString(h.Sum(nil))
 	ctos.Password = pwd
 	//utils.Sleep(4)

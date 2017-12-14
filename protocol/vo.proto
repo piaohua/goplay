@@ -107,6 +107,7 @@ message RoomData
     uint32 seat      = 17;  //操作位置
     uint32 number    = 18;  //剩余牌数
 	uint32 total     = 19;  //总牌局数
+	uint32 players   = 20;  //房间内人数
 }
 
 // 下注信息

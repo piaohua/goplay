@@ -205,6 +205,7 @@
 		HallConnected
 		ServeStop
 		ServeStoped
+		Internal
 		DanSeason
 		DanRanking
 		DanTaskList
