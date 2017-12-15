@@ -83,7 +83,7 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
 	case *pb.ServeStart:
-		a.start()
+		a.start(ctx)
 		//响应
 		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)

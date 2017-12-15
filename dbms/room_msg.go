@@ -35,7 +35,7 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
 	case *pb.ServeStart:
-		ws.start()
+		a.start(ctx)
 		//响应
 		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)
@@ -45,7 +45,7 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 }
 
 func (a *RoomActor) start(ctx actor.Context) {
-	glog.Infof("ws start: %v", ctx.Self().String())
+	glog.Infof("room start: %v", ctx.Self().String())
 	//ctx.SetReceiveTimeout(loop) //timeout set
 }
 

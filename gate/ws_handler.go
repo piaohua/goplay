@@ -30,13 +30,13 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		//断开连接
 		ws.Close()
 	case *pb.ServeStop:
-		ws.stop()
+		ws.stop(ctx)
 		//响应
 		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)
 	case *pb.ServeStoped:
 	case *pb.ServeStart:
-		ws.start()
+		ws.start(ctx)
 		//响应
 		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)

@@ -45,7 +45,7 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
 	case *pb.ServeStart:
-		ws.start()
+		a.start(ctx)
 		//响应
 		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)
@@ -80,7 +80,7 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 }
 
 func (a *BetsActor) start(ctx actor.Context) {
-	glog.Infof("ws start: %v", ctx.Self().String())
+	glog.Infof("bets start: %v", ctx.Self().String())
 	//ctx.SetReceiveTimeout(loop) //timeout set
 	a.initBetting(ctx)
 }
@@ -174,7 +174,7 @@ func (t *BetsActor) timeout1() {
 		t.timer = 0
 		t.state = 0
 		//广播开始消息
-		t.start()
+		t.gamestart()
 	default:
 		t.timer++
 	}
@@ -210,7 +210,7 @@ func (a *BetsActor) shuffle() (cards []uint32) {
 	return
 }
 
-func (a *BetsActor) start() {
+func (a *BetsActor) gamestart() {
 	today := utils.String(utils.DayDate())
 	if today != a.today { //第二天重置
 		a.uniqueid.Save()
@@ -227,7 +227,7 @@ func (a *BetsActor) start() {
 		Times: a.betTime,
 		State: a.state,
 	}
-	glog.Infof("start today %s, state %d", a.today, a.state)
+	glog.Infof("gamestart today %s, state %d", a.today, a.state)
 	//Broadcast(msg)
 	//a.hallPid.Tell(msg)
 	nodePid.Tell(msg)
