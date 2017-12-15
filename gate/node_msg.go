@@ -72,13 +72,17 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		a.roomPid.Tell(arg)
 	case *pb.ServeStop:
 		//关闭服务
-		a.HandlerStop(ctx)
+		a.handlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.ServeStart:
+		//响应
+		rsp := new(pb.ServeStarted)
+		ctx.Respond(rsp)
 	case *pb.HallConnect:
 		//初始化建立连接
-		a.init(ctx)
+		a.start(ctx)
 	case *pb.SyncConfig:
 		//同步配置
 		arg := msg.(*pb.SyncConfig)
@@ -128,18 +132,8 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
-func (a *GateActor) HandlerStop(ctx actor.Context) {
-	glog.Debugf("HandlerStop: %s", a.Name)
-	//msg := new(pb.ServeStop)
-	//for k, v := range a.roles {
-	//	glog.Debugf("Stop role: %s", k)
-	//	v.Tell(msg)
-	//}
-	a.disc(ctx)
-}
-
-func (a *GateActor) init(ctx actor.Context) {
-	glog.Infof("gate init: %v", ctx.Self().String())
+func (a *GateActor) start(ctx actor.Context) {
+	glog.Infof("gate start: %v", ctx.Self().String())
 	//dbms
 	bind := cfg.Section("dbms").Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()
@@ -194,7 +188,13 @@ func (a *GateActor) init(ctx actor.Context) {
 	glog.Infof("a.rolePid: %s", a.rolePid.String())
 }
 
-func (a *GateActor) disc(ctx actor.Context) {
+func (a *GateActor) handlerStop(ctx actor.Context) {
+	glog.Debugf("handlerStop: %s", a.Name)
+	//msg := new(pb.ServeClose)
+	//for k, v := range a.roles {
+	//	glog.Debugf("Stop role: %s", k)
+	//	v.Tell(msg)
+	//}
 	//TODO 关闭消息
 	//for k, v := range a.roles {
 	//}

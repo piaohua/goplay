@@ -60,9 +60,14 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 		ctx.Respond(connected)
 	case *pb.ServeStop:
 		//关闭服务
-		a.HandlerStop(ctx)
+		a.handlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
+		ctx.Respond(rsp)
+	case *pb.ServeStart:
+		ws.start()
+		//响应
+		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)
 	case *pb.SPushNewBetting,
 		*pb.SPushJackpot,
@@ -79,8 +84,19 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
-func (a *DBMSActor) HandlerStop(ctx actor.Context) {
-	glog.Debugf("HandlerStop: %s", a.Name)
+func (a *DBMSActor) start(ctx actor.Context) {
+	glog.Infof("ws start: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(loop) //timeout set
+}
+
+func (a *DBMSActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(0) //timeout off
+	//TODO
+}
+
+func (a *DBMSActor) handlerStop(ctx actor.Context) {
+	glog.Debugf("handlerStop: %s", a.Name)
 	//回存数据
 	for k, _ := range a.gates {
 		glog.Debugf("Stop gate: %s", k)

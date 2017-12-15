@@ -48,17 +48,6 @@ func (a *DBMSActor) Receive(ctx actor.Context) {
 	}
 }
 
-func (a *DBMSActor) init(ctx actor.Context) {
-	glog.Infof("ws init: %v", ctx.Self().String())
-	ctx.SetReceiveTimeout(loop) //timeout set
-}
-
-func (a *DBMSActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
-	//TODO
-}
-
 func newDBMSActor() actor.Actor {
 	a := new(DBMSActor)
 	a.Name = cfg.Section("dbms").Name()
@@ -71,6 +60,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	remote.Start(bind)
 	//
 	//remote.Register(name, actor.FromProducer(newDBMSActor))
+	msg := new(pb.ServeStart)
 	dbmsProps := actor.
 		FromInstance(newDBMSActor())
 	remote.Register(name, dbmsProps)
@@ -89,6 +79,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	}
 	response1 := res1.(*pb.HallConnected)
 	msg1.Sender = response1.HallPid
+	nodePid.Tell(msg)
 	//
 	//remote.Register(room, actor.FromProducer(newRoomActor))
 	roomProps := actor.
@@ -101,6 +92,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	glog.Infof("roomPid %s", roomPid.String())
 	//roomPid.Tell(new(pb.HallConnect))
 	roomPid.Tell(msg1)
+	roomPid.Tell(msg)
 	//
 	//remote.Register(role, actor.FromProducer(newRoleActor))
 	roleProps := actor.
@@ -113,6 +105,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	glog.Infof("rolePid %s", rolePid.String())
 	//rolePid.Tell(new(pb.HallConnect))
 	rolePid.Tell(msg1)
+	rolePid.Tell(msg)
 	//
 	//remote.Register(mail, actor.FromProducer(newMailActor))
 	mailProps := actor.
@@ -125,6 +118,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	glog.Infof("mailPid %s", mailPid.String())
 	//mailPid.Tell(new(pb.HallConnect))
 	mailPid.Tell(msg1)
+	mailPid.Tell(msg)
 	//
 	//remote.Register(bets, actor.FromProducer(newBetsActor))
 	betsProps := actor.
@@ -137,6 +131,7 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	glog.Infof("betsPid %s", betsPid.String())
 	//betsPid.Tell(new(pb.HallConnect))
 	betsPid.Tell(msg1)
+	betsPid.Tell(msg)
 }
 
 //关闭

@@ -183,14 +183,45 @@ func (m *HallConnected) GetName() string {
 	return ""
 }
 
-// 停掉服务
+// 启动服务
+type ServeStart struct {
+	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+}
+
+func (m *ServeStart) Reset()                    { *m = ServeStart{} }
+func (*ServeStart) ProtoMessage()               {}
+func (*ServeStart) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{8} }
+
+func (m *ServeStart) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+type ServeStarted struct {
+	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+}
+
+func (m *ServeStarted) Reset()                    { *m = ServeStarted{} }
+func (*ServeStarted) ProtoMessage()               {}
+func (*ServeStarted) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{9} }
+
+func (m *ServeStarted) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+// 停止服务
 type ServeStop struct {
 	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
 }
 
 func (m *ServeStop) Reset()                    { *m = ServeStop{} }
 func (*ServeStop) ProtoMessage()               {}
-func (*ServeStop) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{8} }
+func (*ServeStop) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{10} }
 
 func (m *ServeStop) GetMessage() string {
 	if m != nil {
@@ -205,9 +236,25 @@ type ServeStoped struct {
 
 func (m *ServeStoped) Reset()                    { *m = ServeStoped{} }
 func (*ServeStoped) ProtoMessage()               {}
-func (*ServeStoped) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{9} }
+func (*ServeStoped) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{11} }
 
 func (m *ServeStoped) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+// 关闭服务
+type ServeClose struct {
+	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
+}
+
+func (m *ServeClose) Reset()                    { *m = ServeClose{} }
+func (*ServeClose) ProtoMessage()               {}
+func (*ServeClose) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{12} }
+
+func (m *ServeClose) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
@@ -223,7 +270,7 @@ type Internal struct {
 
 func (m *Internal) Reset()                    { *m = Internal{} }
 func (*Internal) ProtoMessage()               {}
-func (*Internal) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{10} }
+func (*Internal) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{13} }
 
 func (m *Internal) GetUserid() string {
 	if m != nil {
@@ -246,6 +293,53 @@ func (m *Internal) GetMessage() string {
 	return ""
 }
 
+// 节点获取
+type GetNode struct {
+	Userid string `protobuf:"bytes,1,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Roomid string `protobuf:"bytes,2,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+}
+
+func (m *GetNode) Reset()                    { *m = GetNode{} }
+func (*GetNode) ProtoMessage()               {}
+func (*GetNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{14} }
+
+func (m *GetNode) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *GetNode) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+type GotNode struct {
+	Addr   string     `protobuf:"bytes,1,opt,name=Addr,proto3" json:"Addr,omitempty"`
+	Sender *actor.PID `protobuf:"bytes,2,opt,name=Sender" json:"Sender,omitempty"`
+}
+
+func (m *GotNode) Reset()                    { *m = GotNode{} }
+func (*GotNode) ProtoMessage()               {}
+func (*GotNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{15} }
+
+func (m *GotNode) GetAddr() string {
+	if m != nil {
+		return m.Addr
+	}
+	return ""
+}
+
+func (m *GotNode) GetSender() *actor.PID {
+	if m != nil {
+		return m.Sender
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*Request)(nil), "pb.Request")
 	proto.RegisterType((*Response)(nil), "pb.Response")
@@ -255,9 +349,14 @@ func init() {
 	proto.RegisterType((*GateDisconnected)(nil), "pb.GateDisconnected")
 	proto.RegisterType((*HallConnect)(nil), "pb.HallConnect")
 	proto.RegisterType((*HallConnected)(nil), "pb.HallConnected")
+	proto.RegisterType((*ServeStart)(nil), "pb.ServeStart")
+	proto.RegisterType((*ServeStarted)(nil), "pb.ServeStarted")
 	proto.RegisterType((*ServeStop)(nil), "pb.ServeStop")
 	proto.RegisterType((*ServeStoped)(nil), "pb.ServeStoped")
+	proto.RegisterType((*ServeClose)(nil), "pb.ServeClose")
 	proto.RegisterType((*Internal)(nil), "pb.Internal")
+	proto.RegisterType((*GetNode)(nil), "pb.GetNode")
+	proto.RegisterType((*GotNode)(nil), "pb.GotNode")
 }
 func (this *Request) Equal(that interface{}) bool {
 	if that == nil {
@@ -514,6 +613,66 @@ func (this *HallConnected) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *ServeStart) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ServeStart)
+	if !ok {
+		that2, ok := that.(ServeStart)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
+func (this *ServeStarted) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ServeStarted)
+	if !ok {
+		that2, ok := that.(ServeStarted)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
 func (this *ServeStop) Equal(that interface{}) bool {
 	if that == nil {
 		if this == nil {
@@ -574,6 +733,36 @@ func (this *ServeStoped) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *ServeClose) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ServeClose)
+	if !ok {
+		that2, ok := that.(ServeClose)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
 func (this *Internal) Equal(that interface{}) bool {
 	if that == nil {
 		if this == nil {
@@ -606,6 +795,72 @@ func (this *Internal) Equal(that interface{}) bool {
 		return false
 	}
 	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
+func (this *GetNode) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*GetNode)
+	if !ok {
+		that2, ok := that.(GetNode)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	return true
+}
+func (this *GotNode) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*GotNode)
+	if !ok {
+		that2, ok := that.(GotNode)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Addr != that1.Addr {
+		return false
+	}
+	if !this.Sender.Equal(that1.Sender) {
 		return false
 	}
 	return true
@@ -703,6 +958,26 @@ func (this *HallConnected) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *ServeStart) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.ServeStart{")
+	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ServeStarted) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.ServeStarted{")
+	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *ServeStop) GoString() string {
 	if this == nil {
 		return "nil"
@@ -723,6 +998,16 @@ func (this *ServeStoped) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
+func (this *ServeClose) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.ServeClose{")
+	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
 func (this *Internal) GoString() string {
 	if this == nil {
 		return "nil"
@@ -732,6 +1017,30 @@ func (this *Internal) GoString() string {
 	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
 	s = append(s, "Code: "+fmt.Sprintf("%#v", this.Code)+",\n")
 	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GetNode) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&pb.GetNode{")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *GotNode) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&pb.GotNode{")
+	s = append(s, "Addr: "+fmt.Sprintf("%#v", this.Addr)+",\n")
+	if this.Sender != nil {
+		s = append(s, "Sender: "+fmt.Sprintf("%#v", this.Sender)+",\n")
+	}
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -981,6 +1290,54 @@ func (m *HallConnected) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *ServeStart) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServeStart) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Message) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
+		i += copy(dAtA[i:], m.Message)
+	}
+	return i, nil
+}
+
+func (m *ServeStarted) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServeStarted) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Message) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
+		i += copy(dAtA[i:], m.Message)
+	}
+	return i, nil
+}
+
 func (m *ServeStop) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1029,6 +1386,30 @@ func (m *ServeStoped) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *ServeClose) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServeClose) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Message) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
+		i += copy(dAtA[i:], m.Message)
+	}
+	return i, nil
+}
+
 func (m *Internal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1061,6 +1442,70 @@ func (m *Internal) MarshalTo(dAtA []byte) (int, error) {
 		i++
 		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
 		i += copy(dAtA[i:], m.Message)
+	}
+	return i, nil
+}
+
+func (m *GetNode) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetNode) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	return i, nil
+}
+
+func (m *GotNode) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GotNode) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Addr) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Addr)))
+		i += copy(dAtA[i:], m.Addr)
+	}
+	if m.Sender != nil {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(m.Sender.Size()))
+		n5, err := m.Sender.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n5
 	}
 	return i, nil
 }
@@ -1192,6 +1637,26 @@ func (m *HallConnected) Size() (n int) {
 	return n
 }
 
+func (m *ServeStart) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
+func (m *ServeStarted) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
 func (m *ServeStop) Size() (n int) {
 	var l int
 	_ = l
@@ -1203,6 +1668,16 @@ func (m *ServeStop) Size() (n int) {
 }
 
 func (m *ServeStoped) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
+func (m *ServeClose) Size() (n int) {
 	var l int
 	_ = l
 	l = len(m.Message)
@@ -1225,6 +1700,34 @@ func (m *Internal) Size() (n int) {
 	}
 	l = len(m.Message)
 	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
+func (m *GetNode) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
+func (m *GotNode) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Addr)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	if m.Sender != nil {
+		l = m.Sender.Size()
 		n += 1 + l + sovProtos(uint64(l))
 	}
 	return n
@@ -1328,6 +1831,26 @@ func (this *HallConnected) String() string {
 	}, "")
 	return s
 }
+func (this *ServeStart) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ServeStart{`,
+		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ServeStarted) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ServeStarted{`,
+		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *ServeStop) String() string {
 	if this == nil {
 		return "nil"
@@ -1348,6 +1871,16 @@ func (this *ServeStoped) String() string {
 	}, "")
 	return s
 }
+func (this *ServeClose) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ServeClose{`,
+		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
 func (this *Internal) String() string {
 	if this == nil {
 		return "nil"
@@ -1356,6 +1889,28 @@ func (this *Internal) String() string {
 		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
 		`Code:` + fmt.Sprintf("%v", this.Code) + `,`,
 		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GetNode) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GetNode{`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *GotNode) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&GotNode{`,
+		`Addr:` + fmt.Sprintf("%v", this.Addr) + `,`,
+		`Sender:` + strings.Replace(fmt.Sprintf("%v", this.Sender), "PID", "actor.PID", 1) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -2161,6 +2716,164 @@ func (m *HallConnected) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *ServeStart) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServeStart: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServeStart: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ServeStarted) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServeStarted: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServeStarted: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func (m *ServeStop) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2267,6 +2980,85 @@ func (m *ServeStoped) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: ServeStoped: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ServeClose) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServeClose: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServeClose: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2456,6 +3248,226 @@ func (m *Internal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *GetNode) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetNode: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetNode: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GotNode) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GotNode: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GotNode: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Addr", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Addr = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Sender == nil {
+				m.Sender = &actor.PID{}
+			}
+			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func skipProtos(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
@@ -2564,29 +3576,33 @@ var (
 func init() { proto.RegisterFile("protos.proto", fileDescriptorProtos) }
 
 var fileDescriptorProtos = []byte{
-	// 376 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x92, 0xbd, 0x4e, 0xe3, 0x40,
-	0x10, 0xc7, 0xbd, 0xc9, 0x29, 0x1f, 0xe3, 0xcb, 0xe9, 0xb4, 0xc5, 0x29, 0x4a, 0xb1, 0x3a, 0x59,
-	0x77, 0x02, 0xa4, 0x60, 0x8b, 0x0f, 0xd1, 0xf2, 0x91, 0x20, 0x48, 0x01, 0x8a, 0x1c, 0x78, 0x00,
-	0xc7, 0x1e, 0x85, 0x88, 0x64, 0xd7, 0x78, 0x37, 0x48, 0x74, 0x3c, 0x02, 0x8f, 0xc1, 0xa3, 0x50,
-	0xa6, 0xa4, 0x24, 0xa6, 0xa1, 0xcc, 0x23, 0x20, 0x2f, 0x89, 0xe5, 0x48, 0x10, 0x29, 0x54, 0x9e,
-	0xf1, 0xcc, 0xfc, 0xfe, 0xf3, 0x1f, 0x1b, 0x7e, 0x86, 0x91, 0x50, 0x42, 0xda, 0xfa, 0x41, 0x73,
-	0x61, 0xb7, 0xb6, 0xd7, 0xeb, 0xab, 0xab, 0x51, 0xd7, 0xf6, 0xc5, 0xd0, 0x39, 0x94, 0x77, 0xfc,
-	0x3a, 0x12, 0xbc, 0x75, 0xe1, 0xe8, 0x06, 0xcf, 0x57, 0x22, 0xda, 0xec, 0x09, 0x47, 0x07, 0x4e,
-	0x76, 0xd6, 0xda, 0x87, 0xa2, 0x8b, 0x37, 0x23, 0x94, 0x8a, 0xd6, 0xa0, 0x74, 0x29, 0x31, 0x3a,
-	0xf7, 0x86, 0x58, 0x25, 0x7f, 0xc9, 0x7a, 0xd9, 0x4d, 0x73, 0x5a, 0x85, 0xe2, 0x19, 0x4a, 0xe9,
-	0xf5, 0xb0, 0x9a, 0xd3, 0xa5, 0x79, 0x6a, 0x1d, 0x40, 0xc9, 0x45, 0x19, 0x0a, 0x2e, 0xf1, 0x9b,
-	0x84, 0x2d, 0x30, 0x4f, 0x3c, 0x85, 0x0d, 0xc1, 0x39, 0xfa, 0x8a, 0x5a, 0x50, 0xe8, 0x20, 0x0f,
-	0x30, 0xd2, 0x08, 0x73, 0x1b, 0x6c, 0xbd, 0xb6, 0xdd, 0x6e, 0x35, 0xdd, 0x59, 0xc5, 0xda, 0x80,
-	0x4a, 0x66, 0x04, 0x83, 0x2c, 0x9d, 0x2c, 0xd2, 0x77, 0xe1, 0x57, 0xd2, 0xda, 0xec, 0x4b, 0x7f,
-	0x05, 0x81, 0x3a, 0xfc, 0x5e, 0x9c, 0x5a, 0xaa, 0x71, 0x0c, 0xe6, 0xa9, 0x37, 0x18, 0xac, 0xe0,
-	0x80, 0x52, 0xf8, 0xa1, 0xcf, 0xf4, 0x71, 0x0b, 0x1d, 0x5b, 0x3e, 0x54, 0x32, 0x18, 0x0c, 0xe8,
-	0x3f, 0x28, 0x26, 0x2f, 0xda, 0xfd, 0xe0, 0x13, 0xd2, 0xbc, 0xf4, 0xf5, 0x65, 0x53, 0x91, 0x7c,
-	0x46, 0xe4, 0x3f, 0x94, 0x3b, 0x18, 0xdd, 0x62, 0x47, 0x89, 0x70, 0x89, 0xa5, 0x35, 0x30, 0xd3,
-	0xb6, 0xa5, 0xde, 0xdb, 0x50, 0x6a, 0x71, 0x85, 0x11, 0xf7, 0x06, 0xf4, 0x0f, 0x14, 0x92, 0xef,
-	0x3d, 0x5b, 0xb7, 0xec, 0xce, 0xb2, 0x64, 0x8f, 0x86, 0x08, 0x52, 0xb3, 0x49, 0x9c, 0x25, 0xe6,
-	0x17, 0x88, 0x47, 0xf5, 0xf1, 0x84, 0x19, 0xcf, 0x13, 0x66, 0x4c, 0x27, 0x8c, 0xdc, 0xc7, 0x8c,
-	0x3c, 0xc6, 0x8c, 0x3c, 0xc5, 0x8c, 0x8c, 0x63, 0x46, 0x5e, 0x62, 0x46, 0xde, 0x62, 0x66, 0x4c,
-	0x63, 0x46, 0x1e, 0x5e, 0x99, 0xd1, 0x2d, 0xe8, 0xff, 0x78, 0xe7, 0x3d, 0x00, 0x00, 0xff, 0xff,
-	0x8a, 0xd1, 0xc9, 0x9f, 0x13, 0x03, 0x00, 0x00,
+	// 441 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xcd, 0x6e, 0xd3, 0x40,
+	0x10, 0xc7, 0xb3, 0x69, 0x65, 0x27, 0xe3, 0x16, 0xa1, 0x3d, 0x54, 0x51, 0x0f, 0x2b, 0x64, 0xf1,
+	0x51, 0xa4, 0x62, 0x8b, 0x0f, 0x21, 0x71, 0x82, 0x90, 0xa2, 0x90, 0x03, 0x55, 0xe4, 0xc0, 0x03,
+	0x38, 0xde, 0x51, 0xb0, 0x70, 0x76, 0xcd, 0xee, 0x16, 0x89, 0x1b, 0x8f, 0xc0, 0x63, 0xf0, 0x28,
+	0x1c, 0x7b, 0xe4, 0x48, 0xcc, 0x85, 0x63, 0x1f, 0x01, 0x79, 0xeb, 0x18, 0x47, 0x22, 0x96, 0xc2,
+	0x29, 0x33, 0x99, 0xff, 0xfc, 0x66, 0xe7, 0xaf, 0x31, 0x1c, 0xe4, 0x4a, 0x1a, 0xa9, 0x03, 0xfb,
+	0x43, 0xbb, 0xf9, 0xfc, 0xf8, 0xe9, 0x22, 0x35, 0xef, 0x2f, 0xe6, 0x41, 0x22, 0x97, 0xe1, 0x50,
+	0x7f, 0x16, 0x1f, 0x94, 0x14, 0x93, 0xb7, 0xa1, 0x15, 0xc4, 0x89, 0x91, 0xea, 0xc1, 0x42, 0x86,
+	0x36, 0x08, 0x9b, 0xbd, 0xfe, 0x73, 0x70, 0x23, 0xfc, 0x78, 0x81, 0xda, 0xd0, 0x63, 0xe8, 0xbd,
+	0xd3, 0xa8, 0xce, 0xe3, 0x25, 0x0e, 0xc8, 0x2d, 0x72, 0xd2, 0x8f, 0xea, 0x9c, 0x0e, 0xc0, 0x7d,
+	0x83, 0x5a, 0xc7, 0x0b, 0x1c, 0x74, 0x6d, 0x69, 0x9d, 0xfa, 0x2f, 0xa0, 0x17, 0xa1, 0xce, 0xa5,
+	0xd0, 0xf8, 0x9f, 0x84, 0x87, 0xe0, 0x8d, 0x63, 0x83, 0x23, 0x29, 0x04, 0x26, 0x86, 0xfa, 0xe0,
+	0xcc, 0x50, 0x70, 0x54, 0x16, 0xe1, 0x3d, 0x82, 0xc0, 0x3e, 0x3b, 0x98, 0x4e, 0xce, 0xa2, 0xaa,
+	0xe2, 0xdf, 0x87, 0xc3, 0x46, 0x0b, 0xf2, 0x26, 0x9d, 0x6c, 0xd2, 0x9f, 0xc0, 0x8d, 0x52, 0x7a,
+	0x96, 0xea, 0x64, 0x87, 0x01, 0xa7, 0x70, 0x73, 0xb3, 0xab, 0x75, 0xc6, 0x2b, 0xf0, 0x5e, 0xc7,
+	0x59, 0xb6, 0xc3, 0x06, 0x94, 0xc2, 0xbe, 0xb5, 0xe9, 0xda, 0x0b, 0x1b, 0xfb, 0x09, 0x1c, 0x36,
+	0x30, 0xc8, 0xe9, 0x6d, 0x70, 0xcb, 0x3f, 0xa6, 0x29, 0xff, 0x07, 0x69, 0x5d, 0xda, 0xee, 0x6c,
+	0x3d, 0x64, 0xaf, 0x31, 0xe4, 0x2e, 0xc0, 0x0c, 0xd5, 0x27, 0x9c, 0x99, 0x58, 0x99, 0x96, 0x9d,
+	0x4e, 0xe0, 0xe0, 0xaf, 0xae, 0x75, 0xfb, 0x3b, 0xd0, 0xaf, 0x94, 0x32, 0x6f, 0x91, 0xdd, 0x03,
+	0xaf, 0x96, 0xb5, 0xf2, 0xd6, 0x2f, 0x1c, 0x65, 0x52, 0x63, 0x8b, 0x6e, 0x0a, 0xbd, 0x89, 0x30,
+	0xa8, 0x44, 0x9c, 0xd1, 0x23, 0x70, 0xca, 0x4b, 0xab, 0x8c, 0xea, 0x47, 0x55, 0x56, 0x3a, 0x30,
+	0x92, 0xbc, 0xb6, 0xb9, 0x8c, 0x9b, 0xc4, 0xbd, 0x4d, 0xe2, 0x33, 0x70, 0xc7, 0x68, 0xce, 0x4b,
+	0xd1, 0x36, 0xe0, 0x11, 0x38, 0x91, 0x94, 0xcb, 0x94, 0x57, 0xc8, 0x2a, 0xf3, 0x87, 0xe0, 0x8e,
+	0xe5, 0x75, 0x2b, 0x85, 0xfd, 0x21, 0xe7, 0xaa, 0x6a, 0xb4, 0x71, 0xe3, 0x24, 0xba, 0xdb, 0x4e,
+	0xe2, 0xe5, 0xe9, 0xe5, 0x8a, 0x75, 0x7e, 0xac, 0x58, 0xe7, 0x6a, 0xc5, 0xc8, 0x97, 0x82, 0x91,
+	0x6f, 0x05, 0x23, 0xdf, 0x0b, 0x46, 0x2e, 0x0b, 0x46, 0x7e, 0x16, 0x8c, 0xfc, 0x2e, 0x58, 0xe7,
+	0xaa, 0x60, 0xe4, 0xeb, 0x2f, 0xd6, 0x99, 0x3b, 0xf6, 0xfb, 0x7d, 0xfc, 0x27, 0x00, 0x00, 0xff,
+	0xff, 0x56, 0xc0, 0x1e, 0x82, 0x0b, 0x04, 0x00, 0x00,
 }

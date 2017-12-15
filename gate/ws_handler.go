@@ -23,12 +23,24 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.betsPid = arg.BetsPid
 		ws.mailPid = arg.MailPid
 		glog.Infof("SetLogined %v", arg.Message)
-	case *pb.ServeStop:
+	case *pb.ServeClose:
 		arg := new(pb.SLoginOut)
 		arg.Rtype = 2 //停服
 		ws.Send(arg)
 		//断开连接
 		ws.Close()
+	case *pb.ServeStop:
+		ws.stop()
+		//响应
+		rsp := new(pb.ServeStarted)
+		ctx.Respond(rsp)
+	case *pb.ServeStoped:
+	case *pb.ServeStart:
+		ws.start()
+		//响应
+		rsp := new(pb.ServeStarted)
+		ctx.Respond(rsp)
+	case *pb.ServeStarted:
 	case *pb.LoginElse:
 		ws.loginElse() //别处登录
 	case *pb.SyncUser:
@@ -53,6 +65,55 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		ws.HandlerLogin(msg, ctx)
 	default:
 		glog.Errorf("unknown message %v", msg)
+	}
+}
+
+func (ws *WSConn) start(ctx actor.Context) {
+	glog.Infof("ws start: %v", ctx.Self().String())
+	ctx.SetReceiveTimeout(waitForLogin) //login timeout set
+	set := &pb.SetLogin{
+		Sender: ctx.Self(),
+	}
+	nodePid.Tell(set)
+}
+
+func (ws *WSConn) stop(ctx actor.Context) {
+	glog.Infof("ws stop: %v", ctx.Self().String())
+	//已经断开,在别处登录
+	if ws.hallPid == nil {
+		return
+	}
+	if ws.User == nil {
+		return
+	}
+	//回存数据
+	ws.syncUser()
+	//登出日志
+	if ws.dbmsPid != nil {
+		msg2 := &pb.LogLogout{
+			Userid: ws.User.Userid,
+			Event:  1,
+		}
+		ws.dbmsPid.Tell(msg2)
+	}
+	//断开处理
+	msg := &pb.Logout{
+		Sender: ctx.Self(),
+		Userid: ws.User.Userid,
+	}
+	nodePid.Tell(msg)
+}
+
+func (ws *WSConn) timeout(ctx actor.Context) {
+	if !ws.online {
+		//断开连接
+		ws.Close()
+		return
+	}
+	if ws.status {
+		//同步数据
+		ws.syncUser()
+		ws.status = false
 	}
 }
 

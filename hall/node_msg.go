@@ -82,6 +82,11 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.ServeStart:
+		a.start()
+		//响应
+		rsp := new(pb.ServeStarted)
+		ctx.Respond(rsp)
 	case *pb.WxpayCallback:
 		arg := msg.(*pb.WxpayCallback)
 		glog.Debugf("WxpayCallback: %v", arg)
@@ -108,10 +113,21 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
+func (a *HallActor) start(ctx actor.Context) {
+	glog.Infof("ws start: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(loop) //timeout set
+}
+
+func (a *HallActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(0) //timeout off
+	//TODO
+}
+
 func (a *HallActor) HandlerStop(ctx actor.Context) {
 	glog.Debugf("HandlerStop: %s", a.Name)
 	//回存数据
-	//msg := new(pb.ServeStop)
+	//msg := new(pb.ServeClose)
 	//for k, v := range a.roles {
 	//	glog.Debugf("Stop role: %s", k)
 	//	v.Tell(msg)

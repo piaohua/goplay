@@ -45,7 +45,16 @@ message HallConnected {
     string Name = 3;
 }
 
-//停掉服务
+//启动服务
+message ServeStart {
+    string Message = 1;
+}
+
+message ServeStarted {
+    string Message = 1;
+}
+
+//停止服务
 message ServeStop {
     string Message = 1;
 }
@@ -54,9 +63,25 @@ message ServeStoped {
     string Message = 1;
 }
 
+//关闭服务
+message ServeClose {
+    string Message = 1;
+}
+
 //内部消息
 message Internal {
     string Userid = 1; //路由方式
     string Code = 2; //消息编号
     string Message = 3; //消息内容
+}
+
+//节点获取
+message GetNode {
+    string Userid = 1; //
+    string Roomid = 2; //
+}
+
+message GotNode {
+    string Addr = 1; //地址
+    actor.PID Sender = 2;
 }

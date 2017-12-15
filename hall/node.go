@@ -60,17 +60,6 @@ func newHallActor() actor.Actor {
 	return a
 }
 
-func (a *HallActor) init(ctx actor.Context) {
-	glog.Infof("ws init: %v", ctx.Self().String())
-	ctx.SetReceiveTimeout(loop) //timeout set
-}
-
-func (a *HallActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
-	//TODO
-}
-
 func NewRemote(bind, name string) {
 	remote.Start(bind)
 	remote.Register(name, actor.FromProducer(newHallActor))
@@ -80,6 +69,7 @@ func NewRemote(bind, name string) {
 	if err != nil {
 		glog.Fatalf("nodePid err %v", err)
 	}
+	nodePid.Tell(new(pb.ServeStart))
 }
 
 //关闭

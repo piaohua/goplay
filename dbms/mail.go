@@ -45,17 +45,6 @@ func (a *MailActor) Receive(ctx actor.Context) {
 	}
 }
 
-func (a *MailActor) init(ctx actor.Context) {
-	glog.Infof("ws init: %v", ctx.Self().String())
-	ctx.SetReceiveTimeout(loop) //timeout set
-}
-
-func (a *MailActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
-	//TODO
-}
-
 func newMailActor() actor.Actor {
 	a := new(MailActor)
 	a.Name = cfg.Section("mail").Name()

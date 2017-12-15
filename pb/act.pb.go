@@ -203,9 +203,14 @@
 		GateDisconnected
 		HallConnect
 		HallConnected
+		ServeStart
+		ServeStarted
 		ServeStop
 		ServeStoped
+		ServeClose
 		Internal
+		GetNode
+		GotNode
 		DanSeason
 		DanRanking
 		DanTaskList

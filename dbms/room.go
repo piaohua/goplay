@@ -49,17 +49,6 @@ func (a *RoomActor) Receive(ctx actor.Context) {
 	}
 }
 
-func (a *RoomActor) init(ctx actor.Context) {
-	glog.Infof("ws init: %v", ctx.Self().String())
-	ctx.SetReceiveTimeout(loop) //timeout set
-}
-
-func (a *RoomActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
-	//TODO
-}
-
 func newRoomActor() actor.Actor {
 	a := new(RoomActor)
 	a.Name = cfg.Section("room").Name()

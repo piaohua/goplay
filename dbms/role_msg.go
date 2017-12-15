@@ -40,6 +40,11 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
+	case *pb.ServeStart:
+		ws.start()
+		//响应
+		rsp := new(pb.ServeStarted)
+		ctx.Respond(rsp)
 	case *pb.SyncUser:
 		arg := msg.(*pb.SyncUser)
 		a.syncUser(arg, ctx)
@@ -123,6 +128,17 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+func (a *RoleActor) start(ctx actor.Context) {
+	glog.Infof("ws start: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(loop) //timeout set
+}
+
+func (a *RoleActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(waitForLogin) //timeout set
+	//TODO
 }
 
 func (a *RoleActor) handlerStop(ctx actor.Context) {

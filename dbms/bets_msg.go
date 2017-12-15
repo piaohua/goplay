@@ -40,9 +40,14 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 		a.hallPid.Tell(connect)
 	case *pb.ServeStop:
 		//关闭服务
-		a.HandlerStop(ctx)
+		a.handlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
+		ctx.Respond(rsp)
+	case *pb.ServeStart:
+		ws.start()
+		//响应
+		rsp := new(pb.ServeStarted)
 		ctx.Respond(rsp)
 	case *pb.BetsTimeout:
 		a.timeout1()
@@ -74,8 +79,20 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
-func (a *BetsActor) HandlerStop(ctx actor.Context) {
-	glog.Debugf("HandlerStop: %s", a.Name)
+func (a *BetsActor) start(ctx actor.Context) {
+	glog.Infof("ws start: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(loop) //timeout set
+	a.initBetting(ctx)
+}
+
+func (a *BetsActor) timeout(ctx actor.Context) {
+	glog.Debugf("timeout: %v", ctx.Self().String())
+	//ctx.SetReceiveTimeout(0) //timeout off
+	//TODO
+}
+
+func (a *BetsActor) handlerStop(ctx actor.Context) {
+	glog.Debugf("handlerStop: %s", a.Name)
 	//回存数据
 	if a.uniqueid != nil {
 		a.uniqueid.Save()
