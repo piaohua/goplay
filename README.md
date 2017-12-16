@@ -13,6 +13,8 @@ go clone github.com/piaohua/goplay
 cd $GOPATH/bin/ctrl
 ./ctrl
 
+cp conf.ini.local conf.ini
+
 ./ctrl build login
 ./login-bin -log_dir=./logs
 
@@ -119,12 +121,14 @@ game (package)
 
 ## 启动顺序
     hall
-    login
     dbms
     gate
+    game
+    login
 
 ## 停服顺序
     login
+    game
     gate
     dbms
     hall

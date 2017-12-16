@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -e
+
 usage() {
     echo " ./ctrl cmd "
-    echo " cmd : build (server|robot) (linux) "
-    echo " cmd : start (server|robot) "
-    echo " cmd : status (server|robot) "
-    echo " cmd : stop (server|robot) "
+    echo " cmd : build (hall|login|gate|dbms|robot) (linux) "
+    echo " cmd : start (hall|login|gate|dbms|robot) -node=1 "
+    echo " cmd : status (hall|login|gate|dbms|robot) "
+    echo " cmd : stop (hall|login|gate|dbms|robot) "
     echo " cmd : restart, sync, proto, bb "
 }
 
@@ -21,6 +23,16 @@ SUI_SRC_DIR="${GOPATH}/src/${appName}"
 
 PROTO_SRC="${SUI_SRC_DIR}/protocol"
 MSGDIR="${SUI_SRC_DIR}/pb"
+LOGFILE="${workDir}/ctrl.log"
+
+get_curr_time() {
+    echo `date +"%Y-%m-%d %H:%M:%S"`
+}
+
+save_log() {
+    echo "" >> ${LOGFILE}
+    echo "Time: "`get_curr_time`"   $1 " >> ${LOGFILE}
+}
 
 get_src_file() {
     if [[ ! -d ${SUI_SRC_DIR}/$1 ]]; then
@@ -70,6 +82,7 @@ build() {
             export GOARCH=amd64
             export GOPATH=${GOPATH}
             echo -n "编译LINUX版本 ... "
+            save_log "编译LINUX版本 ... "
             ;;
     esac
     if [[ ${binFile} == '' ]]; then
@@ -81,6 +94,7 @@ build() {
         exit 1
     fi
     echo "编译中 ... "
+    save_log "编译中 ... "
     go build -o ${binFile} -ldflags "-w -s" ${srcFile}
 }
 
@@ -112,8 +126,12 @@ start() {
             exit 1
         fi
         echo -n "正在启动 ... "
-        ${binFile} -log_dir="log" -stderrthreshold="ERROR" > $1.log 2>&1 &
+        save_log "正在启动 ${binFile} ${2} ... "
+        # $2 as -node="1"
+        ${binFile} -log_dir="logs" $2 > $1.log 2>&1 &
         echo $! > ${pidFile}
+        pid=`cat ${pidFile}`
+        save_log "${binFile} started ${pid} ... "
         sleep 3s
         status $1
     fi
@@ -157,10 +175,12 @@ stop() {
     fi
     if [ "$pid" != '' ]; then
         echo -n "正在停止 ... "
+        save_log "${pidFile} 正在停止 ${pid} ... "
         #kill -9 $PID
         kill -2 $pid
         sleep 15s
         echo "$pid killed!"
+        save_log "${pid} killed! "
     else
         echo "服务不在运行状态"
     fi
@@ -170,20 +190,47 @@ restart() {
     echo -n "正在重启 ... "
     stop $1
     sleep 1s
-    start $1
+    start $1 $2
+}
+
+# 同步更新
+sync2() {
+    binFile=`get_bin_file $1`
+    ~/data/ssh scp-up 8 ${binFile} /data/
+}
+
+sync() {
+    sync2 hall
+    sync2 login
+    sync2 dbms
+    sync2 gate
+    sync2 robot
+}
+
+# 编译
+bb() {
+    build hall
+    build login
+    build dbms
+    build gate
+    build robot
 }
 
 case $1 in
     build)
         build $2 $3;;
+    bb)
+        bb;;
     start)
-        start $2;;
+        start $2 $3;;
     status)
         status $2;;
     stop)
         stop $2;;
     restart)
-        restart $2;;
+        restart $2 $3;;
+    sync)
+        sync;;
     proto)
         proto;;
     *)

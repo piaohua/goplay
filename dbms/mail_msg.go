@@ -43,8 +43,8 @@ func (a *MailActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ServeStart:
 		a.start(ctx)
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.CMailList:
 		arg := msg.(*pb.CMailList)
 		userid := a.getUserid(ctx)

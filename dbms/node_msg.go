@@ -67,8 +67,8 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ServeStart:
 		a.start(ctx)
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.SPushNewBetting,
 		*pb.SPushJackpot,
 		*pb.BetsResult:

@@ -38,8 +38,8 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ServeStart:
 		ws.start(ctx)
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.ServeStarted:
 	case *pb.LoginElse:
 		ws.loginElse() //别处登录

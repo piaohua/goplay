@@ -78,8 +78,8 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		ctx.Respond(rsp)
 	case *pb.ServeStart:
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.HallConnect:
 		//初始化建立连接
 		a.start(ctx)

@@ -21,7 +21,7 @@ import (
 const (
 	writeWait      = 10 * time.Second // Time allowed to write a message to the peer.
 	pongWait       = 60 * time.Second // Time allowed to read the next pong message from the peer.
-	pingPeriod     = 9 * time.Second  // Send pings to peer with this period. Must be less than pongWait.
+	pingPeriod     = 10 * time.Second // Send pings to peer with this period. Must be less than pongWait.
 	maxMessageSize = 1024             // Maximum message size allowed from peer.
 	waitForLogin   = 5 * time.Second  // 连接建立后5秒内没有收到登陆请求,断开socket
 )

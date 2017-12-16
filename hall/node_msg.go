@@ -85,8 +85,8 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ServeStart:
 		a.start(ctx)
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.WxpayCallback:
 		arg := msg.(*pb.WxpayCallback)
 		glog.Debugf("WxpayCallback: %v", arg)

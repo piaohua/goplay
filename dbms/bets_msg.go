@@ -47,8 +47,8 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.ServeStart:
 		a.start(ctx)
 		//响应
-		rsp := new(pb.ServeStarted)
-		ctx.Respond(rsp)
+		//rsp := new(pb.ServeStarted)
+		//ctx.Respond(rsp)
 	case *pb.BetsTimeout:
 		a.timeout1()
 	case *pb.CBettingInfo:
@@ -234,7 +234,7 @@ func (a *BetsActor) gamestart() {
 	//重置
 	a.reset()
 	//打印
-	a.print()
+	//a.print()
 }
 
 //发奖
@@ -335,7 +335,7 @@ func (t *BetsActor) over() {
 	//日志
 	t.record()
 	//
-	t.print()
+	//t.print()
 	//
 	t.reset()
 }
