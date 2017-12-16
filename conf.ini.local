@@ -1,0 +1,149 @@
+; Package name
+NAME    = goplay
+; Package version
+VERSION = v1
+
+[author]
+E-MAIL = twopiao7@gmail.com
+NAME   = piaohua
+GITHUB = https://github.com/%(NAME)s
+
+[mysqld]
+host   = "127.0.0.1"
+port   = "3306"
+user   = "root"
+passwd = "root"
+name   = "test"
+prefix = "t_"
+
+[mongod]
+host   = "127.0.0.1"
+port   =
+user   =
+passwd =
+name   = "niu-dev"
+prefix = "col_"
+
+[mongod.gate]
+trade_record   = "trade_record"
+user           = "user"
+game_record    = "game_record"
+user_record    = "user_record"
+game_record_zi = "game_record_zi"
+user_record_zi = "user_record_zi"
+
+[cookie]
+; hall node name
+name = "aMJ28IguIbnYIGhwfb1eBG40lJC0klmGNw+OQPkw2R8"
+; room node name
+room = "srtWp/eR7Qc7/BXh+N+34no7a3gWGD2bE8XYMJtua44"
+; role node name
+role = "LjUeuk9naK9tk6k+xhia5FSXBcxfKlpcc7nlMVGQkv4"
+; mail node name
+mail = "fCSrVw+r4Io02gChjq69LNyHEeD3yWO2LbdZ20HHHB4"
+; betting node name
+bets = "CElkUzYyb98r9aFJ19ZXlu+g+FOus/JNvtVXDM5UIAo"
+
+[web]
+bind = "127.0.0.1:8000"
+path = "/web"
+key  = "UA6MBnVsoXYud6mxPVMTH3NVg9DUy5oWlfE0K9lHMsU"
+
+[gate]
+; aes encrypt key
+key  = "XKycdHdDGPje3Ns7rJ0FjVeaDREuo6TW8Ub61Zuuqo8"
+
+; gate.node(version)
+[gate.node1]
+; grpc addr
+bind = "127.0.0.1:8004"
+; websocket addr
+addr = "0.0.0.0:4107"
+; gate router
+; host = "127.0.0.1:4107"
+; test
+host = "127.0.0.1:4107"
+
+; gate.node(version)
+[gate.node2]
+; grpc addr
+bind = "127.0.0.1:8006"
+; websocket addr
+addr = "0.0.0.0:4107"
+; gate router
+host = "127.0.0.1:4107"
+
+; gate.node(version)
+[gate.node3]
+; grpc addr
+bind = "127.0.0.1:8008"
+; websocket addr
+addr = "0.0.0.0:5107"
+; gate router
+host = "127.0.0.1:5107"
+
+[login]
+; grpc addr
+bind = "127.0.0.1:8001"
+; login addr
+addr = "127.0.0.1:8002"
+; aes encrypt key
+key  = "ihyNwXfVlCiIu9Oydd4l2kuzf3i7WXg8uuwU5iysj0o"
+
+[core]
+bind = "127.0.0.1:7000"
+
+[dbms]
+bind = "127.0.0.1:7001"
+
+[role]
+; TODO
+[room]
+; TODO
+[logger]
+; TODO
+[mail]
+; TODO
+[bets]
+; TODO
+
+[hall]
+bind = "127.0.0.1:7002"
+
+[robot]
+bind = "127.0.0.1:7003"
+phone = "13788888888"
+passwd = "your-password"
+
+[game]
+
+[game.niu]
+bind    = "127.0.0.1:9001"
+; 1 normal, 2 hat, 3 new
+status  = "1"
+version = "1.0"
+
+[game.kong]
+bind    = "127.0.0.1:9002"
+status  = "1"
+version = "1.0"
+
+[game.chat]
+bind    = "127.0.0.1:9003"
+status  = "1"
+version = "1.0"
+
+[game.rank]
+bind    = "127.0.0.1:9003"
+status  = "1"
+version = "1.0"
+
+[tool]
+
+[weixin]
+notifyPattern = "/wxpay/notice"
+notifyUrl     = "https://xxx/wxpay/notice"
+appid         = "wx999999999999999c"
+appsecret     = "88888888888888888888888888888888"
+appkey        = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+mchid         = "1111111111"
