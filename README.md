@@ -45,6 +45,7 @@ pb         生成协议文件目录, packet unpack 文件
 data       数据结构定义, 数据库连接操作 mongodb
 tool       生成协议工具
 game       逻辑处理 (niu, kong...),多个子目录
+test       测试文件
 
 core       中心服务
 gate       网关, 协议转发, 多个, 处理客户端连接, scoket packet unpack
