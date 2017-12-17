@@ -1,0 +1,38 @@
+syntax = "proto3";
+package pb;
+import "github.com/AsynkronIT/protoactor-go/actor/protos.proto";
+import "code.proto";
+
+//桌子操作
+
+//匹配桌子
+message MatchDesk {
+    uint32 Rtype = 1;//类型
+    string Name = 2;
+}
+
+message MatchedDesk {
+    actor.PID Desk = 1;//桌子进程
+    actor.PID Node = 2;//节点进程
+}
+
+//创建桌子
+message CreateDesk {
+    string Data = 1;//桌子数据
+}
+
+message CreatedDesk {
+    string Data = 1;//桌子数据
+    ErrCode error = 2 ;// 错误码
+}
+
+//创建桌子进程
+message SpawnDesk {
+    string Data = 1;
+}
+
+message SpawnedDesk {
+    actor.PID Desk = 1;
+    string Data = 2;
+    ErrCode error = 3 ;// 错误码
+}
