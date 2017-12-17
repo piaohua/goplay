@@ -46,6 +46,7 @@ type WSConn struct {
 
 	online bool //在线状态
 	status bool //更新状态
+	timer  int  //计时
 }
 
 //创建连接

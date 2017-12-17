@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"time"
 
 	"goplay/data"
 	"goplay/glog"
@@ -41,6 +42,8 @@ func (ws *WSConn) Handler(msg interface{}, ctx actor.Context) {
 		//rsp := new(pb.ServeStarted)
 		//ctx.Respond(rsp)
 	case *pb.ServeStarted:
+	case *pb.Tick:
+		ws.ding(ctx)
 	case *pb.LoginElse:
 		ws.loginElse() //别处登录
 	case *pb.SyncUser:
@@ -77,6 +80,48 @@ func (ws *WSConn) start(ctx actor.Context) {
 	nodePid.Tell(set)
 }
 
+//时钟
+func (ws *WSConn) ticker(ctx actor.Context) {
+	tick := time.Tick(time.Second)
+	msg := new(pb.Tick)
+	for {
+		select {
+		case <-ws.stopCh:
+			glog.Info("ws ticker closed")
+			return
+		default: //防止阻塞
+		}
+		select {
+		case <-ws.stopCh:
+			glog.Info("ws ticker closed")
+			return
+		case <-tick:
+			if ws.pid != nil {
+				ws.pid.Tell(msg)
+			}
+		}
+	}
+}
+
+//30秒同步一次
+func (ws *WSConn) ding(ctx actor.Context) {
+	ws.timer += 1
+	if ws.timer != 30 {
+		return
+	}
+	ws.timer = 0
+	if !ws.online {
+		//断开连接
+		ws.Close()
+		return
+	}
+	if ws.status {
+		//同步数据
+		ws.syncUser()
+		ws.status = false
+	}
+}
+
 func (ws *WSConn) stop(ctx actor.Context) {
 	glog.Infof("ws stop: %v", ctx.Self().String())
 	//已经断开,在别处登录
@@ -102,19 +147,6 @@ func (ws *WSConn) stop(ctx actor.Context) {
 		Userid: ws.User.Userid,
 	}
 	nodePid.Tell(msg)
-}
-
-func (ws *WSConn) timeout(ctx actor.Context) {
-	if !ws.online {
-		//断开连接
-		ws.Close()
-		return
-	}
-	if ws.status {
-		//同步数据
-		ws.syncUser()
-		ws.status = false
-	}
 }
 
 func (ws *WSConn) loginElse() {

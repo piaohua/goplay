@@ -12,7 +12,6 @@ import (
 
 var (
 	nodePid *actor.PID
-	loop    = 30 * time.Second
 )
 
 //大厅服务
@@ -26,6 +25,12 @@ type HallActor struct {
 	roles map[string]string
 	//节点人数
 	count map[string]uint32
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer int
 }
 
 func (a *HallActor) Receive(ctx actor.Context) {
@@ -57,6 +62,7 @@ func newHallActor() actor.Actor {
 	a.gates = make(map[string]*actor.PID)
 	a.roles = make(map[string]string)
 	a.count = make(map[string]uint32)
+	a.stopCh = make(chan struct{})
 	return a
 }
 

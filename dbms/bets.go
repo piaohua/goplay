@@ -21,13 +21,8 @@ type BetsActor struct {
 	//唯一id生成
 	uniqueid *data.IDGen //期号,凌晨重置
 	//
-	closeCh chan bool        //关闭通道
-	stopCh  chan struct{}    //关闭通道
-	msgCh   chan interface{} //消息通道
-	//
 	betTime uint32   //时间
 	betRest uint32   //时间
-	timer   uint32   //时间
 	state   uint32   //状态0投注,1等待
 	today   string   //期号
 	cards   []uint32 //牌
@@ -42,6 +37,12 @@ type BetsActor struct {
 	prize  map[string]int32 //个人中奖金额
 	winner map[uint32]bool  //中奖位置
 	lose   map[string]int32 //个人输赢总金额
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer uint32
 }
 
 func (a *BetsActor) Receive(ctx actor.Context) {

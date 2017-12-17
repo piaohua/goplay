@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"time"
 
 	"goplay/data"
 	"goplay/game/config"
@@ -83,6 +84,8 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.HallConnect:
 		//初始化建立连接
 		a.start(ctx)
+	case *pb.Tick:
+		a.ding(ctx)
 	case *pb.SyncConfig:
 		//同步配置
 		arg := msg.(*pb.SyncConfig)
@@ -132,6 +135,7 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
+//启动服务
 func (a *GateActor) start(ctx actor.Context) {
 	glog.Infof("gate start: %v", ctx.Self().String())
 	//dbms
@@ -186,10 +190,52 @@ func (a *GateActor) start(ctx actor.Context) {
 	glog.Infof("a.dbmsPid: %s", a.dbmsPid.String())
 	glog.Infof("a.roomPid: %s", a.roomPid.String())
 	glog.Infof("a.rolePid: %s", a.rolePid.String())
+	//启动
+	go a.ticker(ctx)
+}
+
+//时钟
+func (a *GateActor) ticker(ctx actor.Context) {
+	tick := time.Tick(30 * time.Second)
+	msg := new(pb.Tick)
+	for {
+		select {
+		case <-a.stopCh:
+			glog.Info("gate ticker closed")
+			return
+		default: //防止阻塞
+		}
+		select {
+		case <-a.stopCh:
+			glog.Info("gate ticker closed")
+			return
+		case <-tick:
+			ctx.Self().Tell(msg)
+		}
+	}
+}
+
+//钟声
+func (a *GateActor) ding(ctx actor.Context) {
+	glog.Debugf("ding: %v", ctx.Self().String())
+	//TODO
+}
+
+//关闭时钟
+func (a *GateActor) closeTick() {
+	select {
+	case <-a.stopCh:
+		return
+	default:
+		//停止发送消息
+		close(a.stopCh)
+	}
 }
 
 func (a *GateActor) handlerStop(ctx actor.Context) {
 	glog.Debugf("handlerStop: %s", a.Name)
+	//关闭
+	a.closeTick()
 	//msg := new(pb.ServeClose)
 	//for k, v := range a.roles {
 	//	glog.Debugf("Stop role: %s", k)

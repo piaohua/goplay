@@ -85,3 +85,7 @@ message GotNode {
     string Addr = 1; //地址
     actor.PID Sender = 2;
 }
+
+//时钟嘀嗒
+message Tick {
+}

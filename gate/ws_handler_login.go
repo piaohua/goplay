@@ -256,6 +256,8 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	ws.online = true
 	//成功
 	ctx.SetReceiveTimeout(0) //login Successfully, timeout off
+	//启动时钟
+	go ws.ticker(ctx)
 }
 
 //登录处理

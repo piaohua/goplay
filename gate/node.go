@@ -33,6 +33,12 @@ type GateActor struct {
 	mailPid *actor.PID
 	//节点角色进程
 	roles map[string]*actor.PID
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer int
 }
 
 func (a *GateActor) Receive(ctx actor.Context) {
@@ -62,6 +68,7 @@ func newGateActor() actor.Producer {
 		a.Name = cfg.Section("gate.node1").Name()
 		//roles key=userid
 		a.roles = make(map[string]*actor.PID)
+		a.stopCh = make(chan struct{})
 		return a
 	}
 }

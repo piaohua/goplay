@@ -21,6 +21,12 @@ const (
 	ENV14 = "prize_diamond"     //刮奖钻石
 	ENV15 = "lottery_diamond"   //全民刮奖
 	ENV16 = "lottery_maxnumber" //全民刮奖最大注
+	ENV17 = "sys_carry"         //系统上庄限额
+	ENV18 = "free_carry"        //庄家上庄限额
+	ENV19 = "limit_carry"       //庄家下庄限额
+	ENV20 = "dealer_times"      //做庄次数限制
+	ENV21 = "limit_sit"         //玩家坐下限额
+	ENV22 = "prize_limit"       //中奖下注限额
 )
 
 type Env struct {

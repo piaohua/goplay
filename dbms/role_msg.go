@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"time"
 
 	"goplay/data"
 	"goplay/game/handler"
@@ -33,7 +34,6 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 			Name:   a.Name,
 		}
 		a.hallPid.Tell(connect)
-		ctx.SetReceiveTimeout(loop) //timeout set
 	case *pb.ServeStop:
 		//关闭服务
 		a.handlerStop(ctx)
@@ -45,6 +45,8 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应
 		//rsp := new(pb.ServeStarted)
 		//ctx.Respond(rsp)
+	case *pb.Tick:
+		a.ding(ctx)
 	case *pb.SyncUser:
 		arg := msg.(*pb.SyncUser)
 		a.syncUser(arg, ctx)
@@ -130,19 +132,55 @@ func (a *RoleActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
+//启动服务
 func (a *RoleActor) start(ctx actor.Context) {
 	glog.Infof("role start: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(loop) //timeout set
+	//启动
+	go a.ticker(ctx)
 }
 
-func (a *RoleActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(waitForLogin) //timeout set
+//时钟
+func (a *RoleActor) ticker(ctx actor.Context) {
+	tick := time.Tick(30 * time.Second)
+	msg := new(pb.Tick)
+	for {
+		select {
+		case <-a.stopCh:
+			glog.Info("role ticker closed")
+			return
+		default: //防止阻塞
+		}
+		select {
+		case <-a.stopCh:
+			glog.Info("role ticker closed")
+			return
+		case <-tick:
+			ctx.Self().Tell(msg)
+		}
+	}
+}
+
+//钟声
+func (a *RoleActor) ding(ctx actor.Context) {
+	glog.Debugf("ding: %v", ctx.Self().String())
 	//TODO
+}
+
+//关闭时钟
+func (a *RoleActor) closeTick() {
+	select {
+	case <-a.stopCh:
+		return
+	default:
+		//停止发送消息
+		close(a.stopCh)
+	}
 }
 
 func (a *RoleActor) handlerStop(ctx actor.Context) {
 	glog.Debugf("handlerStop: %s", a.Name)
+	//关闭
+	a.closeTick()
 	//回存数据
 	if a.uniqueid != nil {
 		a.uniqueid.Save()

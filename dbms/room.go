@@ -26,6 +26,12 @@ type RoomActor struct {
 	count map[string]int
 	//唯一id生成
 	uniqueid *data.IDGen
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer int
 }
 
 func (a *RoomActor) Receive(ctx actor.Context) {
@@ -55,5 +61,6 @@ func newRoomActor() actor.Actor {
 	a.rooms = make(map[string]*data.DeskData)
 	//唯一id初始化
 	a.uniqueid = data.InitIDGen(data.ROOMID_KEY)
+	a.stopCh = make(chan struct{})
 	return a
 }

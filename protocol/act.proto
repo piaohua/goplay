@@ -78,11 +78,6 @@ message SetOdds {
     float  Number = 2 ;//赔率
 }
 
-//投注超时
-message BetsTimeout {
-    uint32 Timer  = 1 ;
-}
-
 //投注结果
 message BetsResult {
     string Userid = 1;//玩家id

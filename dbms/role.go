@@ -28,6 +28,12 @@ type RoleActor struct {
 	players map[string]string
 	//唯一id生成
 	uniqueid *data.IDGen
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer int
 }
 
 func (a *RoleActor) Receive(ctx actor.Context) {
@@ -60,5 +66,6 @@ func newRoleActor() actor.Actor {
 	a.players = make(map[string]string)
 	//唯一id初始化
 	a.uniqueid = data.InitIDGen(data.USERID_KEY)
+	a.stopCh = make(chan struct{})
 	return a
 }

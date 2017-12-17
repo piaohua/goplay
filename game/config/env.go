@@ -83,6 +83,18 @@ func GetEnv(k interface{}) int32 {
 		return 88888 //注册赠送金币
 	case data.ENV3:
 		return 30 //绑定赠送钻石
+	case data.ENV17:
+		return 50000000 //系统上庄限额
+	case data.ENV18:
+		return 100000 //庄家上庄限额
+	case data.ENV19:
+		return 100000 //庄家下庄限额
+	case data.ENV20:
+		return 8 //做庄次数限制
+	case data.ENV21:
+		return 300000 //玩家坐下限额
+	case data.ENV22:
+		return 5000000 //中奖下注限额
 	}
 	return 0
 }

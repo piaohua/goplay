@@ -49,8 +49,8 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应
 		//rsp := new(pb.ServeStarted)
 		//ctx.Respond(rsp)
-	case *pb.BetsTimeout:
-		a.timeout1()
+	case *pb.Tick:
+		a.ding(ctx)
 	case *pb.CBettingInfo:
 		arg := msg.(*pb.CBettingInfo)
 		glog.Debugf("CBettingInfo %#v", arg)
@@ -79,20 +79,76 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
+//启动服务
 func (a *BetsActor) start(ctx actor.Context) {
 	glog.Infof("bets start: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(loop) //timeout set
 	a.initBetting(ctx)
+	go a.ticker(ctx) //goroutine,计时
 }
 
-func (a *BetsActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
-	//TODO
+//时钟
+func (a *BetsActor) ticker(ctx actor.Context) {
+	glog.Info("Betting ticker started")
+	tick := time.Tick(time.Second)
+	msg := new(pb.Tick)
+	for {
+		select {
+		case <-a.stopCh:
+			glog.Info("bets ticker closed")
+			return
+		default: //防止阻塞
+		}
+		select {
+		case <-a.stopCh:
+			glog.Info("bets ticker closed")
+			return
+		case <-tick:
+			ctx.Self().Tell(msg)
+		}
+	}
 }
 
+//钟声
+func (t *BetsActor) ding(ctx actor.Context) {
+	glog.Debugf("ding: %v", ctx.Self().String())
+	switch t.timer {
+	case t.betTime:
+		//投注结束
+		t.timer = 0
+		t.state = 1
+		//结算
+		t.over()
+	case t.betRest:
+		if t.state == 0 {
+			t.timer++
+			return
+		}
+		//休息结束
+		t.timer = 0
+		t.state = 0
+		//广播开始消息
+		t.gamestart()
+	default:
+		t.timer++
+	}
+}
+
+//关闭时钟
+func (a *BetsActor) closeTick() {
+	select {
+	case <-a.stopCh:
+		return
+	default:
+		//停止发送消息
+		close(a.stopCh)
+	}
+}
+
+//停止服务
 func (a *BetsActor) handlerStop(ctx actor.Context) {
 	glog.Debugf("handlerStop: %s", a.Name)
+	//关闭
+	a.closeTick()
 	//回存数据
 	if a.uniqueid != nil {
 		a.uniqueid.Save()
@@ -101,7 +157,6 @@ func (a *BetsActor) handlerStop(ctx actor.Context) {
 	if a.state == 0 && len(a.jackpot) != 0 {
 		a.over()
 	}
-	close(a.closeCh) //关闭
 }
 
 func (a *BetsActor) initBetting(ctx actor.Context) {
@@ -109,7 +164,7 @@ func (a *BetsActor) initBetting(ctx actor.Context) {
 	a.betRest = 25
 	a.timer = 0
 	a.state = 1 //等待开始
-	a.closeCh = make(chan bool, 1)
+	a.stopCh = make(chan struct{})
 	a.odds = make(map[uint32]float32)
 	a.jackpot = make(map[uint32]uint32)
 	a.ante = make(map[string]map[uint32]uint32)
@@ -117,7 +172,6 @@ func (a *BetsActor) initBetting(ctx actor.Context) {
 	a.today = utils.String(utils.DayDate())
 	//初始化
 	a.initOdds()
-	go a.ticker(ctx) //goroutine,计时
 }
 
 func (t *BetsActor) initOdds() {
@@ -139,45 +193,6 @@ func (a *BetsActor) print() {
 	glog.Infof("prize -> %v", a.prize)
 	glog.Infof("winner -> %v", a.winner)
 	glog.Infof("lose -> %v", a.lose)
-}
-
-//计时器
-func (t *BetsActor) ticker(ctx actor.Context) {
-	tick := time.Tick(time.Second) //每3分钟
-	glog.Info("Betting ticker started")
-	msg := new(pb.BetsTimeout)
-	for {
-		select {
-		case <-tick:
-			ctx.Self().Tell(msg)
-		case <-t.closeCh:
-			glog.Info("Betting closed")
-			return
-		}
-	}
-}
-
-func (t *BetsActor) timeout1() {
-	switch t.timer {
-	case t.betTime:
-		//投注结束
-		t.timer = 0
-		t.state = 1
-		//结算
-		t.over()
-	case t.betRest:
-		if t.state == 0 {
-			t.timer++
-			return
-		}
-		//休息结束
-		t.timer = 0
-		t.state = 0
-		//广播开始消息
-		t.gamestart()
-	default:
-		t.timer++
-	}
 }
 
 func (a *BetsActor) reset() {

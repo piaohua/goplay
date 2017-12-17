@@ -78,7 +78,7 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		delete(a.roles, userid)
 	case *pb.ServeStop:
 		//关闭服务
-		a.HandlerStop(ctx)
+		a.handlerStop(ctx)
 		//响应登录
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
@@ -87,6 +87,8 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 		//响应
 		//rsp := new(pb.ServeStarted)
 		//ctx.Respond(rsp)
+	case *pb.Tick:
+		a.ding(ctx)
 	case *pb.WxpayCallback:
 		arg := msg.(*pb.WxpayCallback)
 		glog.Debugf("WxpayCallback: %v", arg)
@@ -113,19 +115,55 @@ func (a *HallActor) Handler(msg interface{}, ctx actor.Context) {
 	}
 }
 
+//启动服务
 func (a *HallActor) start(ctx actor.Context) {
-	glog.Infof("ws start: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(loop) //timeout set
+	glog.Infof("hall start: %v", ctx.Self().String())
+	//启动
+	go a.ticker(ctx)
 }
 
-func (a *HallActor) timeout(ctx actor.Context) {
-	glog.Debugf("timeout: %v", ctx.Self().String())
-	//ctx.SetReceiveTimeout(0) //timeout off
+//时钟
+func (a *HallActor) ticker(ctx actor.Context) {
+	tick := time.Tick(30 * time.Second)
+	msg := new(pb.Tick)
+	for {
+		select {
+		case <-a.stopCh:
+			glog.Info("hall ticker closed")
+			return
+		default: //防止阻塞
+		}
+		select {
+		case <-a.stopCh:
+			glog.Info("hall ticker closed")
+			return
+		case <-tick:
+			ctx.Self().Tell(msg)
+		}
+	}
+}
+
+//钟声
+func (a *HallActor) ding(ctx actor.Context) {
+	glog.Debugf("ding: %v", ctx.Self().String())
 	//TODO
 }
 
-func (a *HallActor) HandlerStop(ctx actor.Context) {
-	glog.Debugf("HandlerStop: %s", a.Name)
+//关闭时钟
+func (a *HallActor) closeTick() {
+	select {
+	case <-a.stopCh:
+		return
+	default:
+		//停止发送消息
+		close(a.stopCh)
+	}
+}
+
+func (a *HallActor) handlerStop(ctx actor.Context) {
+	glog.Debugf("handlerStop: %s", a.Name)
+	//关闭
+	a.closeTick()
 	//回存数据
 	//msg := new(pb.ServeClose)
 	//for k, v := range a.roles {

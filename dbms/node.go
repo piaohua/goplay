@@ -13,7 +13,6 @@ import (
 
 var (
 	nodePid *actor.PID
-	loop    = 30 * time.Second
 )
 
 //数据库操作服务
@@ -25,6 +24,12 @@ type DBMSActor struct {
 	logger *actor.PID
 	//网关节点
 	gates map[string]*actor.PID
+	//关闭通道
+	stopCh chan struct{}
+	//更新状态
+	status bool
+	//计时
+	timer int
 }
 
 func (a *DBMSActor) Receive(ctx actor.Context) {
@@ -53,6 +58,7 @@ func newDBMSActor() actor.Actor {
 	a.Name = cfg.Section("dbms").Name()
 	a.gates = make(map[string]*actor.PID)
 	a.logger = NewLogger()
+	a.stopCh = make(chan struct{})
 	return a
 }
 
