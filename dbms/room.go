@@ -23,7 +23,7 @@ type RoomActor struct {
 	//角色userid-roomid
 	router map[string]string
 	//房间人数roomid-numbers
-	count map[string]int
+	count map[string]uint32
 	//唯一id生成
 	uniqueid *data.IDGen
 	//关闭通道
@@ -61,6 +61,7 @@ func newRoomActor() actor.Actor {
 	a.rooms = make(map[string]*data.DeskData)
 	//唯一id初始化
 	a.uniqueid = data.InitIDGen(data.ROOMID_KEY)
+	a.count = make(map[string]uint32)
 	a.stopCh = make(chan struct{})
 	return a
 }

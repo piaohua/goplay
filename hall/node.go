@@ -21,9 +21,9 @@ type HallActor struct {
 	serve map[string]*actor.PID
 	//所有网关节点
 	gates map[string]*actor.PID
-	//玩家所在节点
+	//玩家所在节点userid-gate
 	roles map[string]string
-	//节点人数
+	//节点人数gate-numbers
 	count map[string]uint32
 	//关闭通道
 	stopCh chan struct{}

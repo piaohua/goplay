@@ -175,7 +175,7 @@ func (a *HallActor) handlerStop(ctx actor.Context) {
 	roleName := cfg.Section("role").Name()
 	loginName := cfg.Section("login").Name()
 	mailName := cfg.Section("mail").Name()
-	bettingName := cfg.Section("betting").Name()
+	betsName := cfg.Section("bets").Name()
 	if v, ok := a.serve[loginName]; ok {
 		v.Stop()
 	}
