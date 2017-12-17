@@ -64,6 +64,7 @@ func (ws *WSConn) HandlerAct(msg interface{}, ctx actor.Context) {
 		msg2.Page = arg.GetPage()
 		ws.rolePid.Request(msg2, ctx.Self())
 	default:
-		glog.Errorf("unknown message %v", msg)
+		//glog.Errorf("unknown message %v", msg)
+		ws.HandlerFree(msg, ctx)
 	}
 }

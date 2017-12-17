@@ -1,19 +1,19 @@
 package data
 
 const (
-	ROOM_PRIVATE  = 1 //私人房房间类型(看牌抢庄)
-	ROOM_FREE     = 2 //自由场房间类型
-	ROOM_PRIVATE3 = 3 //私人房房间类型(通比牛牛)
-	ROOM_PRIVATE4 = 4 //私人房房间类型(牛牛坐庄)
-	ROOM_PRIVATE5 = 5 //私人房房间类型(天杠玩法)
-	ROOM_PAOHUZI  = 6 //私人房房间类型(跑胡子)
-	ROOM_PAOHUZI2 = 7 //自由房房间类型(跑胡子)
-	ROOM_PAOHUZI3 = 8 //竞技场房间类型(跑胡子)
+	ROOM_PRIVATE  uint32 = 1 //私人房房间类型(看牌抢庄)
+	ROOM_FREE     uint32 = 2 //自由场房间类型
+	ROOM_PRIVATE3 uint32 = 3 //私人房房间类型(通比牛牛)
+	ROOM_PRIVATE4 uint32 = 4 //私人房房间类型(牛牛坐庄)
+	ROOM_PRIVATE5 uint32 = 5 //私人房房间类型(天杠玩法)
+	ROOM_PAOHUZI  uint32 = 6 //私人房房间类型(跑胡子)
+	ROOM_PAOHUZI2 uint32 = 7 //自由房房间类型(跑胡子)
+	ROOM_PAOHUZI3 uint32 = 8 //竞技场房间类型(跑胡子)
 
-	ROOM_LEVEL1 = 1 //初级场
-	ROOM_LEVEL2 = 2 //中级场
-	ROOM_LEVEL3 = 3 //高级场
-	ROOM_LEVEL4 = 4 //大师场
+	ROOM_LEVEL1 uint32 = 1 //初级场
+	ROOM_LEVEL2 uint32 = 2 //中级场
+	ROOM_LEVEL3 uint32 = 3 //高级场
+	ROOM_LEVEL4 uint32 = 4 //大师场
 )
 
 func NewDeskData(round, expire, rtype, ante, cost, xi,

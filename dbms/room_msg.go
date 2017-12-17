@@ -43,6 +43,9 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 		//ctx.Respond(rsp)
 	case *pb.Tick:
 		a.ding(ctx)
+	case *pb.CreateDesk:
+		arg := msg.(*pb.CreateDesk)
+		a.create(arg, ctx)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
@@ -106,4 +109,12 @@ func (a *RoomActor) handlerStop(ctx actor.Context) {
 		//TODO
 		//v.Save()
 	}
+}
+
+//创建房间
+func (a *RoomActor) create(arg *pb.CreateDesk, ctx actor.Context) {
+	glog.Debugf("CreateDesk %#v", arg)
+	//响应登录
+	rsp := new(pb.CreatedDesk)
+	ctx.Respond(rsp)
 }

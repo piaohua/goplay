@@ -22,6 +22,8 @@ type RoomActor struct {
 	rooms map[string]*data.DeskData
 	//角色userid-roomid
 	router map[string]string
+	//邀请码code-roomid
+	codes map[string]string
 	//房间人数roomid-numbers
 	count map[string]uint32
 	//唯一id生成
@@ -61,6 +63,8 @@ func newRoomActor() actor.Actor {
 	a.rooms = make(map[string]*data.DeskData)
 	//唯一id初始化
 	a.uniqueid = data.InitIDGen(data.ROOMID_KEY)
+	a.router = make(map[string]string)
+	a.codes = make(map[string]string)
 	a.count = make(map[string]uint32)
 	a.stopCh = make(chan struct{})
 	return a
