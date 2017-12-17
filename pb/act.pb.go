@@ -14,6 +14,7 @@
 		code.proto
 		dan.proto
 		data.proto
+		desk.proto
 		free.proto
 		logger.proto
 		login.proto
@@ -95,6 +96,12 @@
 		CDanRanking
 		SDanRanking
 		SDanNotice
+		MatchDesk
+		MatchedDesk
+		CreateDesk
+		CreatedDesk
+		SpawnDesk
+		SpawnedDesk
 		CEnterFreeRoom
 		SEnterFreeRoom
 		SFreeCamein
