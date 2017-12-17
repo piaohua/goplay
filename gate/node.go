@@ -65,7 +65,7 @@ func (a *GateActor) Receive(ctx actor.Context) {
 func newGateActor() actor.Producer {
 	return func() actor.Actor {
 		a := new(GateActor)
-		a.Name = cfg.Section("gate.node1").Name()
+		a.Name = cfg.Section("gate.node" + *node).Name()
 		//roles key=userid
 		a.roles = make(map[string]*actor.PID)
 		a.stopCh = make(chan struct{})
