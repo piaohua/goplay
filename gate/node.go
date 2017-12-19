@@ -84,7 +84,6 @@ func NewRemote(bind, name string) {
 		glog.Fatalf("nodePid err %v", err)
 	}
 	glog.Infof("nodePid %s", nodePid.String())
-	nodePid.Tell(new(pb.HallConnect))
 	nodePid.Tell(new(pb.ServeStart))
 }
 

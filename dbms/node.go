@@ -75,16 +75,6 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 		glog.Fatalf("nodePid err %v", err)
 	}
 	glog.Infof("nodePid %s", nodePid.String())
-	//nodePid.Request(new(pb.HallConnect))
-	timeout := 3 * time.Second
-	msg1 := new(pb.HallConnect)
-	res1, err1 := nodePid.RequestFuture(msg1, timeout).Result()
-	if err1 != nil || res1 == nil {
-		glog.Fatalf("Hall Connect err: %v", err1)
-		return
-	}
-	response1 := res1.(*pb.HallConnected)
-	msg1.Sender = response1.HallPid
 	nodePid.Tell(msg)
 	//
 	//remote.Register(room, actor.FromProducer(newRoomActor))
@@ -97,7 +87,6 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	}
 	glog.Infof("roomPid %s", roomPid.String())
 	//roomPid.Tell(new(pb.HallConnect))
-	roomPid.Tell(msg1)
 	roomPid.Tell(msg)
 	//
 	//remote.Register(role, actor.FromProducer(newRoleActor))
@@ -110,7 +99,6 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	}
 	glog.Infof("rolePid %s", rolePid.String())
 	//rolePid.Tell(new(pb.HallConnect))
-	rolePid.Tell(msg1)
 	rolePid.Tell(msg)
 	//
 	//remote.Register(mail, actor.FromProducer(newMailActor))
@@ -123,7 +111,6 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	}
 	glog.Infof("mailPid %s", mailPid.String())
 	//mailPid.Tell(new(pb.HallConnect))
-	mailPid.Tell(msg1)
 	mailPid.Tell(msg)
 	//
 	//remote.Register(bets, actor.FromProducer(newBetsActor))
@@ -136,7 +123,6 @@ func NewRemote(bind, name, room, role, mail, bets string) {
 	}
 	glog.Infof("betsPid %s", betsPid.String())
 	//betsPid.Tell(new(pb.HallConnect))
-	betsPid.Tell(msg1)
 	betsPid.Tell(msg)
 }
 

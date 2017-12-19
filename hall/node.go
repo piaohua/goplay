@@ -25,11 +25,11 @@ type HallActor struct {
 	roles map[string]string
 	//节点人数gate-numbers
 	count map[string]uint32
-	//所有桌子roomid-
+	//所有桌子roomid-deskPid
 	desks map[string]*actor.PID
 	//桌子人数roomid-numbers
 	rnums map[string]uint32
-	//桌子类型roomid-numbers
+	//桌子类型roomid-type
 	rtype map[string]uint32
 	//玩家所在桌子userid-roomid
 	router map[string]string

@@ -203,12 +203,10 @@
 		SPushVip
 		Request
 		Response
-		GateConnect
-		GateConnected
-		GateDisconnect
-		GateDisconnected
-		HallConnect
-		HallConnected
+		Connect
+		Connected
+		Disconnect
+		Disconnected
 		ServeStart
 		ServeStarted
 		ServeStop

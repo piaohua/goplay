@@ -15,14 +15,14 @@ import (
 
 func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	switch msg.(type) {
-	case *pb.GateConnected:
+	case *pb.Connected:
 		//连接成功
-		arg := msg.(*pb.GateConnected)
-		glog.Infof("GateConnected %v", arg.Message)
-	case *pb.GateDisconnected:
+		arg := msg.(*pb.Connected)
+		glog.Infof("Connected %s", arg.Name)
+	case *pb.Disconnected:
 		//成功断开
-		arg := msg.(*pb.GateDisconnected)
-		glog.Infof("GateDisconnected %s", arg.Message)
+		arg := msg.(*pb.Disconnected)
+		glog.Infof("Disconnected %s", arg.Name)
 	case *pb.LoginElse:
 		//别处登录
 		arg := msg.(*pb.LoginElse)
@@ -78,12 +78,11 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 		rsp := new(pb.ServeStoped)
 		ctx.Respond(rsp)
 	case *pb.ServeStart:
+		//初始化建立连接
+		a.start(ctx)
 		//响应
 		//rsp := new(pb.ServeStarted)
 		//ctx.Respond(rsp)
-	case *pb.HallConnect:
-		//初始化建立连接
-		a.start(ctx)
 	case *pb.Tick:
 		a.ding(ctx)
 	case *pb.SyncConfig:
@@ -145,48 +144,20 @@ func (a *GateActor) start(ctx actor.Context) {
 	role := cfg.Section("cookie").Key("role").Value()
 	bets := cfg.Section("cookie").Key("bets").Value()
 	mail := cfg.Section("cookie").Key("mail").Value()
-	//timeout := 3 * time.Second
-	//a.dbmsPid, err = remote.SpawnNamed(bind, a.Name, name, timeout)
-	//if err != nil {
-	//	glog.Fatalf("remote dbms err %v", err)
-	//}
-	//a.roomPid, err = remote.SpawnNamed(bind, a.Name, room, timeout)
-	//if err != nil {
-	//	glog.Fatalf("remote room err %v", err)
-	//}
-	//a.rolePid, err = remote.SpawnNamed(bind, a.Name, role, timeout)
-	//if err != nil {
-	//	glog.Fatalf("remote role err %v", err)
-	//}
 	a.dbmsPid = actor.NewPID(bind, name)
 	a.roomPid = actor.NewPID(bind, room)
 	a.rolePid = actor.NewPID(bind, role)
 	a.betsPid = actor.NewPID(bind, bets)
 	a.mailPid = actor.NewPID(bind, mail)
-	//a.dbmsPid.
-	//	RequestFuture(&pb.Request{}, 2*time.Second).
-	//	Wait()
-	//a.roomPid.
-	//	RequestFuture(&pb.Request{}, 2*time.Second).
-	//	Wait()
-	//a.rolePid.
-	//	RequestFuture(&pb.Request{}, 2*time.Second).
-	//	Wait()
 	//hall
 	bind = cfg.Section("hall").Key("bind").Value()
-	////name
-	//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
-	//if err != nil {
-	//	glog.Fatalf("remote hall err %v", err)
-	//}
-	//a.hallPid = hallPid.Pid
 	a.hallPid = actor.NewPID(bind, name)
 	glog.Infof("a.hallPid: %s", a.hallPid.String())
-	connect := &pb.GateConnect{
-		Sender: ctx.Self(),
+	connect := &pb.Connect{
+		Name: a.Name,
 	}
-	a.dbmsPid.Tell(connect)
-	a.hallPid.Tell(connect)
+	a.dbmsPid.Request(connect, ctx.Self())
+	a.hallPid.Request(connect, ctx.Self())
 	glog.Infof("a.dbmsPid: %s", a.dbmsPid.String())
 	glog.Infof("a.roomPid: %s", a.roomPid.String())
 	glog.Infof("a.rolePid: %s", a.rolePid.String())
@@ -245,20 +216,20 @@ func (a *GateActor) handlerStop(ctx actor.Context) {
 	//for k, v := range a.roles {
 	//}
 	//断开处理
-	msg := &pb.GateDisconnect{
-		Sender: ctx.Self(),
+	msg := &pb.Disconnect{
+		Name: a.Name,
 	}
 	if a.dbmsPid != nil {
-		a.dbmsPid.Tell(msg)
+		a.dbmsPid.Request(msg, ctx.Self())
 	}
 	if a.roomPid != nil {
-		a.roomPid.Tell(msg)
+		a.roomPid.Request(msg, ctx.Self())
 	}
 	if a.rolePid != nil {
-		a.rolePid.Tell(msg)
+		a.rolePid.Request(msg, ctx.Self())
 	}
 	if a.hallPid != nil {
-		a.hallPid.Tell(msg)
+		a.hallPid.Request(msg, ctx.Self())
 	}
 }
 

@@ -47,7 +47,7 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 	if ws.gamePid != nil {
 		//进入房间
-		ws.entryRoom()
+		ws.entryRoom(ctx)
 		return
 	}
 	stoc := new(pb.SEnterFreeRoom)
@@ -60,7 +60,7 @@ func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 	} else if response1.Desk != nil {
 		ws.gamePid = response1.Desk
 		//进入房间
-		ws.entryRoom()
+		ws.entryRoom(ctx)
 		return
 	}
 	//节点不存在
@@ -84,7 +84,7 @@ func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 		return
 	}
 	ws.gamePid = response3.Desk
-	ws.entryRoom()
+	ws.entryRoom(ctx)
 }
 
 //自由场数据

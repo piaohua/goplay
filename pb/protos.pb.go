@@ -66,117 +66,62 @@ func (m *Response) GetMessage() string {
 	return ""
 }
 
-// 网关连接节点
-type GateConnect struct {
-	Sender *actor.PID `protobuf:"bytes,1,opt,name=Sender" json:"Sender,omitempty"`
+// 连接节点
+type Connect struct {
+	Name string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
 }
 
-func (m *GateConnect) Reset()                    { *m = GateConnect{} }
-func (*GateConnect) ProtoMessage()               {}
-func (*GateConnect) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{2} }
+func (m *Connect) Reset()                    { *m = Connect{} }
+func (*Connect) ProtoMessage()               {}
+func (*Connect) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{2} }
 
-func (m *GateConnect) GetSender() *actor.PID {
-	if m != nil {
-		return m.Sender
-	}
-	return nil
-}
-
-type GateConnected struct {
-	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
-}
-
-func (m *GateConnected) Reset()                    { *m = GateConnected{} }
-func (*GateConnected) ProtoMessage()               {}
-func (*GateConnected) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{3} }
-
-func (m *GateConnected) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-// 网关节点断开连接
-type GateDisconnect struct {
-	Sender *actor.PID `protobuf:"bytes,1,opt,name=Sender" json:"Sender,omitempty"`
-}
-
-func (m *GateDisconnect) Reset()                    { *m = GateDisconnect{} }
-func (*GateDisconnect) ProtoMessage()               {}
-func (*GateDisconnect) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{4} }
-
-func (m *GateDisconnect) GetSender() *actor.PID {
-	if m != nil {
-		return m.Sender
-	}
-	return nil
-}
-
-type GateDisconnected struct {
-	Message string `protobuf:"bytes,1,opt,name=Message,proto3" json:"Message,omitempty"`
-}
-
-func (m *GateDisconnected) Reset()                    { *m = GateDisconnected{} }
-func (*GateDisconnected) ProtoMessage()               {}
-func (*GateDisconnected) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{5} }
-
-func (m *GateDisconnected) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-// 连接中心节点
-type HallConnect struct {
-	Sender *actor.PID `protobuf:"bytes,1,opt,name=Sender" json:"Sender,omitempty"`
-	Name   string     `protobuf:"bytes,2,opt,name=Name,proto3" json:"Name,omitempty"`
-}
-
-func (m *HallConnect) Reset()                    { *m = HallConnect{} }
-func (*HallConnect) ProtoMessage()               {}
-func (*HallConnect) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{6} }
-
-func (m *HallConnect) GetSender() *actor.PID {
-	if m != nil {
-		return m.Sender
-	}
-	return nil
-}
-
-func (m *HallConnect) GetName() string {
+func (m *Connect) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-type HallConnected struct {
-	HallPid *actor.PID `protobuf:"bytes,1,opt,name=HallPid" json:"HallPid,omitempty"`
-	Message string     `protobuf:"bytes,2,opt,name=Message,proto3" json:"Message,omitempty"`
-	Name    string     `protobuf:"bytes,3,opt,name=Name,proto3" json:"Name,omitempty"`
+type Connected struct {
+	Name string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
 }
 
-func (m *HallConnected) Reset()                    { *m = HallConnected{} }
-func (*HallConnected) ProtoMessage()               {}
-func (*HallConnected) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{7} }
+func (m *Connected) Reset()                    { *m = Connected{} }
+func (*Connected) ProtoMessage()               {}
+func (*Connected) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{3} }
 
-func (m *HallConnected) GetHallPid() *actor.PID {
+func (m *Connected) GetName() string {
 	if m != nil {
-		return m.HallPid
-	}
-	return nil
-}
-
-func (m *HallConnected) GetMessage() string {
-	if m != nil {
-		return m.Message
+		return m.Name
 	}
 	return ""
 }
 
-func (m *HallConnected) GetName() string {
+// 节点断开
+type Disconnect struct {
+	Name string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+}
+
+func (m *Disconnect) Reset()                    { *m = Disconnect{} }
+func (*Disconnect) ProtoMessage()               {}
+func (*Disconnect) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{4} }
+
+func (m *Disconnect) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+type Disconnected struct {
+	Name string `protobuf:"bytes,1,opt,name=Name,proto3" json:"Name,omitempty"`
+}
+
+func (m *Disconnected) Reset()                    { *m = Disconnected{} }
+func (*Disconnected) ProtoMessage()               {}
+func (*Disconnected) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{5} }
+
+func (m *Disconnected) GetName() string {
 	if m != nil {
 		return m.Name
 	}
@@ -190,7 +135,7 @@ type ServeStart struct {
 
 func (m *ServeStart) Reset()                    { *m = ServeStart{} }
 func (*ServeStart) ProtoMessage()               {}
-func (*ServeStart) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{8} }
+func (*ServeStart) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{6} }
 
 func (m *ServeStart) GetMessage() string {
 	if m != nil {
@@ -205,7 +150,7 @@ type ServeStarted struct {
 
 func (m *ServeStarted) Reset()                    { *m = ServeStarted{} }
 func (*ServeStarted) ProtoMessage()               {}
-func (*ServeStarted) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{9} }
+func (*ServeStarted) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{7} }
 
 func (m *ServeStarted) GetMessage() string {
 	if m != nil {
@@ -221,7 +166,7 @@ type ServeStop struct {
 
 func (m *ServeStop) Reset()                    { *m = ServeStop{} }
 func (*ServeStop) ProtoMessage()               {}
-func (*ServeStop) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{10} }
+func (*ServeStop) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{8} }
 
 func (m *ServeStop) GetMessage() string {
 	if m != nil {
@@ -236,7 +181,7 @@ type ServeStoped struct {
 
 func (m *ServeStoped) Reset()                    { *m = ServeStoped{} }
 func (*ServeStoped) ProtoMessage()               {}
-func (*ServeStoped) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{11} }
+func (*ServeStoped) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{9} }
 
 func (m *ServeStoped) GetMessage() string {
 	if m != nil {
@@ -252,7 +197,7 @@ type ServeClose struct {
 
 func (m *ServeClose) Reset()                    { *m = ServeClose{} }
 func (*ServeClose) ProtoMessage()               {}
-func (*ServeClose) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{12} }
+func (*ServeClose) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{10} }
 
 func (m *ServeClose) GetMessage() string {
 	if m != nil {
@@ -270,7 +215,7 @@ type Internal struct {
 
 func (m *Internal) Reset()                    { *m = Internal{} }
 func (*Internal) ProtoMessage()               {}
-func (*Internal) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{13} }
+func (*Internal) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{11} }
 
 func (m *Internal) GetUserid() string {
 	if m != nil {
@@ -301,7 +246,7 @@ type GetNode struct {
 
 func (m *GetNode) Reset()                    { *m = GetNode{} }
 func (*GetNode) ProtoMessage()               {}
-func (*GetNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{14} }
+func (*GetNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{12} }
 
 func (m *GetNode) GetUserid() string {
 	if m != nil {
@@ -324,7 +269,7 @@ type GotNode struct {
 
 func (m *GotNode) Reset()                    { *m = GotNode{} }
 func (*GotNode) ProtoMessage()               {}
-func (*GotNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{15} }
+func (*GotNode) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{13} }
 
 func (m *GotNode) GetAddr() string {
 	if m != nil {
@@ -346,17 +291,15 @@ type Tick struct {
 
 func (m *Tick) Reset()                    { *m = Tick{} }
 func (*Tick) ProtoMessage()               {}
-func (*Tick) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{16} }
+func (*Tick) Descriptor() ([]byte, []int) { return fileDescriptorProtos, []int{14} }
 
 func init() {
 	proto.RegisterType((*Request)(nil), "pb.Request")
 	proto.RegisterType((*Response)(nil), "pb.Response")
-	proto.RegisterType((*GateConnect)(nil), "pb.GateConnect")
-	proto.RegisterType((*GateConnected)(nil), "pb.GateConnected")
-	proto.RegisterType((*GateDisconnect)(nil), "pb.GateDisconnect")
-	proto.RegisterType((*GateDisconnected)(nil), "pb.GateDisconnected")
-	proto.RegisterType((*HallConnect)(nil), "pb.HallConnect")
-	proto.RegisterType((*HallConnected)(nil), "pb.HallConnected")
+	proto.RegisterType((*Connect)(nil), "pb.Connect")
+	proto.RegisterType((*Connected)(nil), "pb.Connected")
+	proto.RegisterType((*Disconnect)(nil), "pb.Disconnect")
+	proto.RegisterType((*Disconnected)(nil), "pb.Disconnected")
 	proto.RegisterType((*ServeStart)(nil), "pb.ServeStart")
 	proto.RegisterType((*ServeStarted)(nil), "pb.ServeStarted")
 	proto.RegisterType((*ServeStop)(nil), "pb.ServeStop")
@@ -433,7 +376,7 @@ func (this *Response) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *GateConnect) Equal(that interface{}) bool {
+func (this *Connect) Equal(that interface{}) bool {
 	if that == nil {
 		if this == nil {
 			return true
@@ -441,9 +384,9 @@ func (this *GateConnect) Equal(that interface{}) bool {
 		return false
 	}
 
-	that1, ok := that.(*GateConnect)
+	that1, ok := that.(*Connect)
 	if !ok {
-		that2, ok := that.(GateConnect)
+		that2, ok := that.(Connect)
 		if ok {
 			that1 = &that2
 		} else {
@@ -456,129 +399,6 @@ func (this *GateConnect) Equal(that interface{}) bool {
 		}
 		return false
 	} else if this == nil {
-		return false
-	}
-	if !this.Sender.Equal(that1.Sender) {
-		return false
-	}
-	return true
-}
-func (this *GateConnected) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*GateConnected)
-	if !ok {
-		that2, ok := that.(GateConnected)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Message != that1.Message {
-		return false
-	}
-	return true
-}
-func (this *GateDisconnect) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*GateDisconnect)
-	if !ok {
-		that2, ok := that.(GateDisconnect)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if !this.Sender.Equal(that1.Sender) {
-		return false
-	}
-	return true
-}
-func (this *GateDisconnected) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*GateDisconnected)
-	if !ok {
-		that2, ok := that.(GateDisconnected)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if this.Message != that1.Message {
-		return false
-	}
-	return true
-}
-func (this *HallConnect) Equal(that interface{}) bool {
-	if that == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	}
-
-	that1, ok := that.(*HallConnect)
-	if !ok {
-		that2, ok := that.(HallConnect)
-		if ok {
-			that1 = &that2
-		} else {
-			return false
-		}
-	}
-	if that1 == nil {
-		if this == nil {
-			return true
-		}
-		return false
-	} else if this == nil {
-		return false
-	}
-	if !this.Sender.Equal(that1.Sender) {
 		return false
 	}
 	if this.Name != that1.Name {
@@ -586,7 +406,7 @@ func (this *HallConnect) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (this *HallConnected) Equal(that interface{}) bool {
+func (this *Connected) Equal(that interface{}) bool {
 	if that == nil {
 		if this == nil {
 			return true
@@ -594,9 +414,9 @@ func (this *HallConnected) Equal(that interface{}) bool {
 		return false
 	}
 
-	that1, ok := that.(*HallConnected)
+	that1, ok := that.(*Connected)
 	if !ok {
-		that2, ok := that.(HallConnected)
+		that2, ok := that.(Connected)
 		if ok {
 			that1 = &that2
 		} else {
@@ -611,10 +431,64 @@ func (this *HallConnected) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if !this.HallPid.Equal(that1.HallPid) {
+	if this.Name != that1.Name {
 		return false
 	}
-	if this.Message != that1.Message {
+	return true
+}
+func (this *Disconnect) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Disconnect)
+	if !ok {
+		that2, ok := that.(Disconnect)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Name != that1.Name {
+		return false
+	}
+	return true
+}
+func (this *Disconnected) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Disconnected)
+	if !ok {
+		that2, ok := that.(Disconnected)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
 		return false
 	}
 	if this.Name != that1.Name {
@@ -923,73 +797,42 @@ func (this *Response) GoString() string {
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *GateConnect) GoString() string {
+func (this *Connect) GoString() string {
 	if this == nil {
 		return "nil"
 	}
 	s := make([]string, 0, 5)
-	s = append(s, "&pb.GateConnect{")
-	if this.Sender != nil {
-		s = append(s, "Sender: "+fmt.Sprintf("%#v", this.Sender)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *GateConnected) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&pb.GateConnected{")
-	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *GateDisconnect) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&pb.GateDisconnect{")
-	if this.Sender != nil {
-		s = append(s, "Sender: "+fmt.Sprintf("%#v", this.Sender)+",\n")
-	}
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *GateDisconnected) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 5)
-	s = append(s, "&pb.GateDisconnected{")
-	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
-	s = append(s, "}")
-	return strings.Join(s, "")
-}
-func (this *HallConnect) GoString() string {
-	if this == nil {
-		return "nil"
-	}
-	s := make([]string, 0, 6)
-	s = append(s, "&pb.HallConnect{")
-	if this.Sender != nil {
-		s = append(s, "Sender: "+fmt.Sprintf("%#v", this.Sender)+",\n")
-	}
+	s = append(s, "&pb.Connect{")
 	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
-func (this *HallConnected) GoString() string {
+func (this *Connected) GoString() string {
 	if this == nil {
 		return "nil"
 	}
-	s := make([]string, 0, 7)
-	s = append(s, "&pb.HallConnected{")
-	if this.HallPid != nil {
-		s = append(s, "HallPid: "+fmt.Sprintf("%#v", this.HallPid)+",\n")
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.Connected{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Disconnect) GoString() string {
+	if this == nil {
+		return "nil"
 	}
-	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.Disconnect{")
+	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Disconnected) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.Disconnected{")
 	s = append(s, "Name: "+fmt.Sprintf("%#v", this.Name)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -1157,7 +1000,7 @@ func (m *Response) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *GateConnect) Marshal() (dAtA []byte, err error) {
+func (m *Connect) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1167,127 +1010,13 @@ func (m *GateConnect) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GateConnect) MarshalTo(dAtA []byte) (int, error) {
+func (m *Connect) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.Sender != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(m.Sender.Size()))
-		n1, err := m.Sender.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n1
-	}
-	return i, nil
-}
-
-func (m *GateConnected) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GateConnected) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Message) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
-		i += copy(dAtA[i:], m.Message)
-	}
-	return i, nil
-}
-
-func (m *GateDisconnect) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GateDisconnect) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Sender != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(m.Sender.Size()))
-		n2, err := m.Sender.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n2
-	}
-	return i, nil
-}
-
-func (m *GateDisconnected) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *GateDisconnected) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if len(m.Message) > 0 {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
-		i += copy(dAtA[i:], m.Message)
-	}
-	return i, nil
-}
-
-func (m *HallConnect) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalTo(dAtA)
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *HallConnect) MarshalTo(dAtA []byte) (int, error) {
-	var i int
-	_ = i
-	var l int
-	_ = l
-	if m.Sender != nil {
-		dAtA[i] = 0xa
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(m.Sender.Size()))
-		n3, err := m.Sender.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n3
-	}
 	if len(m.Name) > 0 {
-		dAtA[i] = 0x12
+		dAtA[i] = 0xa
 		i++
 		i = encodeVarintProtos(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
@@ -1295,7 +1024,7 @@ func (m *HallConnect) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
-func (m *HallConnected) Marshal() (dAtA []byte, err error) {
+func (m *Connected) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalTo(dAtA)
@@ -1305,29 +1034,61 @@ func (m *HallConnected) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *HallConnected) MarshalTo(dAtA []byte) (int, error) {
+func (m *Connected) MarshalTo(dAtA []byte) (int, error) {
 	var i int
 	_ = i
 	var l int
 	_ = l
-	if m.HallPid != nil {
+	if len(m.Name) > 0 {
 		dAtA[i] = 0xa
 		i++
-		i = encodeVarintProtos(dAtA, i, uint64(m.HallPid.Size()))
-		n4, err := m.HallPid.MarshalTo(dAtA[i:])
-		if err != nil {
-			return 0, err
-		}
-		i += n4
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
 	}
-	if len(m.Message) > 0 {
-		dAtA[i] = 0x12
-		i++
-		i = encodeVarintProtos(dAtA, i, uint64(len(m.Message)))
-		i += copy(dAtA[i:], m.Message)
+	return i, nil
+}
+
+func (m *Disconnect) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
 	}
+	return dAtA[:n], nil
+}
+
+func (m *Disconnect) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
 	if len(m.Name) > 0 {
-		dAtA[i] = 0x1a
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintProtos(dAtA, i, uint64(len(m.Name)))
+		i += copy(dAtA[i:], m.Name)
+	}
+	return i, nil
+}
+
+func (m *Disconnected) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Disconnected) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Name) > 0 {
+		dAtA[i] = 0xa
 		i++
 		i = encodeVarintProtos(dAtA, i, uint64(len(m.Name)))
 		i += copy(dAtA[i:], m.Name)
@@ -1546,11 +1307,11 @@ func (m *GotNode) MarshalTo(dAtA []byte) (int, error) {
 		dAtA[i] = 0x12
 		i++
 		i = encodeVarintProtos(dAtA, i, uint64(m.Sender.Size()))
-		n5, err := m.Sender.MarshalTo(dAtA[i:])
+		n1, err := m.Sender.MarshalTo(dAtA[i:])
 		if err != nil {
 			return 0, err
 		}
-		i += n5
+		i += n1
 	}
 	return i, nil
 }
@@ -1628,53 +1389,9 @@ func (m *Response) Size() (n int) {
 	return n
 }
 
-func (m *GateConnect) Size() (n int) {
+func (m *Connect) Size() (n int) {
 	var l int
 	_ = l
-	if m.Sender != nil {
-		l = m.Sender.Size()
-		n += 1 + l + sovProtos(uint64(l))
-	}
-	return n
-}
-
-func (m *GateConnected) Size() (n int) {
-	var l int
-	_ = l
-	l = len(m.Message)
-	if l > 0 {
-		n += 1 + l + sovProtos(uint64(l))
-	}
-	return n
-}
-
-func (m *GateDisconnect) Size() (n int) {
-	var l int
-	_ = l
-	if m.Sender != nil {
-		l = m.Sender.Size()
-		n += 1 + l + sovProtos(uint64(l))
-	}
-	return n
-}
-
-func (m *GateDisconnected) Size() (n int) {
-	var l int
-	_ = l
-	l = len(m.Message)
-	if l > 0 {
-		n += 1 + l + sovProtos(uint64(l))
-	}
-	return n
-}
-
-func (m *HallConnect) Size() (n int) {
-	var l int
-	_ = l
-	if m.Sender != nil {
-		l = m.Sender.Size()
-		n += 1 + l + sovProtos(uint64(l))
-	}
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovProtos(uint64(l))
@@ -1682,17 +1399,29 @@ func (m *HallConnect) Size() (n int) {
 	return n
 }
 
-func (m *HallConnected) Size() (n int) {
+func (m *Connected) Size() (n int) {
 	var l int
 	_ = l
-	if m.HallPid != nil {
-		l = m.HallPid.Size()
-		n += 1 + l + sovProtos(uint64(l))
-	}
-	l = len(m.Message)
+	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovProtos(uint64(l))
 	}
+	return n
+}
+
+func (m *Disconnect) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovProtos(uint64(l))
+	}
+	return n
+}
+
+func (m *Disconnected) Size() (n int) {
+	var l int
+	_ = l
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovProtos(uint64(l))
@@ -1837,64 +1566,41 @@ func (this *Response) String() string {
 	}, "")
 	return s
 }
-func (this *GateConnect) String() string {
+func (this *Connect) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&GateConnect{`,
-		`Sender:` + strings.Replace(fmt.Sprintf("%v", this.Sender), "PID", "actor.PID", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GateConnected) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GateConnected{`,
-		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GateDisconnect) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GateDisconnect{`,
-		`Sender:` + strings.Replace(fmt.Sprintf("%v", this.Sender), "PID", "actor.PID", 1) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *GateDisconnected) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&GateDisconnected{`,
-		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
-		`}`,
-	}, "")
-	return s
-}
-func (this *HallConnect) String() string {
-	if this == nil {
-		return "nil"
-	}
-	s := strings.Join([]string{`&HallConnect{`,
-		`Sender:` + strings.Replace(fmt.Sprintf("%v", this.Sender), "PID", "actor.PID", 1) + `,`,
+	s := strings.Join([]string{`&Connect{`,
 		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
 		`}`,
 	}, "")
 	return s
 }
-func (this *HallConnected) String() string {
+func (this *Connected) String() string {
 	if this == nil {
 		return "nil"
 	}
-	s := strings.Join([]string{`&HallConnected{`,
-		`HallPid:` + strings.Replace(fmt.Sprintf("%v", this.HallPid), "PID", "actor.PID", 1) + `,`,
-		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+	s := strings.Join([]string{`&Connected{`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Disconnect) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Disconnect{`,
+		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Disconnected) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Disconnected{`,
 		`Name:` + fmt.Sprintf("%v", this.Name) + `,`,
 		`}`,
 	}, "")
@@ -2217,7 +1923,7 @@ func (m *Response) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GateConnect) Unmarshal(dAtA []byte) error {
+func (m *Connect) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2240,370 +1946,13 @@ func (m *GateConnect) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GateConnect: wiretype end group for non-group")
+			return fmt.Errorf("proto: Connect: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GateConnect: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Connect: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Sender == nil {
-				m.Sender = &actor.PID{}
-			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtos(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtos
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GateConnected) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtos
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GateConnected: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GateConnected: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Message = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtos(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtos
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GateDisconnect) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtos
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GateDisconnect: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GateDisconnect: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Sender == nil {
-				m.Sender = &actor.PID{}
-			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtos(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtos
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *GateDisconnected) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtos
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: GateDisconnected: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GateDisconnected: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= (uint64(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Message = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipProtos(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if skippy < 0 {
-				return ErrInvalidLengthProtos
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *HallConnect) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowProtos
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= (uint64(b) & 0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: HallConnect: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HallConnect: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Sender == nil {
-				m.Sender = &actor.PID{}
-			}
-			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -2653,7 +2002,7 @@ func (m *HallConnect) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *HallConnected) Unmarshal(dAtA []byte) error {
+func (m *Connected) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2676,48 +2025,15 @@ func (m *HallConnected) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: HallConnected: wiretype end group for non-group")
+			return fmt.Errorf("proto: Connected: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: HallConnected: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Connected: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field HallPid", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowProtos
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= (int(b) & 0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthProtos
-			}
-			postIndex := iNdEx + msglen
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.HallPid == nil {
-				m.HallPid = &actor.PID{}
-			}
-			if err := m.HallPid.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2742,9 +2058,138 @@ func (m *HallConnected) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Message = string(dAtA[iNdEx:postIndex])
+			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Disconnect) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Disconnect: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Disconnect: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowProtos
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthProtos
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipProtos(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthProtos
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Disconnected) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowProtos
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Disconnected: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Disconnected: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -3704,33 +3149,30 @@ var (
 func init() { proto.RegisterFile("protos.proto", fileDescriptorProtos) }
 
 var fileDescriptorProtos = []byte{
-	// 447 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x93, 0xcd, 0x6e, 0xd3, 0x40,
-	0x10, 0xc7, 0xb3, 0x69, 0x64, 0x27, 0x93, 0x16, 0xa1, 0x3d, 0x54, 0x51, 0x0f, 0x2b, 0x64, 0xf1,
-	0x51, 0xa4, 0x62, 0x8b, 0x0f, 0x21, 0x71, 0x82, 0x90, 0xa2, 0x90, 0x03, 0x55, 0xe4, 0x94, 0x07,
-	0x70, 0xbc, 0xa3, 0x60, 0xd5, 0xd9, 0x35, 0xbb, 0x5b, 0x24, 0x6e, 0x3c, 0x02, 0x8f, 0xc1, 0xa3,
-	0x70, 0xec, 0x91, 0x23, 0x31, 0x17, 0x8e, 0x7d, 0x04, 0xe4, 0xad, 0x63, 0x1c, 0x89, 0x58, 0x0a,
-	0xa7, 0xcc, 0x64, 0xfe, 0xf3, 0x9b, 0x9d, 0xbf, 0xc6, 0xb0, 0x9f, 0x29, 0x69, 0xa4, 0xf6, 0xed,
-	0x0f, 0x6d, 0x67, 0xf3, 0xa3, 0xe7, 0x8b, 0xc4, 0x7c, 0xb8, 0x9c, 0xfb, 0xb1, 0x5c, 0x06, 0x43,
-	0xfd, 0x59, 0x5c, 0x28, 0x29, 0x26, 0xe7, 0x81, 0x15, 0x44, 0xb1, 0x91, 0xea, 0xd1, 0x42, 0x06,
-	0x36, 0x08, 0xea, 0xbd, 0xde, 0x4b, 0x70, 0x43, 0xfc, 0x78, 0x89, 0xda, 0xd0, 0x23, 0xe8, 0xbe,
-	0xd7, 0xa8, 0xce, 0xa2, 0x25, 0x0e, 0xc8, 0x1d, 0x72, 0xdc, 0x0b, 0xab, 0x9c, 0x0e, 0xc0, 0x7d,
-	0x87, 0x5a, 0x47, 0x0b, 0x1c, 0xb4, 0x6d, 0x69, 0x9d, 0x7a, 0xaf, 0xa0, 0x1b, 0xa2, 0xce, 0xa4,
-	0xd0, 0xf8, 0x9f, 0x84, 0xc7, 0xd0, 0x1f, 0x47, 0x06, 0x47, 0x52, 0x08, 0x8c, 0x0d, 0xf5, 0xc0,
-	0x99, 0xa1, 0xe0, 0xa8, 0x2c, 0xa2, 0xff, 0x04, 0x7c, 0xfb, 0x6c, 0x7f, 0x3a, 0x39, 0x0d, 0xcb,
-	0x8a, 0xf7, 0x10, 0x0e, 0x6a, 0x2d, 0xc8, 0xeb, 0x74, 0xb2, 0x49, 0x7f, 0x06, 0xb7, 0x0a, 0xe9,
-	0x69, 0xa2, 0xe3, 0x1d, 0x06, 0x9c, 0xc0, 0xed, 0xcd, 0xae, 0xc6, 0x19, 0x6f, 0xa0, 0xff, 0x36,
-	0x4a, 0xd3, 0x1d, 0x36, 0xa0, 0x14, 0x3a, 0xd6, 0xa6, 0x1b, 0x2f, 0x6c, 0xec, 0xc5, 0x70, 0x50,
-	0xc3, 0x20, 0xa7, 0x77, 0xc1, 0x2d, 0xfe, 0x98, 0x26, 0xfc, 0x1f, 0xa4, 0x75, 0x69, 0xbb, 0xb3,
-	0xd5, 0x90, 0xbd, 0xda, 0x90, 0xfb, 0x00, 0x33, 0x54, 0x9f, 0x70, 0x66, 0x22, 0x65, 0x1a, 0x76,
-	0x3a, 0x86, 0xfd, 0xbf, 0xba, 0xc6, 0xed, 0xef, 0x41, 0xaf, 0x54, 0xca, 0xac, 0x41, 0xf6, 0x00,
-	0xfa, 0x95, 0xac, 0x91, 0xb7, 0x7e, 0xe1, 0x28, 0x95, 0x1a, 0x1b, 0x74, 0x53, 0xe8, 0x4e, 0x84,
-	0x41, 0x25, 0xa2, 0x94, 0x1e, 0x82, 0x53, 0x5c, 0x5a, 0x69, 0x54, 0x2f, 0x2c, 0xb3, 0xc2, 0x81,
-	0x91, 0xe4, 0x95, 0xcd, 0x45, 0x5c, 0x27, 0xee, 0x6d, 0x12, 0x5f, 0x80, 0x3b, 0x46, 0x73, 0x56,
-	0x88, 0xb6, 0x01, 0x0f, 0xc1, 0x09, 0xa5, 0x5c, 0x26, 0xbc, 0x44, 0x96, 0x99, 0x37, 0x04, 0x77,
-	0x2c, 0x6f, 0x5a, 0x29, 0x74, 0x86, 0x9c, 0xab, 0xb2, 0xd1, 0xc6, 0xb5, 0x93, 0x68, 0x6f, 0xbd,
-	0x39, 0x07, 0x3a, 0xe7, 0x49, 0x7c, 0xf1, 0xfa, 0xe4, 0x6a, 0xc5, 0x5a, 0x3f, 0x56, 0xac, 0x75,
-	0xbd, 0x62, 0xe4, 0x4b, 0xce, 0xc8, 0xb7, 0x9c, 0x91, 0xef, 0x39, 0x23, 0x57, 0x39, 0x23, 0x3f,
-	0x73, 0x46, 0x7e, 0xe7, 0xac, 0x75, 0x9d, 0x33, 0xf2, 0xf5, 0x17, 0x6b, 0xcd, 0x1d, 0xfb, 0x1d,
-	0x3f, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff, 0xf5, 0xc7, 0x76, 0xe7, 0x13, 0x04, 0x00, 0x00,
+	// 396 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x92, 0x41, 0x8b, 0xd3, 0x40,
+	0x14, 0xc7, 0x33, 0x6b, 0x49, 0xda, 0xb7, 0x3d, 0xcd, 0x61, 0x29, 0x0b, 0x8e, 0x4b, 0x40, 0xdd,
+	0x83, 0x26, 0xa0, 0x20, 0x78, 0xd2, 0xda, 0x85, 0xd2, 0x83, 0xa5, 0xa4, 0xf5, 0x03, 0xa4, 0x99,
+	0x47, 0x0d, 0x6d, 0x67, 0xe2, 0xcc, 0x54, 0xf0, 0xe6, 0x47, 0xf0, 0x63, 0xf8, 0x51, 0x3c, 0xf6,
+	0xe8, 0xd1, 0xc6, 0x8b, 0xc7, 0x7e, 0x04, 0xc9, 0x98, 0xb4, 0x29, 0xd8, 0x1c, 0xf6, 0x34, 0xef,
+	0xf1, 0x7e, 0xff, 0x1f, 0x8f, 0x99, 0x81, 0x6e, 0xa6, 0xa4, 0x91, 0x3a, 0xb0, 0x07, 0xbd, 0xc8,
+	0xe6, 0xd7, 0xaf, 0x16, 0xa9, 0xf9, 0xb8, 0x99, 0x07, 0x89, 0x5c, 0x87, 0x7d, 0xfd, 0x45, 0x2c,
+	0x95, 0x14, 0xa3, 0x59, 0x68, 0x81, 0x38, 0x31, 0x52, 0x3d, 0x5f, 0xc8, 0xd0, 0x16, 0x61, 0x3d,
+	0xeb, 0xbf, 0x01, 0x2f, 0xc2, 0x4f, 0x1b, 0xd4, 0x86, 0x5e, 0x43, 0xfb, 0x83, 0x46, 0x35, 0x8e,
+	0xd7, 0xd8, 0x23, 0x37, 0xe4, 0xb6, 0x13, 0x1d, 0x7a, 0xda, 0x03, 0xef, 0x3d, 0x6a, 0x1d, 0x2f,
+	0xb0, 0x77, 0x61, 0x47, 0x55, 0xeb, 0xbf, 0x85, 0x76, 0x84, 0x3a, 0x93, 0x42, 0xe3, 0x3d, 0x0d,
+	0x0f, 0xc1, 0x1b, 0x48, 0x21, 0x30, 0x31, 0x94, 0x42, 0xab, 0x16, 0xb6, 0xb5, 0xff, 0x08, 0x3a,
+	0xe5, 0x18, 0xf9, 0x7f, 0x81, 0x1b, 0x80, 0xbb, 0x54, 0x27, 0x0d, 0x0a, 0x1f, 0xba, 0x47, 0xe2,
+	0x8c, 0xe5, 0x09, 0xc0, 0x14, 0xd5, 0x67, 0x9c, 0x9a, 0x58, 0x99, 0xfa, 0xb6, 0xe4, 0x74, 0xdb,
+	0x5b, 0xe8, 0x1e, 0x39, 0xe4, 0x0d, 0xe4, 0x63, 0xe8, 0x94, 0xa4, 0xcc, 0x1a, 0xb0, 0xa7, 0x70,
+	0x79, 0xc0, 0x1a, 0x7d, 0xd5, 0x86, 0x83, 0x95, 0xd4, 0xd8, 0xc0, 0x4d, 0xa0, 0x3d, 0x12, 0x06,
+	0x95, 0x88, 0x57, 0xf4, 0x0a, 0xdc, 0xe2, 0x05, 0x52, 0x5e, 0x42, 0x65, 0x57, 0xdc, 0xc0, 0x40,
+	0xf2, 0xea, 0x29, 0x6c, 0x5d, 0x37, 0x3e, 0x38, 0x35, 0xbe, 0x06, 0x6f, 0x88, 0x66, 0x5c, 0x40,
+	0xe7, 0x84, 0x57, 0xe0, 0x46, 0x52, 0xae, 0x53, 0x5e, 0x2a, 0xcb, 0xce, 0xef, 0x83, 0x37, 0x94,
+	0xff, 0xa2, 0x14, 0x5a, 0x7d, 0xce, 0x55, 0x75, 0xeb, 0x45, 0x4d, 0x7d, 0x70, 0xa7, 0x28, 0x38,
+	0x2a, 0x1b, 0xbb, 0x7c, 0x01, 0x81, 0xfd, 0xa3, 0xc1, 0x64, 0x74, 0x17, 0x95, 0x13, 0xdf, 0x85,
+	0xd6, 0x2c, 0x4d, 0x96, 0xef, 0x9e, 0x6d, 0x77, 0xcc, 0xf9, 0xb9, 0x63, 0xce, 0x7e, 0xc7, 0xc8,
+	0xd7, 0x9c, 0x91, 0xef, 0x39, 0x23, 0x3f, 0x72, 0x46, 0xb6, 0x39, 0x23, 0xbf, 0x72, 0x46, 0xfe,
+	0xe4, 0xcc, 0xd9, 0xe7, 0x8c, 0x7c, 0xfb, 0xcd, 0x9c, 0xb9, 0x6b, 0xff, 0xf7, 0xcb, 0xbf, 0x01,
+	0x00, 0x00, 0xff, 0xff, 0xcf, 0xb6, 0x03, 0xf2, 0x2b, 0x03, 0x00, 0x00,
 }

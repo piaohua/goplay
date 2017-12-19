@@ -17,27 +17,12 @@ import (
 
 func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 	switch msg.(type) {
-	case *pb.HallConnect:
-		//初始化建立连接
-		glog.Infof("bets init: %v", ctx.Self().String())
-		//连接
-		bind := cfg.Section("hall").Key("bind").Value()
-		name := cfg.Section("cookie").Key("name").Value()
-		//timeout := 3 * time.Second
-		//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
-		//if err != nil {
-		//	glog.Fatalf("remote hall err %v", err)
-		//}
-		//a.hallPid = hallPid.Pid
-		a.hallPid = actor.NewPID(bind, name)
-		//arg := msg.(*pb.HallConnect)
-		//a.hallPid = arg.Sender
-		glog.Infof("a.hallPid: %s", a.hallPid.String())
-		connect := &pb.HallConnect{
-			Sender: ctx.Self(),
-			Name:   a.Name,
-		}
-		a.hallPid.Tell(connect)
+	case *pb.Connected:
+		arg := msg.(*pb.Connected)
+		glog.Infof("Connected %s", arg.Name)
+	case *pb.Disconnected:
+		arg := msg.(*pb.Disconnected)
+		glog.Infof("Disconnected %s", arg.Name)
 	case *pb.ServeStop:
 		//关闭服务
 		a.handlerStop(ctx)
@@ -82,6 +67,22 @@ func (a *BetsActor) Handler(msg interface{}, ctx actor.Context) {
 //启动服务
 func (a *BetsActor) start(ctx actor.Context) {
 	glog.Infof("bets start: %v", ctx.Self().String())
+	//初始化建立连接
+	bind := cfg.Section("hall").Key("bind").Value()
+	name := cfg.Section("cookie").Key("name").Value()
+	//timeout := 3 * time.Second
+	//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
+	//if err != nil {
+	//	glog.Fatalf("remote hall err %v", err)
+	//}
+	//a.hallPid = hallPid.Pid
+	a.hallPid = actor.NewPID(bind, name)
+	glog.Infof("a.hallPid: %s", a.hallPid.String())
+	connect := &pb.Connect{
+		Name: a.Name,
+	}
+	a.hallPid.Request(connect, ctx.Self())
+	//初始化
 	a.initBetting(ctx)
 	go a.ticker(ctx) //goroutine,计时
 }

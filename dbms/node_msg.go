@@ -14,51 +14,34 @@ import (
 
 func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 	switch msg.(type) {
-	case *pb.GateConnect:
-		arg := msg.(*pb.GateConnect)
-		connected := &pb.GateConnected{
-			Message: ctx.Self().String(),
-		}
-		arg.Sender.Tell(connected)
-		glog.Infof("GateConnect %s", arg.Sender.String())
+	case *pb.Connected:
+		arg := msg.(*pb.Connected)
+		glog.Infof("Connected %s", arg.Name)
+	case *pb.Disconnected:
+		arg := msg.(*pb.Disconnected)
+		glog.Infof("Disconnected %s", arg.Name)
+	case *pb.Connect:
+		arg := msg.(*pb.Connect)
 		//网关注册
-		a.gates[arg.Sender.String()] = arg.Sender
-		//同步配置
-		a.syncConfig(arg.Sender.String())
-	case *pb.GateDisconnect:
-		arg := msg.(*pb.GateDisconnect)
-		connected := &pb.GateDisconnected{
-			Message: ctx.Self().String(),
-		}
-		arg.Sender.Tell(connected)
-		glog.Infof("GateDisconnect %s", arg.Sender.String())
-		//网关注销
-		delete(a.gates, arg.Sender.String())
-	case *pb.HallConnect:
-		//初始化建立连接
-		glog.Infof("dbms init: %v", ctx.Self().String())
-		//连接
-		bind := cfg.Section("hall").Key("bind").Value()
-		name := cfg.Section("cookie").Key("name").Value()
-		//timeout := 3 * time.Second
-		//hallPid, err := remote.SpawnNamed(bind, a.Name, name, timeout)
-		//if err != nil {
-		//	glog.Fatalf("remote hall err %v", err)
-		//}
-		//a.hallPid = hallPid.Pid
-		a.hallPid = actor.NewPID(bind, name)
-		glog.Infof("a.hallPid: %s", a.hallPid.String())
-		connect := &pb.HallConnect{
-			Sender: ctx.Self(),
-			Name:   a.Name,
-		}
-		a.hallPid.Tell(connect)
-		connected := &pb.HallConnected{
-			Message: ctx.Self().String(),
-			Name:    a.Name,
-			HallPid: a.hallPid,
+		a.gates[arg.Name] = ctx.Sender()
+		//响应
+		connected := &pb.Connected{
+			Name: a.Name,
 		}
 		ctx.Respond(connected)
+		glog.Infof("Connect %s", arg.Name)
+		//同步配置
+		a.syncConfig(arg.Name)
+	case *pb.Disconnect:
+		arg := msg.(*pb.Disconnect)
+		//网关注销
+		delete(a.gates, arg.Name)
+		//响应
+		disconnected := &pb.Disconnected{
+			Name: a.Name,
+		}
+		ctx.Respond(disconnected)
+		glog.Infof("Disconnect %s", arg.Name)
 	case *pb.ServeStop:
 		//关闭服务
 		a.handlerStop(ctx)
@@ -90,6 +73,23 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 //启动服务
 func (a *DBMSActor) start(ctx actor.Context) {
 	glog.Infof("dbms start: %v", ctx.Self().String())
+	//初始化建立连接
+	bind := cfg.Section("hall").Key("bind").Value()
+	name := cfg.Section("cookie").Key("name").Value()
+	a.hallPid = actor.NewPID(bind, name)
+	glog.Infof("a.hallPid: %s", a.hallPid.String())
+	connect := &pb.Connect{
+		Name: a.Name,
+	}
+	a.hallPid.Request(connect, ctx.Self())
+	//timeout := 3 * time.Second
+	//msg1 := new(pb.Connect)
+	//res1, err1 := nodePid.RequestFuture(msg1, timeout).Result()
+	//if err1 != nil || res1 == nil {
+	//	glog.Fatalf("Hall Connect err: %v", err1)
+	//	return
+	//}
+	//response1 := res1.(*pb.Connected)
 	//启动
 	go a.ticker(ctx)
 }

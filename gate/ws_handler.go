@@ -131,6 +131,9 @@ func (ws *WSConn) stop(ctx actor.Context) {
 	if ws.User == nil {
 		return
 	}
+	if ws.gamePid != nil {
+		//TODO 下线
+	}
 	//回存数据
 	ws.syncUser()
 	//登出日志

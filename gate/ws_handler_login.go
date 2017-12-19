@@ -233,6 +233,9 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	//msg3 := &pb.LoginGate{}
 	//res3, err3 := ws.roomPid.RequestFuture(msg3, timeout).Result()
 	//response3 := res3.(*pb.LoginedGate)
+	//TODO hallPid 查询是否在房间内
+	//if ws.gamePid != nil {
+	//}
 	//登录成功响应
 	result4, err4 := json.Marshal(ws.User)
 	if err4 != nil {
