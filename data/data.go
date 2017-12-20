@@ -1,5 +1,7 @@
 package data
 
+import "github.com/AsynkronIT/protoactor-go/actor"
+
 const (
 	ROOM_PRIVATE  uint32 = 1 //私人房房间类型(看牌抢庄)
 	ROOM_FREE     uint32 = 2 //自由场房间类型
@@ -109,4 +111,13 @@ type DeskOperate struct {
 	Cards []uint32 `json:"cards"` //
 	Bione []uint32 `json:"bione"` //
 	Bitwo []uint32 `json:"bitwo"` //
+}
+
+//TODO 桌子路由信息
+type DeskInfo struct {
+	Rid   string     `json:"rid"`   //房间ID
+	Rtype uint32     `json:"rtype"` //房间类型
+	Count uint32     `json:"count"` //牌局人数限制
+	Num   uint32     `json:"num"`   //玩家人数
+	Pid   *actor.PID `json:"-"`     //进程id
 }

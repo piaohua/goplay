@@ -38,7 +38,8 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 		glog.Debugf("CRoomList %#v", arg)
 		//ws.rolePid.Request(msg2, ctx.Self())
 	default:
-		glog.Errorf("unknown message %v", msg)
+		//glog.Errorf("unknown message %v", msg)
+		ws.HandlerFree(msg, ctx)
 	}
 }
 
@@ -50,6 +51,8 @@ func (ws *WSConn) entryRoom(ctx actor.Context) {
 	}
 	//TODO 进入房间
 	//ws.gamePid.Tell(msg)
+	//ws.roomPid.Tell(msg)
+	//ws.hallPid.Tell(msg)
 }
 
 //大厅中匹配可用房间

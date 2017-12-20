@@ -20,7 +20,7 @@ type HallActor struct {
 	//服务注册
 	serve map[string]*actor.PID
 	//所有网关节点
-	gates map[string]*actor.PID
+	//gates map[string]*actor.PID
 	//玩家所在节点userid-gate
 	roles map[string]string
 	//节点人数gate-numbers
@@ -67,7 +67,7 @@ func newHallActor() actor.Actor {
 	//name
 	a.Name = cfg.Section("hall").Name()
 	a.serve = make(map[string]*actor.PID)
-	a.gates = make(map[string]*actor.PID)
+	//a.gates = make(map[string]*actor.PID)
 	a.roles = make(map[string]string)
 	a.count = make(map[string]uint32)
 	a.stopCh = make(chan struct{})
