@@ -17,6 +17,9 @@ const (
 type IDGen struct {
 	Id    string `bson:"_id"`
 	Value string `bson:"value"`
+	//TODO 优化
+	//Step  string `bson:"step"`
+	//Max   string `bson:"max"`
 }
 
 func (this *IDGen) Save() bool {

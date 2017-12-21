@@ -33,6 +33,5 @@ message SpawnDesk {
 
 message SpawnedDesk {
     actor.PID Desk = 1;
-    string Data = 2;
-    ErrCode error = 3 ;// 错误码
+    ErrCode error = 2 ;// 错误码
 }

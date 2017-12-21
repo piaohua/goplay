@@ -118,5 +118,8 @@ func (ws *WSConn) spawnRoom(node *actor.PID, rdata string) *pb.SpawnedDesk {
 	if response2.Desk == nil {
 		return nil
 	}
+	if response2.Error != pb.OK {
+		return nil
+	}
 	return response2
 }
