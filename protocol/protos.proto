@@ -33,40 +33,6 @@ message Disconnected {
     string Name = 1; //断开的节点名字
 }
 
-////网关连接节点
-//message GateConnect {
-//    actor.PID Sender = 1;
-//    string Name = 2;
-//}
-//
-//message GateConnected {
-//    string Message = 1;
-//    string Name = 2;
-//}
-//
-////网关节点断开连接
-//message GateDisconnect {
-//    actor.PID Sender = 1;
-//    string Name = 2;
-//}
-//
-//message GateDisconnected {
-//    string Message = 1;
-//    string Name = 2;
-//}
-//
-////连接中心节点
-//message HallConnect {
-//    actor.PID Sender = 1;
-//    string Name = 2;
-//}
-//
-//message HallConnected {
-//    actor.PID HallPid = 1;
-//    string Message = 2;
-//    string Name = 3;
-//}
-
 //启动服务
 message ServeStart {
     string Message = 1;

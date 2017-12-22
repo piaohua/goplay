@@ -3,8 +3,11 @@ package main
 import (
 	"time"
 
+	"goplay/data"
+	"goplay/game/handler"
 	"goplay/glog"
 	"goplay/pb"
+	"utils"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
 )
@@ -116,7 +119,46 @@ func (a *RoomActor) handlerStop(ctx actor.Context) {
 //创建房间
 func (a *RoomActor) create(arg *pb.CreateDesk, ctx actor.Context) {
 	glog.Debugf("CreateDesk %#v", arg)
-	//响应登录
 	rsp := new(pb.CreatedDesk)
+	deskData := handler.Data2Desk(arg.Data)
+	if deskData == nil {
+		rsp.Error = pb.RoomNotExist
+		ctx.Respond(rsp)
+	}
+	switch deskData.Rtype {
+	case data.ROOM_FREE:
+		//百人
+		deskData.Rid = a.uniqueid.GenID()
+		deskData.Code = a.GenCodeFree()
+	case data.ROOM_PRIVATE:
+		//私人
+		deskData.Rid = a.uniqueid.GenID()
+		deskData.Code = a.GenCode()
+	}
+	//添加房间,TODO 如果响应超时？
+	a.rooms[deskData.Rid] = deskData
+	a.codes[deskData.Code] = deskData.Rid
+	//响应登录
+	rsp.Data = handler.DeskData2(deskData)
 	ctx.Respond(rsp)
+}
+
+//生成一个牌桌邀请码,全列表中唯一
+func (a *RoomActor) GenCode() (s string) {
+	s = utils.RandStr(6)
+	//是否已经存在
+	if _, ok := a.codes[s]; ok {
+		return a.GenCode() //重复尝试,TODO:一定次数后放弃尝试
+	}
+	return
+}
+
+//生成一个牌桌邀请码,全列表中唯一
+func (a *RoomActor) GenCodeFree() (s string) {
+	s = utils.RandStr(7) //区别于私人房间
+	//是否已经存在
+	if _, ok := a.codes[s]; ok {
+		return a.GenCode() //重复尝试,TODO:一定次数后放弃尝试
+	}
+	return
 }

@@ -1,13 +1,9 @@
 package main
 
 import (
-	"encoding/json"
-
 	"goplay/data"
-	"goplay/game/config"
 	"goplay/glog"
 	"goplay/pb"
-	"utils"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
 )
@@ -85,18 +81,4 @@ func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 	}
 	ws.gamePid = response3.Desk
 	ws.entryRoom(ctx)
-}
-
-//自由场数据
-func (ws *WSConn) freeData() string {
-	now := uint32(utils.Timestamp())
-	count := uint32(config.GetEnv(data.ENV11))
-	deskData := data.NewDeskData(0, 0, data.ROOM_FREE, 1,
-		0, 0, 0, 0, count, now, 0, 0, 0, "", "", "", "")
-	result, err := json.Marshal(deskData)
-	if err != nil {
-		glog.Errorf("deskData Marshal err %v", err)
-		return ""
-	}
-	return string(result)
 }

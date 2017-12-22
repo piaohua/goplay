@@ -118,10 +118,10 @@ const (
 
 // suit
 const (
-	Spade   uint32 = 0x40 //黑桃
-	Heart   uint32 = 0x30 //红桃
-	Club    uint32 = 0x20 //梅花
-	Diamond uint32 = 0x10 //方块
+	Spade   uint32 = 0x40 //黑桃(♠)
+	Heart   uint32 = 0x30 //红桃(♥)
+	Club    uint32 = 0x20 //梅花(♣)
+	Diamond uint32 = 0x10 //方块(♦)
 
 	SuitMask uint32 = 0xF0
 )

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"goplay/data"
+	"goplay/game/handler"
 	"goplay/glog"
 	"goplay/pb"
 
@@ -81,7 +82,7 @@ func (ws *WSConn) createRoom(rtype uint32) *pb.CreatedDesk {
 	msg2 := new(pb.CreateDesk)
 	switch rtype {
 	case data.ROOM_FREE:
-		msg2.Data = ws.freeData()
+		msg2.Data = handler.FreeData()
 	}
 	if msg2.Data == "" {
 		return nil
@@ -95,6 +96,7 @@ func (ws *WSConn) createRoom(rtype uint32) *pb.CreatedDesk {
 	response2 := res2.(*pb.CreatedDesk)
 	glog.Debugf("response2: %#v", response2)
 	if response2.Error != pb.OK {
+		glog.Error("createRoom failed")
 		return nil
 	}
 	return response2

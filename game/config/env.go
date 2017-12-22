@@ -85,6 +85,10 @@ func GetEnv(k interface{}) int32 {
 		return 30 //绑定赠送钻石
 	case data.ENV11:
 		return 100 //百人场人数
+	case data.ENV15:
+		return 5 //全民刮奖
+	case data.ENV16:
+		return 100 //全民刮奖最大注
 	case data.ENV17:
 		return 50000000 //系统上庄限额
 	case data.ENV18:
