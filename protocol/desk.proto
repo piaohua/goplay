@@ -35,3 +35,38 @@ message SpawnedDesk {
     actor.PID Desk = 1;
     ErrCode error = 2 ;// 错误码
 }
+
+//创建桌子进程
+message AddDesk {
+    actor.PID Desk = 1;
+    string Roomid = 2;
+    uint32 Rtype = 3;
+}
+
+message AddedDesk {
+    ErrCode error = 1 ;// 错误码
+}
+
+//进入房间
+message EnterDesk {
+    string Data = 1;
+}
+
+message EnteredDesk {
+    string Roomid = 1;
+    uint32 Rtype = 2;
+    string Userid = 3;
+    ErrCode error = 4 ;// 错误码
+}
+
+//进入房间
+message EnterRoom {
+    actor.PID Sender = 1; //玩家进程
+    string Roomid = 2;
+    string Rtype = 3;
+    string Userid = 4;
+}
+
+message EnteredRoom {
+    ErrCode error = 3 ;// 错误码
+}

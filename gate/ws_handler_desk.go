@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"time"
 
 	"goplay/data"
@@ -50,8 +51,17 @@ func (ws *WSConn) entryRoom(ctx actor.Context) {
 		glog.Errorf("not in the room: %s", ws.User.GetUserid())
 		return
 	}
+	result4, err4 := json.Marshal(ws.User)
+	if err4 != nil {
+		glog.Errorf("user Marshal err %v", err4)
+		return
+	}
+	msg4 := new(pb.EnterDesk)
+	msg4.Data = string(result4)
+	msg4.Userid = ws.User.GetUserid()
 	//TODO 进入房间
 	//ws.gamePid.Tell(msg)
+	msg5 := new(pb.Entry)
 	//ws.roomPid.Tell(msg)
 	//ws.hallPid.Tell(msg)
 }
@@ -103,14 +113,14 @@ func (ws *WSConn) createRoom(rtype uint32) *pb.CreatedDesk {
 }
 
 //创建新桌子
-func (ws *WSConn) spawnRoom(node *actor.PID, rdata string) *pb.SpawnedDesk {
-	if rdata == "" || node == nil {
+func (ws *WSConn) spawnRoom(deskNode *actor.PID, rdata string) *pb.SpawnedDesk {
+	if rdata == "" || deskNode == nil {
 		return nil
 	}
 	msg2 := new(pb.SpawnDesk)
 	msg2.Data = rdata
 	timeout := 3 * time.Second
-	res2, err2 := node.RequestFuture(msg2, timeout).Result()
+	res2, err2 := deskNode.RequestFuture(msg2, timeout).Result()
 	if err2 != nil {
 		glog.Errorf("spawnRoom err: %v", err2)
 		return nil

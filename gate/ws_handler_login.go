@@ -75,9 +75,9 @@ func (ws *WSConn) regist(arg *pb.CRegist, ctx actor.Context) {
 		return
 	}
 	ws.User = new(data.User)
-	err := json.Unmarshal([]byte(response1.Data), ws.User)
-	if err != nil {
-		glog.Errorf("user Unmarshal err %v", err)
+	err2 := json.Unmarshal([]byte(response1.Data), ws.User)
+	if err2 != nil {
+		glog.Errorf("user Unmarshal err %v", err2)
 		stoc.Error = pb.RegistError
 		ws.Send(stoc)
 		return
@@ -129,9 +129,9 @@ func (ws *WSConn) login(arg *pb.CLogin, ctx actor.Context) {
 		return
 	}
 	ws.User = new(data.User)
-	err := json.Unmarshal([]byte(response1.Data), ws.User)
-	if err != nil {
-		glog.Errorf("user Unmarshal err %v", err)
+	err2 := json.Unmarshal([]byte(response1.Data), ws.User)
+	if err2 != nil {
+		glog.Errorf("user Unmarshal err %v", err2)
 		stoc.Error = pb.LoginError
 		ws.Send(stoc)
 		return
@@ -185,9 +185,9 @@ func (ws *WSConn) wxlogin(arg *pb.CWxLogin, ctx actor.Context) {
 		return
 	}
 	ws.User = new(data.User)
-	err := json.Unmarshal([]byte(response1.Data), ws.User)
-	if err != nil {
-		glog.Errorf("user Unmarshal err %v", err)
+	err2 := json.Unmarshal([]byte(response1.Data), ws.User)
+	if err2 != nil {
+		glog.Errorf("user Unmarshal err %v", err2)
 		stoc.Error = pb.GetWechatUserInfoFail
 		ws.Send(stoc)
 		return
@@ -239,7 +239,7 @@ func (ws *WSConn) logined(isRegist bool, ctx actor.Context) {
 	//登录成功响应
 	result4, err4 := json.Marshal(ws.User)
 	if err4 != nil {
-		glog.Errorf("user Marshal err %v", err)
+		glog.Errorf("user Marshal err %v", err4)
 	}
 	msg4 := new(pb.Login)
 	msg4.Userid = ws.User.GetUserid()
