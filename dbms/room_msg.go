@@ -36,14 +36,28 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.CreateDesk:
 		arg := msg.(*pb.CreateDesk)
 		a.create(arg, ctx)
-	case *pb.EnterRoom:
-		arg := msg.(*pb.EnterRoom)
-		glog.Debugf("EnterRoom %#v", arg)
+	case *pb.JoinDesk:
+		arg := msg.(*pb.JoinDesk)
+		glog.Debugf("JoinDesk %#v", arg)
 		//房间数据变更
 		a.router[arg.Userid] = arg.Roomid
 		a.count[arg.Roomid] += 1
 		//响应
-		//rsp := new(pb.EnteredRoom)
+		//rsp := new(pb.JoinedDesk)
+		//ctx.Respond(rsp)
+	case *pb.CloseDesk:
+		arg := msg.(*pb.CloseDesk)
+		glog.Debugf("CloseDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.ClosedDesk)
+		//ctx.Respond(rsp)
+	case *pb.LeaveDesk:
+		arg := msg.(*pb.LeaveDesk)
+		glog.Debugf("LeaveDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.LeftDesk)
 		//ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)

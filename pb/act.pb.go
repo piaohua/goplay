@@ -102,6 +102,16 @@
 		CreatedDesk
 		SpawnDesk
 		SpawnedDesk
+		AddDesk
+		AddedDesk
+		CloseDesk
+		ClosedDesk
+		EnterDesk
+		EnteredDesk
+		JoinDesk
+		JoinedDesk
+		LeaveDesk
+		LeftDesk
 		CEnterFreeRoom
 		SEnterFreeRoom
 		SFreeCamein

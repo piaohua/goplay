@@ -39,6 +39,20 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 		arg := msg.(*pb.CRoomList)
 		glog.Debugf("CRoomList %#v", arg)
 		//ws.rolePid.Request(msg2, ctx.Self())
+	case *pb.CloseDesk:
+		arg := msg.(*pb.CloseDesk)
+		glog.Debugf("CloseDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.ClosedDesk)
+		//ctx.Respond(rsp)
+	case *pb.LeaveDesk:
+		arg := msg.(*pb.LeaveDesk)
+		glog.Debugf("LeaveDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.LeftDesk)
+		//ctx.Respond(rsp)
 	default:
 		//glog.Errorf("unknown message %v", msg)
 		ws.HandlerFree(msg, ctx)
@@ -58,12 +72,15 @@ func (ws *WSConn) entryRoom(ctx actor.Context) {
 	}
 	msg4 := new(pb.EnterDesk)
 	msg4.Data = string(result4)
-	msg4.Userid = ws.User.GetUserid()
-	//TODO 进入房间
-	//ws.gamePid.Tell(msg)
-	msg5 := new(pb.Entry)
-	//ws.roomPid.Tell(msg)
-	//ws.hallPid.Tell(msg)
+	//进入房间
+	timeout := 3 * time.Second
+	res1, err1 := ws.gamePid.RequestFuture(msg4, timeout).Result()
+	if err1 != nil {
+		glog.Errorf("entryRoom err: %v", err1)
+		return
+	}
+	response1 := res1.(*pb.EnteredDesk)
+	glog.Debugf("response1: %#v", response1)
 }
 
 //大厅中匹配可用房间

@@ -144,6 +144,249 @@ func (m *SpawnedDesk) GetError() ErrCode {
 	return OK
 }
 
+// 创建桌子进程
+type AddDesk struct {
+	Desk   *actor.PID `protobuf:"bytes,1,opt,name=Desk" json:"Desk,omitempty"`
+	Roomid string     `protobuf:"bytes,2,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+	Rtype  uint32     `protobuf:"varint,3,opt,name=Rtype,proto3" json:"Rtype,omitempty"`
+}
+
+func (m *AddDesk) Reset()                    { *m = AddDesk{} }
+func (*AddDesk) ProtoMessage()               {}
+func (*AddDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{6} }
+
+func (m *AddDesk) GetDesk() *actor.PID {
+	if m != nil {
+		return m.Desk
+	}
+	return nil
+}
+
+func (m *AddDesk) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+func (m *AddDesk) GetRtype() uint32 {
+	if m != nil {
+		return m.Rtype
+	}
+	return 0
+}
+
+type AddedDesk struct {
+	Error ErrCode `protobuf:"varint,1,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *AddedDesk) Reset()                    { *m = AddedDesk{} }
+func (*AddedDesk) ProtoMessage()               {}
+func (*AddedDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{7} }
+
+func (m *AddedDesk) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
+// 关闭桌子进程
+type CloseDesk struct {
+	Roomid string `protobuf:"bytes,1,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+	Rtype  uint32 `protobuf:"varint,2,opt,name=Rtype,proto3" json:"Rtype,omitempty"`
+	Code   string `protobuf:"bytes,3,opt,name=Code,proto3" json:"Code,omitempty"`
+}
+
+func (m *CloseDesk) Reset()                    { *m = CloseDesk{} }
+func (*CloseDesk) ProtoMessage()               {}
+func (*CloseDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{8} }
+
+func (m *CloseDesk) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+func (m *CloseDesk) GetRtype() uint32 {
+	if m != nil {
+		return m.Rtype
+	}
+	return 0
+}
+
+func (m *CloseDesk) GetCode() string {
+	if m != nil {
+		return m.Code
+	}
+	return ""
+}
+
+type ClosedDesk struct {
+	Error ErrCode `protobuf:"varint,1,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *ClosedDesk) Reset()                    { *m = ClosedDesk{} }
+func (*ClosedDesk) ProtoMessage()               {}
+func (*ClosedDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{9} }
+
+func (m *ClosedDesk) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
+// 进入房间
+type EnterDesk struct {
+	Data string `protobuf:"bytes,1,opt,name=Data,proto3" json:"Data,omitempty"`
+}
+
+func (m *EnterDesk) Reset()                    { *m = EnterDesk{} }
+func (*EnterDesk) ProtoMessage()               {}
+func (*EnterDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{10} }
+
+func (m *EnterDesk) GetData() string {
+	if m != nil {
+		return m.Data
+	}
+	return ""
+}
+
+type EnteredDesk struct {
+	Roomid string  `protobuf:"bytes,1,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+	Rtype  uint32  `protobuf:"varint,2,opt,name=Rtype,proto3" json:"Rtype,omitempty"`
+	Userid string  `protobuf:"bytes,3,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Error  ErrCode `protobuf:"varint,4,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *EnteredDesk) Reset()                    { *m = EnteredDesk{} }
+func (*EnteredDesk) ProtoMessage()               {}
+func (*EnteredDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{11} }
+
+func (m *EnteredDesk) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+func (m *EnteredDesk) GetRtype() uint32 {
+	if m != nil {
+		return m.Rtype
+	}
+	return 0
+}
+
+func (m *EnteredDesk) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *EnteredDesk) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
+// 加入桌子
+type JoinDesk struct {
+	Sender *actor.PID `protobuf:"bytes,1,opt,name=Sender" json:"Sender,omitempty"`
+	Roomid string     `protobuf:"bytes,2,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+	Rtype  string     `protobuf:"bytes,3,opt,name=Rtype,proto3" json:"Rtype,omitempty"`
+	Userid string     `protobuf:"bytes,4,opt,name=Userid,proto3" json:"Userid,omitempty"`
+}
+
+func (m *JoinDesk) Reset()                    { *m = JoinDesk{} }
+func (*JoinDesk) ProtoMessage()               {}
+func (*JoinDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{12} }
+
+func (m *JoinDesk) GetSender() *actor.PID {
+	if m != nil {
+		return m.Sender
+	}
+	return nil
+}
+
+func (m *JoinDesk) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+func (m *JoinDesk) GetRtype() string {
+	if m != nil {
+		return m.Rtype
+	}
+	return ""
+}
+
+func (m *JoinDesk) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+type JoinedDesk struct {
+	Error ErrCode `protobuf:"varint,1,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *JoinedDesk) Reset()                    { *m = JoinedDesk{} }
+func (*JoinedDesk) ProtoMessage()               {}
+func (*JoinedDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{13} }
+
+func (m *JoinedDesk) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
+// 离开房间
+type LeaveDesk struct {
+	Roomid string `protobuf:"bytes,1,opt,name=Roomid,proto3" json:"Roomid,omitempty"`
+	Userid string `protobuf:"bytes,2,opt,name=Userid,proto3" json:"Userid,omitempty"`
+}
+
+func (m *LeaveDesk) Reset()                    { *m = LeaveDesk{} }
+func (*LeaveDesk) ProtoMessage()               {}
+func (*LeaveDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{14} }
+
+func (m *LeaveDesk) GetRoomid() string {
+	if m != nil {
+		return m.Roomid
+	}
+	return ""
+}
+
+func (m *LeaveDesk) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+type LeftDesk struct {
+	Error ErrCode `protobuf:"varint,1,opt,name=error,proto3,enum=pb.ErrCode" json:"error,omitempty"`
+}
+
+func (m *LeftDesk) Reset()                    { *m = LeftDesk{} }
+func (*LeftDesk) ProtoMessage()               {}
+func (*LeftDesk) Descriptor() ([]byte, []int) { return fileDescriptorDesk, []int{15} }
+
+func (m *LeftDesk) GetError() ErrCode {
+	if m != nil {
+		return m.Error
+	}
+	return OK
+}
+
 func init() {
 	proto.RegisterType((*MatchDesk)(nil), "pb.MatchDesk")
 	proto.RegisterType((*MatchedDesk)(nil), "pb.MatchedDesk")
@@ -151,6 +394,16 @@ func init() {
 	proto.RegisterType((*CreatedDesk)(nil), "pb.CreatedDesk")
 	proto.RegisterType((*SpawnDesk)(nil), "pb.SpawnDesk")
 	proto.RegisterType((*SpawnedDesk)(nil), "pb.SpawnedDesk")
+	proto.RegisterType((*AddDesk)(nil), "pb.AddDesk")
+	proto.RegisterType((*AddedDesk)(nil), "pb.AddedDesk")
+	proto.RegisterType((*CloseDesk)(nil), "pb.CloseDesk")
+	proto.RegisterType((*ClosedDesk)(nil), "pb.ClosedDesk")
+	proto.RegisterType((*EnterDesk)(nil), "pb.EnterDesk")
+	proto.RegisterType((*EnteredDesk)(nil), "pb.EnteredDesk")
+	proto.RegisterType((*JoinDesk)(nil), "pb.JoinDesk")
+	proto.RegisterType((*JoinedDesk)(nil), "pb.JoinedDesk")
+	proto.RegisterType((*LeaveDesk)(nil), "pb.LeaveDesk")
+	proto.RegisterType((*LeftDesk)(nil), "pb.LeftDesk")
 }
 func (this *MatchDesk) Equal(that interface{}) bool {
 	if that == nil {
@@ -344,6 +597,339 @@ func (this *SpawnedDesk) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *AddDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*AddDesk)
+	if !ok {
+		that2, ok := that.(AddDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Desk.Equal(that1.Desk) {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	if this.Rtype != that1.Rtype {
+		return false
+	}
+	return true
+}
+func (this *AddedDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*AddedDesk)
+	if !ok {
+		that2, ok := that.(AddedDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
+func (this *CloseDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*CloseDesk)
+	if !ok {
+		that2, ok := that.(CloseDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	if this.Rtype != that1.Rtype {
+		return false
+	}
+	if this.Code != that1.Code {
+		return false
+	}
+	return true
+}
+func (this *ClosedDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*ClosedDesk)
+	if !ok {
+		that2, ok := that.(ClosedDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
+func (this *EnterDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*EnterDesk)
+	if !ok {
+		that2, ok := that.(EnterDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Data != that1.Data {
+		return false
+	}
+	return true
+}
+func (this *EnteredDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*EnteredDesk)
+	if !ok {
+		that2, ok := that.(EnteredDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	if this.Rtype != that1.Rtype {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
+func (this *JoinDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*JoinDesk)
+	if !ok {
+		that2, ok := that.(JoinDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if !this.Sender.Equal(that1.Sender) {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	if this.Rtype != that1.Rtype {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	return true
+}
+func (this *JoinedDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*JoinedDesk)
+	if !ok {
+		that2, ok := that.(JoinedDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
+func (this *LeaveDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*LeaveDesk)
+	if !ok {
+		that2, ok := that.(LeaveDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Roomid != that1.Roomid {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	return true
+}
+func (this *LeftDesk) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*LeftDesk)
+	if !ok {
+		that2, ok := that.(LeftDesk)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Error != that1.Error {
+		return false
+	}
+	return true
+}
 func (this *MatchDesk) GoString() string {
 	if this == nil {
 		return "nil"
@@ -410,6 +996,121 @@ func (this *SpawnedDesk) GoString() string {
 	if this.Desk != nil {
 		s = append(s, "Desk: "+fmt.Sprintf("%#v", this.Desk)+",\n")
 	}
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *AddDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&pb.AddDesk{")
+	if this.Desk != nil {
+		s = append(s, "Desk: "+fmt.Sprintf("%#v", this.Desk)+",\n")
+	}
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "Rtype: "+fmt.Sprintf("%#v", this.Rtype)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *AddedDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.AddedDesk{")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *CloseDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&pb.CloseDesk{")
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "Rtype: "+fmt.Sprintf("%#v", this.Rtype)+",\n")
+	s = append(s, "Code: "+fmt.Sprintf("%#v", this.Code)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *ClosedDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.ClosedDesk{")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *EnterDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.EnterDesk{")
+	s = append(s, "Data: "+fmt.Sprintf("%#v", this.Data)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *EnteredDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&pb.EnteredDesk{")
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "Rtype: "+fmt.Sprintf("%#v", this.Rtype)+",\n")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *JoinDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&pb.JoinDesk{")
+	if this.Sender != nil {
+		s = append(s, "Sender: "+fmt.Sprintf("%#v", this.Sender)+",\n")
+	}
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "Rtype: "+fmt.Sprintf("%#v", this.Rtype)+",\n")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *JoinedDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.JoinedDesk{")
+	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *LeaveDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&pb.LeaveDesk{")
+	s = append(s, "Roomid: "+fmt.Sprintf("%#v", this.Roomid)+",\n")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *LeftDesk) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 5)
+	s = append(s, "&pb.LeftDesk{")
 	s = append(s, "Error: "+fmt.Sprintf("%#v", this.Error)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
@@ -599,6 +1300,312 @@ func (m *SpawnedDesk) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *AddDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AddDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Desk != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Desk.Size()))
+		n4, err := m.Desk.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n4
+	}
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	if m.Rtype != 0 {
+		dAtA[i] = 0x18
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Rtype))
+	}
+	return i, nil
+}
+
+func (m *AddedDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *AddedDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Error != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
+func (m *CloseDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CloseDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	if m.Rtype != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Rtype))
+	}
+	if len(m.Code) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Code)))
+		i += copy(dAtA[i:], m.Code)
+	}
+	return i, nil
+}
+
+func (m *ClosedDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ClosedDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Error != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
+func (m *EnterDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EnterDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Data)))
+		i += copy(dAtA[i:], m.Data)
+	}
+	return i, nil
+}
+
+func (m *EnteredDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *EnteredDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	if m.Rtype != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Rtype))
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if m.Error != 0 {
+		dAtA[i] = 0x20
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
+func (m *JoinDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *JoinDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Sender != nil {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Sender.Size()))
+		n5, err := m.Sender.MarshalTo(dAtA[i:])
+		if err != nil {
+			return 0, err
+		}
+		i += n5
+	}
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	if len(m.Rtype) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Rtype)))
+		i += copy(dAtA[i:], m.Rtype)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	return i, nil
+}
+
+func (m *JoinedDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *JoinedDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Error != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
+func (m *LeaveDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LeaveDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Roomid) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Roomid)))
+		i += copy(dAtA[i:], m.Roomid)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	return i, nil
+}
+
+func (m *LeftDesk) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LeftDesk) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Error != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintDesk(dAtA, i, uint64(m.Error))
+	}
+	return i, nil
+}
+
 func encodeFixed64Desk(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	dAtA[offset+1] = uint8(v >> 8)
@@ -699,6 +1706,142 @@ func (m *SpawnedDesk) Size() (n int) {
 	return n
 }
 
+func (m *AddDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Desk != nil {
+		l = m.Desk.Size()
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	if m.Rtype != 0 {
+		n += 1 + sovDesk(uint64(m.Rtype))
+	}
+	return n
+}
+
+func (m *AddedDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Error != 0 {
+		n += 1 + sovDesk(uint64(m.Error))
+	}
+	return n
+}
+
+func (m *CloseDesk) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	if m.Rtype != 0 {
+		n += 1 + sovDesk(uint64(m.Rtype))
+	}
+	l = len(m.Code)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	return n
+}
+
+func (m *ClosedDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Error != 0 {
+		n += 1 + sovDesk(uint64(m.Error))
+	}
+	return n
+}
+
+func (m *EnterDesk) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	return n
+}
+
+func (m *EnteredDesk) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	if m.Rtype != 0 {
+		n += 1 + sovDesk(uint64(m.Rtype))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	if m.Error != 0 {
+		n += 1 + sovDesk(uint64(m.Error))
+	}
+	return n
+}
+
+func (m *JoinDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Sender != nil {
+		l = m.Sender.Size()
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	l = len(m.Rtype)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	return n
+}
+
+func (m *JoinedDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Error != 0 {
+		n += 1 + sovDesk(uint64(m.Error))
+	}
+	return n
+}
+
+func (m *LeaveDesk) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Roomid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovDesk(uint64(l))
+	}
+	return n
+}
+
+func (m *LeftDesk) Size() (n int) {
+	var l int
+	_ = l
+	if m.Error != 0 {
+		n += 1 + sovDesk(uint64(m.Error))
+	}
+	return n
+}
+
 func sovDesk(x uint64) (n int) {
 	for {
 		n++
@@ -771,6 +1914,117 @@ func (this *SpawnedDesk) String() string {
 	}
 	s := strings.Join([]string{`&SpawnedDesk{`,
 		`Desk:` + strings.Replace(fmt.Sprintf("%v", this.Desk), "PID", "actor.PID", 1) + `,`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AddDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AddDesk{`,
+		`Desk:` + strings.Replace(fmt.Sprintf("%v", this.Desk), "PID", "actor.PID", 1) + `,`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`Rtype:` + fmt.Sprintf("%v", this.Rtype) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *AddedDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&AddedDesk{`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *CloseDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&CloseDesk{`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`Rtype:` + fmt.Sprintf("%v", this.Rtype) + `,`,
+		`Code:` + fmt.Sprintf("%v", this.Code) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *ClosedDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&ClosedDesk{`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EnterDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EnterDesk{`,
+		`Data:` + fmt.Sprintf("%v", this.Data) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *EnteredDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&EnteredDesk{`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`Rtype:` + fmt.Sprintf("%v", this.Rtype) + `,`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *JoinDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&JoinDesk{`,
+		`Sender:` + strings.Replace(fmt.Sprintf("%v", this.Sender), "PID", "actor.PID", 1) + `,`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`Rtype:` + fmt.Sprintf("%v", this.Rtype) + `,`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *JoinedDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&JoinedDesk{`,
+		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *LeaveDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&LeaveDesk{`,
+		`Roomid:` + fmt.Sprintf("%v", this.Roomid) + `,`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *LeftDesk) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&LeftDesk{`,
 		`Error:` + fmt.Sprintf("%v", this.Error) + `,`,
 		`}`,
 	}, "")
@@ -1356,6 +2610,1043 @@ func (m *SpawnedDesk) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *AddDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AddDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AddDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Desk", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Desk == nil {
+				m.Desk = &actor.PID{}
+			}
+			if err := m.Desk.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rtype", wireType)
+			}
+			m.Rtype = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rtype |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *AddedDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: AddedDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: AddedDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *CloseDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: CloseDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: CloseDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rtype", wireType)
+			}
+			m.Rtype = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rtype |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Code = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ClosedDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ClosedDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ClosedDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EnterDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EnterDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EnterDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *EnteredDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: EnteredDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: EnteredDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rtype", wireType)
+			}
+			m.Rtype = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Rtype |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *JoinDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: JoinDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: JoinDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Sender", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + msglen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Sender == nil {
+				m.Sender = &actor.PID{}
+			}
+			if err := m.Sender.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Rtype", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Rtype = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *JoinedDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: JoinedDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: JoinedDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LeaveDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LeaveDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LeaveDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Roomid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Roomid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthDesk
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LeftDesk) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowDesk
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LeftDesk: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LeftDesk: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
+			}
+			m.Error = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowDesk
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Error |= (ErrCode(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipDesk(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthDesk
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func skipDesk(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
@@ -1464,25 +3755,35 @@ var (
 func init() { proto.RegisterFile("desk.proto", fileDescriptorDesk) }
 
 var fileDescriptorDesk = []byte{
-	// 308 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x91, 0x31, 0x4e, 0xc3, 0x30,
-	0x14, 0x86, 0xe3, 0x2a, 0x45, 0xca, 0x8b, 0x60, 0x88, 0x18, 0xaa, 0x0e, 0x8f, 0x92, 0xa9, 0x03,
-	0xa4, 0x52, 0x11, 0xec, 0xd0, 0x30, 0x74, 0x68, 0x55, 0x19, 0x2e, 0xe0, 0xc4, 0x56, 0x8b, 0xaa,
-	0xd6, 0x91, 0x63, 0x84, 0xba, 0x71, 0x04, 0x8e, 0xc1, 0x51, 0x18, 0x3b, 0x32, 0x52, 0xb3, 0x30,
-	0xf6, 0x08, 0xa8, 0xcf, 0x62, 0x41, 0xaa, 0x60, 0xf2, 0xef, 0xf7, 0x7f, 0xff, 0xfb, 0x65, 0x19,
-	0x40, 0xaa, 0x7a, 0x9e, 0x55, 0x46, 0x5b, 0x9d, 0x34, 0xaa, 0xa2, 0x7d, 0x35, 0x7d, 0xb0, 0xb3,
-	0xc7, 0x22, 0x2b, 0xf5, 0xa2, 0x77, 0x5d, 0xaf, 0x96, 0x73, 0xa3, 0x97, 0xc3, 0xfb, 0x1e, 0x01,
-	0xa2, 0xb4, 0xda, 0x9c, 0x4f, 0x75, 0x8f, 0x84, 0x9f, 0xd5, 0x3e, 0xdb, 0x86, 0x52, 0x4b, 0xe5,
-	0x75, 0x7a, 0x09, 0xd1, 0x48, 0xd8, 0x72, 0x96, 0xab, 0x7a, 0x9e, 0x1c, 0x43, 0x93, 0xdb, 0x55,
-	0xa5, 0x5a, 0xac, 0xc3, 0xba, 0x87, 0xdc, 0x5f, 0x92, 0x04, 0xc2, 0xb1, 0x58, 0xa8, 0x56, 0xa3,
-	0xc3, 0xba, 0x11, 0x27, 0x9d, 0x8e, 0x20, 0xa6, 0x98, 0x92, 0x14, 0x44, 0x08, 0x77, 0x27, 0xe5,
-	0xe2, 0x3e, 0x64, 0x54, 0x9a, 0x4d, 0x86, 0x39, 0x0f, 0x7f, 0xfc, 0xb1, 0x96, 0x7e, 0xc5, 0x2f,
-	0x7f, 0x37, 0x4f, 0x3b, 0x00, 0x03, 0xa3, 0x84, 0x55, 0x44, 0x27, 0x10, 0xe6, 0xc2, 0x0a, 0xda,
-	0x16, 0x71, 0xd2, 0x69, 0x0e, 0xb1, 0x27, 0xe4, 0x3e, 0x24, 0x39, 0x85, 0xa6, 0x32, 0x46, 0x1b,
-	0x6a, 0x39, 0xea, 0xc7, 0x59, 0x55, 0x64, 0xb7, 0xc6, 0x0c, 0xb4, 0x54, 0xdc, 0x3b, 0xe9, 0x09,
-	0x44, 0x77, 0x95, 0x78, 0x5a, 0xee, 0xad, 0x99, 0x40, 0x4c, 0xc0, 0x3f, 0xdf, 0xf5, 0x77, 0xe5,
-	0xcd, 0xd9, 0x7a, 0x83, 0xc1, 0xfb, 0x06, 0x83, 0xed, 0x06, 0xd9, 0xb3, 0x43, 0xf6, 0xea, 0x90,
-	0xbd, 0x39, 0x64, 0x6b, 0x87, 0xec, 0xc3, 0x21, 0xfb, 0x72, 0x18, 0x6c, 0x1d, 0xb2, 0x97, 0x4f,
-	0x0c, 0x8a, 0x03, 0xfa, 0x95, 0x8b, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0x85, 0xfc, 0x8e, 0x96,
-	0xeb, 0x01, 0x00, 0x00,
+	// 469 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x94, 0xb1, 0x6e, 0x13, 0x41,
+	0x10, 0x86, 0xbd, 0xe6, 0x62, 0xb2, 0x73, 0x82, 0xe2, 0x84, 0xa2, 0x28, 0xc5, 0xc6, 0x5c, 0x95,
+	0x82, 0x9c, 0xa5, 0x20, 0x68, 0xa8, 0x8c, 0x9d, 0x22, 0x28, 0x8e, 0xa2, 0x0d, 0x88, 0x7a, 0xed,
+	0x1d, 0x12, 0xcb, 0xf8, 0xf6, 0xb4, 0xb7, 0x04, 0xa5, 0xe3, 0x11, 0x78, 0x0c, 0x1e, 0x85, 0x32,
+	0x25, 0x25, 0x3e, 0x1a, 0xca, 0x3c, 0x02, 0xba, 0xd9, 0x03, 0x07, 0xe3, 0x43, 0x97, 0xca, 0xb3,
+	0x3b, 0x33, 0xff, 0xf7, 0x7b, 0x66, 0x75, 0x00, 0x1a, 0xf3, 0x59, 0x92, 0x59, 0xe3, 0x4c, 0xd4,
+	0xce, 0xc6, 0x3b, 0xcf, 0xcf, 0xa7, 0xee, 0xe2, 0xc3, 0x38, 0x99, 0x98, 0x79, 0xaf, 0x9f, 0x5f,
+	0xa5, 0x33, 0x6b, 0xd2, 0xa3, 0xd7, 0x3d, 0x2a, 0x50, 0x13, 0x67, 0xec, 0xfe, 0xb9, 0xe9, 0x51,
+	0xe0, 0xef, 0x72, 0xdf, 0xbb, 0x03, 0x13, 0xa3, 0xd1, 0xc7, 0xf1, 0x33, 0xe0, 0x23, 0xe5, 0x26,
+	0x17, 0x43, 0xcc, 0x67, 0xd1, 0x23, 0xd8, 0x90, 0xee, 0x2a, 0xc3, 0x6d, 0xd6, 0x65, 0x7b, 0x0f,
+	0xa4, 0x3f, 0x44, 0x11, 0x04, 0x27, 0x6a, 0x8e, 0xdb, 0xed, 0x2e, 0xdb, 0xe3, 0x92, 0xe2, 0x78,
+	0x04, 0x21, 0xb5, 0xa1, 0xa6, 0x46, 0x01, 0x41, 0xf9, 0x4b, 0x7d, 0xe1, 0x01, 0x24, 0x04, 0x4d,
+	0x4e, 0x8f, 0x86, 0x32, 0xf8, 0x9d, 0x3f, 0x31, 0xda, 0x4b, 0xac, 0xe4, 0xcb, 0xfb, 0xb8, 0x0b,
+	0x30, 0xb0, 0xa8, 0x1c, 0x52, 0x75, 0x04, 0xc1, 0x50, 0x39, 0x45, 0x6a, 0x5c, 0x52, 0x1c, 0x0f,
+	0x21, 0xf4, 0x15, 0xba, 0xae, 0x24, 0x7a, 0x0c, 0x1b, 0x68, 0xad, 0xb1, 0x44, 0x79, 0x78, 0x10,
+	0x26, 0xd9, 0x38, 0x39, 0xb4, 0x76, 0x60, 0x34, 0x4a, 0x9f, 0x89, 0x77, 0x81, 0x9f, 0x65, 0xea,
+	0x63, 0x5a, 0x8b, 0x39, 0x85, 0x90, 0x0a, 0x1a, 0xfe, 0xaf, 0x06, 0xc8, 0xb7, 0x70, 0xbf, 0xaf,
+	0x9b, 0xa9, 0x6d, 0x41, 0x47, 0x1a, 0x33, 0x9f, 0xea, 0x6a, 0xd4, 0xd5, 0x69, 0xb9, 0x96, 0x7b,
+	0xb7, 0xd6, 0x12, 0x27, 0xc0, 0xfb, 0x5a, 0x57, 0x46, 0xff, 0x18, 0x61, 0xb5, 0x46, 0x46, 0xc0,
+	0x07, 0xef, 0x4d, 0x8e, 0x2b, 0x28, 0xb6, 0x1e, 0xd5, 0x5e, 0x79, 0x01, 0xa5, 0x12, 0xf1, 0xb9,
+	0xa4, 0x38, 0xee, 0x01, 0x90, 0x5c, 0x63, 0xfe, 0x2e, 0xf0, 0xc3, 0xd4, 0xa1, 0xad, 0x9d, 0xfd,
+	0x25, 0x84, 0x54, 0x50, 0x49, 0xde, 0xcd, 0xe2, 0x16, 0x74, 0xde, 0xe4, 0x68, 0xa7, 0xba, 0x32,
+	0x59, 0x9d, 0x96, 0xc6, 0x82, 0x5a, 0x63, 0x0e, 0x36, 0x5f, 0x99, 0xa9, 0x7f, 0x13, 0x31, 0x74,
+	0xce, 0x30, 0xd5, 0x68, 0xd7, 0x2c, 0xa9, 0xca, 0x34, 0x5b, 0x13, 0xff, 0xd7, 0x58, 0x70, 0xdb,
+	0x58, 0x39, 0xbf, 0x92, 0xda, 0x7c, 0x7e, 0x2f, 0x80, 0x1f, 0xa3, 0xba, 0xfc, 0xff, 0xfe, 0x96,
+	0xb4, 0xf6, 0x5f, 0xb4, 0x7d, 0xd8, 0x3c, 0xc6, 0x77, 0xae, 0x21, 0xeb, 0xe5, 0x93, 0xeb, 0x85,
+	0x68, 0x7d, 0x5b, 0x88, 0xd6, 0xcd, 0x42, 0xb0, 0x4f, 0x85, 0x60, 0x5f, 0x0a, 0xc1, 0xbe, 0x16,
+	0x82, 0x5d, 0x17, 0x82, 0x7d, 0x2f, 0x04, 0xfb, 0x59, 0x88, 0xd6, 0x4d, 0x21, 0xd8, 0xe7, 0x1f,
+	0xa2, 0x35, 0xee, 0xd0, 0xa7, 0xe4, 0xe9, 0xaf, 0x00, 0x00, 0x00, 0xff, 0xff, 0x9a, 0xb1, 0x2e,
+	0xbc, 0xa0, 0x04, 0x00, 0x00,
 }
