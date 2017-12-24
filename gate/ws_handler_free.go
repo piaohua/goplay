@@ -18,22 +18,46 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 	case *pb.CFreeDealer:
 		arg := msg.(*pb.CFreeDealer)
 		glog.Debugf("CFreeDealer %#v", arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SFreeDealer)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CDealerList:
 		arg := msg.(*pb.CDealerList)
 		glog.Debugf("CDealerList %#v", arg)
-		//ws.rolePid.Request(arg, ctx.Self())
+		if ws.gamePid == nil {
+			rsp := new(pb.SDealerList)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CFreeSit:
 		arg := msg.(*pb.CFreeSit)
 		glog.Debugf("CFreeSit %#v", arg)
-		//ws.rolePid.Request(msg2, ctx.Self())
+		if ws.gamePid == nil {
+			rsp := new(pb.SFreeSit)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CFreeBet:
 		arg := msg.(*pb.CFreeBet)
 		glog.Debugf("CFreeBet %#v", arg)
-		//ws.Send(arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SFreeBet)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CFreeTrend:
 		arg := msg.(*pb.CFreeTrend)
 		glog.Debugf("CFreeTrend %#v", arg)
-		//ws.rolePid.Request(msg2, ctx.Self())
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}

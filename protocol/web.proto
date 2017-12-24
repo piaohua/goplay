@@ -16,6 +16,12 @@ enum ConfigType {
 // 同步数据
 message SyncConfig
 {
-    ConfigType  Type     = 1 ;//协议号
+    ConfigType Type = 1 ;//类型
     string Data = 2 ;//数据
+}
+
+// 主动获取数据
+message GetConfig
+{
+    ConfigType Type = 1 ;//类型
 }

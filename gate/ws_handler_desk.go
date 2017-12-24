@@ -18,27 +18,56 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.CLeave:
 		arg := msg.(*pb.CLeave)
 		glog.Debugf("CEnterFreeRoom %#v", arg)
-		//rsp := handler.LotteryInfo(arg)
-		//ws.Send(rsp)
+		if ws.gamePid == nil {
+			rsp := new(pb.SLeave)
+			rsp.Error = pb.NotInRoomCannotLeave
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CKick:
 		arg := msg.(*pb.CKick)
 		glog.Debugf("CKick %#v", arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SKick)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CReady:
 		arg := msg.(*pb.CReady)
 		glog.Debugf("CReady %#v", arg)
-		//ws.rolePid.Request(arg, ctx.Self())
+		if ws.gamePid == nil {
+			rsp := new(pb.SReady)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CLaunchVote:
 		arg := msg.(*pb.CLaunchVote)
 		glog.Debugf("CLaunchVote %#v", arg)
-		//ws.rolePid.Request(msg2, ctx.Self())
+		if ws.gamePid == nil {
+			rsp := new(pb.SLaunchVote)
+			rsp.Error = pb.NotInPrivateRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CVote:
 		arg := msg.(*pb.CVote)
 		glog.Debugf("CVote %#v", arg)
-		//ws.Send(arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SVote)
+			rsp.Error = pb.NotInPrivateRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(msg, ctx.Self())
 	case *pb.CRoomList:
 		arg := msg.(*pb.CRoomList)
 		glog.Debugf("CRoomList %#v", arg)
-		//ws.rolePid.Request(msg2, ctx.Self())
 	case *pb.CloseDesk:
 		arg := msg.(*pb.CloseDesk)
 		glog.Debugf("CloseDesk %#v", arg)
