@@ -27,3 +27,15 @@ func Init2Gate(id, secret, key, machid, pattern, notifyUrl string) {
 
 	WxPayInit(id, key, machid, pattern, notifyUrl) //微信支付
 }
+
+//逻辑服初始化
+func Init2Game() {
+	InitNotice2()  //公告服务
+	InitShop2()    //商城服务
+	InitBox2()     //宝箱服务
+	InitPrize2()   //抽奖服务
+	InitEnv2()     //变量服务
+	InitClassic2() //经典服务
+	InitVip2()     //VIP服务
+	InitLottery2() //刮奖服务
+}

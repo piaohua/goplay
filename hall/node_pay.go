@@ -18,7 +18,7 @@ func (a *HallActor) HandlerPay(msg interface{}, ctx actor.Context) {
 		//支付回调
 		for k, v := range a.serve {
 			//TODO 优化
-			if strings.Contains(k, "game.node") {
+			if strings.Contains(k, "gate.node") {
 				v.Tell(arg)
 				//TODO 优化
 				//选择一个验证即可,

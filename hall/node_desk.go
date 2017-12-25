@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"goplay/glog"
 	"goplay/pb"
 
@@ -50,6 +52,15 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 		//响应
 		//rsp := new(pb.LeftDesk)
 		//ctx.Respond(rsp)
+	case *pb.SyncConfig:
+		//主动通知同步配置
+		arg := msg.(*pb.SyncConfig)
+		//name := cfg.Section("game.free").Name()
+		for k, v := range a.serve {
+			if strings.Contains(k, "game.") {
+				v.Tell(arg)
+			}
+		}
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
