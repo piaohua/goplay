@@ -41,14 +41,21 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.CloseDesk:
 		arg := msg.(*pb.CloseDesk)
 		glog.Debugf("CloseDesk %#v", arg)
-		//TODO
+		//移除
+		delete(a.rtype, arg.Roomid)
+		delete(a.rnums, arg.Roomid)
+		delete(a.desks, arg.Roomid)
 		//响应
 		//rsp := new(pb.ClosedDesk)
 		//ctx.Respond(rsp)
 	case *pb.LeaveDesk:
 		arg := msg.(*pb.LeaveDesk)
 		glog.Debugf("LeaveDesk %#v", arg)
-		//TODO
+		//移除
+		delete(a.router, arg.Userid)
+		if n, ok := a.rnums[arg.Roomid]; ok && n > 0 {
+			a.rnums[arg.Roomid] = n - 1
+		}
 		//响应
 		//rsp := new(pb.LeftDesk)
 		//ctx.Respond(rsp)

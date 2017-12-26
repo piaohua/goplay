@@ -48,14 +48,21 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.CloseDesk:
 		arg := msg.(*pb.CloseDesk)
 		glog.Debugf("CloseDesk %#v", arg)
-		//TODO
+		//移除
+		delete(a.count, arg.Roomid)
+		delete(a.codes, arg.Code)
+		delete(a.rooms, arg.Roomid)
 		//响应
 		//rsp := new(pb.ClosedDesk)
 		//ctx.Respond(rsp)
 	case *pb.LeaveDesk:
 		arg := msg.(*pb.LeaveDesk)
 		glog.Debugf("LeaveDesk %#v", arg)
-		//TODO
+		//移除
+		delete(a.router, arg.Userid)
+		if n, ok := a.count[arg.Roomid]; ok && n > 0 {
+			a.count[arg.Roomid] = n - 1
+		}
 		//响应
 		//rsp := new(pb.LeftDesk)
 		//ctx.Respond(rsp)
