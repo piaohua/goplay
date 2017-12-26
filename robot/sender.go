@@ -12,6 +12,7 @@ import (
 	"encoding/hex"
 
 	"goplay/game/algo"
+	"goplay/game/kong"
 	"goplay/game/paohuzi"
 	"goplay/glog"
 	"goplay/pb"
@@ -126,6 +127,20 @@ func (c *Robot) SendNiu() {
 	ctos := &pb.CNiu{}
 	ctos.Cards = c.cards
 	val := algo.Algo(c.cards)
+	ctos.Value = val
+	utils.Sleep(3)
+	c.Sender(ctos)
+}
+
+// 提交组合
+func (c *Robot) SendNiu2() {
+	ctos := &pb.CNiu{}
+	ctos.Cards = c.cards
+	ctos.Cards = append(ctos.Cards, c.card)
+	ctos.Cards = append(ctos.Cards, 0x0)
+	ctos.Cards = append(ctos.Cards, 0x0)
+	//val := algo.Algo(c.cards)
+	val, _, _ := kong.Algo(c.cards, c.card)
 	ctos.Value = val
 	utils.Sleep(3)
 	c.Sender(ctos)

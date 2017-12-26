@@ -51,6 +51,7 @@ type Robot struct {
 	classic   []*pb.Classic
 	classicId string
 	timer     uint32 //在线时间
+	card      uint32 //天杠手牌
 }
 
 // 基本数据

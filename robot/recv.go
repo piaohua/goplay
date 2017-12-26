@@ -8,6 +8,7 @@
 package main
 
 import (
+	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
 )
@@ -23,9 +24,9 @@ func (r *Robot) receive(msg interface{}) {
 	case *pb.SCreateRoom:
 		r.recvCreate(msg.(*pb.SCreateRoom))
 	case *pb.SPushDealer:
-		//r.recvDealer(msg.(*pb.SPushDealer))
+		r.recvDealer(msg.(*pb.SPushDealer))
 	case *pb.SDraw:
-		//r.recvDraw(msg.(*pb.SDraw))
+		r.recvDraw(msg.(*pb.SDraw))
 	case *pb.SGameover:
 		r.recvGameover(msg.(*pb.SGameover))
 	case *pb.SLeave:
@@ -74,6 +75,8 @@ func (r *Robot) receive(msg interface{}) {
 		r.recvPhzOperate(msg.(*pb.SOperate))
 	case *pb.SPushStatus:
 		r.recvPhzStatus(msg.(*pb.SPushStatus))
+	case *pb.SPubDraw:
+		r.recvPubDraw(msg.(*pb.SPubDraw))
 	default:
 		glog.Errorf("unknow message: %#v", msg)
 	}
@@ -265,56 +268,65 @@ func (r *Robot) recvGameover(stoc *pb.SGameover) {
 //STATE_DEALER = 1  //抢庄状态
 //STATE_BET    = 2  //下注状态
 //STATE_NIU    = 3  //选牛状态
-//func (r *Robot) recvDraw(stoc *pb.SDraw) {
-//	var state uint32 = stoc.GetState()
-//	var seat uint32 = stoc.GetSeat()
-//	var cards []uint32 = stoc.GetCards()
-//	if seat != r.seat { //自己摸牌
-//		return
-//	}
-//	r.cards = append(r.cards, cards...)
-//	switch r.rtype {
-//	case data.ROOM_PRIVATE:
-//		switch state {
-//		case 1:
-//			//抢庄
-//			r.SendDealer()
-//		case 2:
-//			//提交组合
-//			r.SendNiu()
-//		}
-//	case data.ROOM_PRIVATE4:
-//		switch state {
-//		case 2:
-//			//提交组合
-//			r.SendNiu()
-//		}
-//	case data.ROOM_PRIVATE3:
-//		switch state {
-//		case 2:
-//			//提交组合
-//			r.SendNiu()
-//		}
-//	}
-//}
+func (r *Robot) recvDraw(stoc *pb.SDraw) {
+	var state uint32 = stoc.GetState()
+	var seat uint32 = stoc.GetSeat()
+	var cards []uint32 = stoc.GetCards()
+	if seat != r.seat { //自己摸牌
+		return
+	}
+	r.cards = append(r.cards, cards...)
+	switch r.rtype {
+	case data.ROOM_PRIVATE:
+		switch state {
+		case 1:
+			//抢庄
+			r.SendDealer()
+		case 2:
+			//提交组合
+			r.SendNiu()
+		}
+	case data.ROOM_PRIVATE4:
+		switch state {
+		case 2:
+			//提交组合
+			r.SendNiu()
+		}
+	case data.ROOM_PRIVATE3:
+		switch state {
+		case 2:
+			//提交组合
+			r.SendNiu()
+		}
+	case data.ROOM_PRIVATE5:
+		switch state {
+		case 2:
+			//提交组合
+			c.SendNiu2()
+		}
+	}
+}
 
 //.
 
 //' 打庄
-//func (r *Robot) recvDealer(stoc *pb.SPushDealer) {
-//	var dealer uint32 = stoc.GetDealer()
-//	if r.seat == dealer { //做庄不下注
-//		return
-//	}
-//	switch r.rtype {
-//	case data.ROOM_PRIVATE:
-//		//下注
-//		r.SendBet()
-//	case data.ROOM_PRIVATE3, data.ROOM_PRIVATE4:
-//		//下注
-//		r.SendClassicBet()
-//	}
-//}
+func (r *Robot) recvDealer(stoc *pb.SPushDealer) {
+	var dealer uint32 = stoc.GetDealer()
+	if r.seat == dealer { //做庄不下注
+		return
+	}
+	switch r.rtype {
+	case data.ROOM_PRIVATE:
+		//下注
+		r.SendBet()
+	case data.ROOM_PRIVATE3, data.ROOM_PRIVATE4:
+		//下注
+		r.SendClassicBet()
+	case data.ROOM_PRIVATE5:
+		//下注
+		c.SendBet()
+	}
+}
 
 //.
 
@@ -616,6 +628,20 @@ func (r *Robot) recvPhzStatus(stoc *pb.SPushStatus) {
 	}
 	if stoc.GetStatus() == 2 { //出牌
 		r.phzDiscard()
+	}
+}
+
+//.
+
+//' 天杠
+func (r *Robot) recvPubDraw(stoc *pb.SPubDraw) {
+	var state uint32 = stoc.GetState()
+	var card uint32 = stoc.GetCard()
+	switch state {
+	case 1:
+		r.card = card
+		//抢庄
+		r.SendDealer()
 	}
 }
 
