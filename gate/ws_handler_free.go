@@ -24,6 +24,13 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
+		var num uint32 = arg.GetCoin()
+		if ws.User.GetCoin() < num {
+			rsp := new(pb.SFreeDealer)
+			rsp.Error = pb.NotEnoughCoin
+			ws.Send(rsp)
+			return
+		}
 		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CDealerList:
 		arg := msg.(*pb.CDealerList)
