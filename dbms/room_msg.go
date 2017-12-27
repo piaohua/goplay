@@ -169,7 +169,7 @@ func (a *RoomActor) create(arg *pb.CreateDesk, ctx actor.Context) {
 	a.rooms[deskData.Rid] = deskData
 	a.codes[deskData.Code] = deskData.Rid
 	//响应登录
-	rsp.Data = handler.DeskData2(deskData)
+	rsp.Data = handler.Desk2Data(deskData)
 	ctx.Respond(rsp)
 }
 

@@ -74,7 +74,7 @@ message EnteredDesk {
 message JoinDesk {
     actor.PID Sender = 1; //玩家进程
     string Roomid = 2;
-    string Rtype = 3;
+    uint32 Rtype = 3;
     string Userid = 4;
 }
 

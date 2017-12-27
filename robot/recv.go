@@ -255,6 +255,7 @@ func (r *Robot) recvKick(stoc *pb.SKick) {
 func (r *Robot) recvGameover(stoc *pb.SGameover) {
 	var round uint32 = stoc.GetRound()
 	r.cards = []uint32{} //清除牌
+	r.card = 0
 	if round == 0 {
 		r.Close() //结束下线
 	} else {
@@ -302,7 +303,7 @@ func (r *Robot) recvDraw(stoc *pb.SDraw) {
 		switch state {
 		case 2:
 			//提交组合
-			c.SendNiu2()
+			r.SendNiu2()
 		}
 	}
 }
@@ -324,7 +325,7 @@ func (r *Robot) recvDealer(stoc *pb.SPushDealer) {
 		r.SendClassicBet()
 	case data.ROOM_PRIVATE5:
 		//下注
-		c.SendBet()
+		r.SendBet()
 	}
 }
 
