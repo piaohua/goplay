@@ -24,7 +24,7 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CKick:
 		arg := msg.(*pb.CKick)
 		glog.Debugf("CKick %#v", arg)
@@ -34,7 +34,7 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CReady:
 		arg := msg.(*pb.CReady)
 		glog.Debugf("CReady %#v", arg)
@@ -44,7 +44,7 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CLaunchVote:
 		arg := msg.(*pb.CLaunchVote)
 		glog.Debugf("CLaunchVote %#v", arg)
@@ -54,7 +54,7 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CVote:
 		arg := msg.(*pb.CVote)
 		glog.Debugf("CVote %#v", arg)
@@ -64,7 +64,7 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CRoomList:
 		arg := msg.(*pb.CRoomList)
 		glog.Debugf("CRoomList %#v", arg)
