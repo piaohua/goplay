@@ -318,6 +318,7 @@
 		ZiRecordList
 		ZiRoomInfo
 		SyncConfig
+		GetConfig
 */
 package pb
 
