@@ -24,7 +24,7 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CDealerList:
 		arg := msg.(*pb.CDealerList)
 		glog.Debugf("CDealerList %#v", arg)
@@ -34,7 +34,7 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CFreeSit:
 		arg := msg.(*pb.CFreeSit)
 		glog.Debugf("CFreeSit %#v", arg)
@@ -44,7 +44,7 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CFreeBet:
 		arg := msg.(*pb.CFreeBet)
 		glog.Debugf("CFreeBet %#v", arg)
@@ -54,7 +54,7 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 			ws.Send(rsp)
 			return
 		}
-		ws.gamePid.Request(msg, ctx.Self())
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CFreeTrend:
 		arg := msg.(*pb.CFreeTrend)
 		glog.Debugf("CFreeTrend %#v", arg)
