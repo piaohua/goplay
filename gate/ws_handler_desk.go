@@ -15,9 +15,43 @@ import (
 //玩家桌子常用共有操作请求处理
 func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	switch msg.(type) {
+	case *pb.CloseDesk:
+		arg := msg.(*pb.CloseDesk)
+		glog.Debugf("CloseDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.ClosedDesk)
+		//ctx.Respond(rsp)
+	case *pb.LeaveDesk:
+		arg := msg.(*pb.LeaveDesk)
+		glog.Debugf("LeaveDesk %#v", arg)
+		//TODO
+		//响应
+		//rsp := new(pb.LeftDesk)
+		//ctx.Respond(rsp)
+	case *pb.CChatText:
+		arg := msg.(*pb.CChatText)
+		glog.Debugf("CChatText %#v", arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SChatText)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(arg, ctx.Self())
+	case *pb.CChatVoice:
+		arg := msg.(*pb.CChatVoice)
+		glog.Debugf("CChatVoice %#v", arg)
+		if ws.gamePid == nil {
+			rsp := new(pb.SChatVoice)
+			rsp.Error = pb.NotInRoom
+			ws.Send(rsp)
+			return
+		}
+		ws.gamePid.Request(arg, ctx.Self())
 	case *pb.CLeave:
 		arg := msg.(*pb.CLeave)
-		glog.Debugf("CEnterFreeRoom %#v", arg)
+		glog.Debugf("CLeave %#v", arg)
 		if ws.gamePid == nil {
 			rsp := new(pb.SLeave)
 			rsp.Error = pb.NotInRoomCannotLeave
@@ -68,20 +102,6 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.CRoomList:
 		arg := msg.(*pb.CRoomList)
 		glog.Debugf("CRoomList %#v", arg)
-	case *pb.CloseDesk:
-		arg := msg.(*pb.CloseDesk)
-		glog.Debugf("CloseDesk %#v", arg)
-		//TODO
-		//响应
-		//rsp := new(pb.ClosedDesk)
-		//ctx.Respond(rsp)
-	case *pb.LeaveDesk:
-		arg := msg.(*pb.LeaveDesk)
-		glog.Debugf("LeaveDesk %#v", arg)
-		//TODO
-		//响应
-		//rsp := new(pb.LeftDesk)
-		//ctx.Respond(rsp)
 	default:
 		//glog.Errorf("unknown message %v", msg)
 		ws.HandlerFree(msg, ctx)

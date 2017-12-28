@@ -91,3 +91,7 @@ message LeaveDesk {
 message LeftDesk {
     ErrCode error = 1 ;// 错误码
 }
+
+//打印桌子信息
+message PrintDesk {
+}

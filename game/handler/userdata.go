@@ -48,6 +48,21 @@ func VipList(ctos *pb.CVipList) (stoc *pb.SVipList) {
 	return
 }
 
+// 公告列表
+func GetNotice(atype uint32) (stoc *pb.SNotice) {
+	stoc = new(pb.SNotice)
+	list := config.GetNotices(atype)
+	for _, v := range list {
+		body := &pb.Notice{
+			Rtype:   uint32(v.Rtype),
+			Acttype: uint32(v.Acttype),
+			Content: v.Content,
+		}
+		stoc.List = append(stoc.List, body)
+	}
+	return
+}
+
 func ClassicList(ctos *pb.CClassicList) (stoc *pb.SClassicList) {
 	stoc = new(pb.SClassicList)
 	list := config.GetClassics()

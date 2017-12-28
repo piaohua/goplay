@@ -21,6 +21,11 @@ func (ws *WSConn) HandlerUser(msg interface{}, ctx actor.Context) {
 		arg := msg.(*pb.CConfig)
 		rsp := handler.Config(arg)
 		ws.Send(rsp)
+	case *pb.CNotice:
+		arg := msg.(*pb.CNotice)
+		glog.Debugf("CNotice %#v", arg)
+		rsp := handler.GetNotice(ws.User.GetAtype())
+		ws.Send(rsp)
 	case *pb.CVipList:
 		arg := msg.(*pb.CVipList)
 		rsp := handler.VipList(arg)

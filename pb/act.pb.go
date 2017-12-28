@@ -112,6 +112,7 @@
 		JoinedDesk
 		LeaveDesk
 		LeftDesk
+		PrintDesk
 		CEnterFreeRoom
 		SEnterFreeRoom
 		SFreeCamein
