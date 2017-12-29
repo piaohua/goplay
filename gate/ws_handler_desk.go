@@ -102,6 +102,10 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.CRoomList:
 		arg := msg.(*pb.CRoomList)
 		glog.Debugf("CRoomList %#v", arg)
+	case *pb.SetRecord:
+		arg := msg.(*pb.SetRecord)
+		glog.Debugf("SetRecord %#v", arg)
+		handler.SetRecord(ws.User, int(arg.Rtype))
 	default:
 		//glog.Errorf("unknown message %v", msg)
 		ws.HandlerFree(msg, ctx)

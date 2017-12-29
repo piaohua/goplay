@@ -95,3 +95,9 @@ message LeftDesk {
 //打印桌子信息
 message PrintDesk {
 }
+
+//记录
+message SetRecord {
+	//1胜利 //-1输了 //0荒庄
+    int32 Rtype = 1;
+}

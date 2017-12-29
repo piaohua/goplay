@@ -61,6 +61,9 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 		for _, v := range a.gates {
 			v.Tell(msg)
 		}
+	case *pb.GetConfig:
+		arg := msg.(*pb.GetConfig)
+		glog.Infof("GetConfig %#v", arg)
 	default:
 		if a.logger == nil {
 			glog.Errorf("unknown message %v", msg)
@@ -181,4 +184,13 @@ func (a *DBMSActor) syncConfig(key string) {
 	pid.Tell(msg7)
 	msg8 := a.syncConfigMsg(pb.CONFIG_CLASSIC, config.GetClassics())
 	pid.Tell(msg8)
+}
+
+//同步配置
+func (a *DBMSActor) getConfig(arg *pb.GetConfig, ctx actor.Context) {
+	switch arg.Type {
+	case pb.CONFIG_ENV:
+		msg2 := a.syncConfigMsg(pb.CONFIG_ENV, config.GetEnvs())
+		ctx.Respond(msg2)
+	}
 }

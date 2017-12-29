@@ -201,6 +201,10 @@ func (ws *WSConn) addCurrency(diamond, coin int32, ltype int) {
 		Coin:    coin,
 	}
 	ws.Send(msg)
+	//机器人不写日志
+	if ws.User.GetPhone() != "" {
+		return
+	}
 	//日志
 	if diamond != 0 {
 		msg1 := &pb.LogDiamond{

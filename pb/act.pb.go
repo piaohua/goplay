@@ -113,6 +113,7 @@
 		LeaveDesk
 		LeftDesk
 		PrintDesk
+		SetRecord
 		CEnterFreeRoom
 		SEnterFreeRoom
 		SFreeCamein

@@ -9,6 +9,14 @@ import (
 	"utils"
 )
 
+//个人记录
+func SetRecord(p *data.User, rtype int) {
+	if p == nil {
+		return
+	}
+	p.SetRecord(rtype) //1胜利 //-1输了 //0荒庄
+}
+
 //网关直接调用
 func GetCurrency(ctos *pb.CGetCurrency, p *data.User) (stoc *pb.SGetCurrency) {
 	stoc = new(pb.SGetCurrency)
