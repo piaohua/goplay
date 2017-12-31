@@ -5,7 +5,9 @@ set -e
 usage() {
     echo " ./ctrl cmd "
     echo " cmd : build (hall|login|gate|dbms|robot) (linux) "
-    echo " cmd : start (hall|login|gate|dbms|robot) -node=1 "
+    echo " cmd : start (gate|robot) -node=1 "
+    echo " cmd : start (hall|dbms|login|...) "
+    echo " cmd : start (game/free|...) "
     echo " cmd : status (hall|login|gate|dbms|robot) "
     echo " cmd : stop (hall|login|gate|dbms|robot) "
     echo " cmd : restart, sync, proto, bb "
@@ -17,7 +19,7 @@ workDir=$(cd `dirname $0`; pwd)
 
 cd $workDir
 
-GOPATH=$(cd ../../"$(dirname "$0")"; pwd)
+GOPATH=$(cd ../../../"$(dirname "$0")"; pwd)
 
 SUI_SRC_DIR="${GOPATH}/src/${appName}"
 

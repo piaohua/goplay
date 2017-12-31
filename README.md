@@ -22,7 +22,7 @@ cp conf.ini.local conf.ini
 ./dbms-bin -log_dir=./logs
 
 ./ctrl build gate
-./gate-bin -log_dir=./logs
+./gate-bin -node=1 -log_dir=./logs
 
 ./ctrl build hall
 ./hall-bin -log_dir=./logs

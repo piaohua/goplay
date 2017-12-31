@@ -222,12 +222,6 @@ func (a *GateActor) handlerStop(ctx actor.Context) {
 	if a.dbmsPid != nil {
 		a.dbmsPid.Request(msg, ctx.Self())
 	}
-	if a.roomPid != nil {
-		a.roomPid.Request(msg, ctx.Self())
-	}
-	if a.rolePid != nil {
-		a.rolePid.Request(msg, ctx.Self())
-	}
 	if a.hallPid != nil {
 		a.hallPid.Request(msg, ctx.Self())
 	}

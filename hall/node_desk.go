@@ -15,11 +15,8 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.MatchDesk:
 		arg := msg.(*pb.MatchDesk)
 		glog.Debugf("MatchDesk: %v", arg)
-		//匹配房间
-		if v, ok := a.serve[arg.Name]; ok {
-			//TODO
-			v.Tell(arg)
-		}
+		//按规则匹配房间
+		a.matchDesk(arg, ctx)
 	case *pb.JoinDesk:
 		arg := msg.(*pb.JoinDesk)
 		glog.Debugf("JoinDesk %#v", arg)
@@ -35,6 +32,7 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 		//房间数据变更
 		a.desks[arg.Roomid] = arg.Desk
 		a.rtype[arg.Roomid] = arg.Rtype
+		//TODO 添加桌子匹配规则
 		//响应
 		//rsp := new(pb.AddedDesk)
 		//ctx.Respond(rsp)
@@ -71,4 +69,14 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
+}
+
+//匹配房间
+func (a *HallActor) matchDesk(arg *pb.MatchDesk, ctx actor.Context) {
+	rsp := new(pb.MatchedDesk)
+	if v, ok := a.serve[arg.Name]; ok {
+		rsp.Node = v
+	}
+	//响应
+	ctx.Respond(rsp)
 }

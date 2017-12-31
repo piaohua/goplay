@@ -85,14 +85,18 @@ func (r *Robot) receive(msg interface{}) {
 //' 接收到服务器登录返回
 func (r *Robot) recvRegist(stoc *pb.SRegist) {
 	var errcode = stoc.GetError()
-	switch {
-	case errcode == 0:
+	switch errcode {
+	case pb.OK:
 		Logined(r.data.Phone) //登录成功
 		r.regist = true       //注册成功
 		r.data.Userid = stoc.GetUserid()
 		glog.Infof("regist successful -> %s", r.data.Userid)
 		r.SendGetClassic()
 		r.SendUserData() // 获取玩家数据
+		return
+	case pb.PhoneRegisted:
+		glog.Infof("phone registed -> %s", r.data.Phone)
+		r.SendLogin() //尝试登录
 		return
 	default:
 		glog.Infof("regist err -> %d", errcode)
@@ -107,8 +111,8 @@ func (r *Robot) recvRegist(stoc *pb.SRegist) {
 //' 接收到服务器登录返回
 func (r *Robot) recvLogin(stoc *pb.SLogin) {
 	var errcode = stoc.GetError()
-	switch {
-	case errcode == 0:
+	switch errcode {
+	case pb.OK:
 		Logined(r.data.Phone) //登录成功
 		r.data.Userid = stoc.GetUserid()
 		glog.Infof("login successful -> %s", r.data.Userid)
@@ -126,7 +130,7 @@ func (r *Robot) recvLogin(stoc *pb.SLogin) {
 //' 接收到玩家数据
 func (r *Robot) recvdata(stoc *pb.SUserData) {
 	var errcode = stoc.GetError()
-	if errcode != 0 {
+	if errcode != pb.OK {
 		glog.Infof("get data err -> %d", errcode)
 	}
 	userdata := stoc.GetData()
@@ -191,8 +195,8 @@ func (r *Robot) recvLeave(stoc *pb.SLeave) {
 //' 创建房间
 func (r *Robot) recvCreate(stoc *pb.SCreateRoom) {
 	var errcode = stoc.GetError()
-	switch {
-	case errcode == 0:
+	switch errcode {
+	case pb.OK:
 		var code string = stoc.GetRdata().GetInvitecode()
 		if code != "" && len(code) == 6 {
 			glog.Infof("create room code -> %s", code)
@@ -213,8 +217,8 @@ func (r *Robot) recvCreate(stoc *pb.SCreateRoom) {
 //' 进入房间
 func (r *Robot) recvComein(stoc *pb.SEnterRoom) {
 	var errcode = stoc.GetError()
-	switch {
-	case errcode == 0:
+	switch errcode {
+	case pb.OK:
 		userinfo := stoc.GetUserinfo()
 		for _, v := range userinfo {
 			if v.GetUserid() == r.data.Userid {
@@ -226,6 +230,7 @@ func (r *Robot) recvComein(stoc *pb.SEnterRoom) {
 		}
 		info := stoc.GetRoominfo()
 		r.rtype = info.GetRtype() // 房间类型
+		glog.Debugf("comein desk info -> %#v", info)
 	default:
 		glog.Infof("comein err -> %d", errcode)
 		r.Close() //进入出错,关闭
@@ -337,12 +342,13 @@ func (r *Robot) recvDealer(stoc *pb.SPushDealer) {
 func (r *Robot) recvEntryFree(stoc *pb.SEnterFreeRoom) {
 	var errcode = stoc.GetError()
 	switch errcode {
-	case 0:
+	case pb.OK:
 		if r.data.Coin >= 300000 {
 			r.SendFreeSit()
 		}
 		info := stoc.GetRoominfo()
 		r.rtype = info.GetRtype() // 房间类型
+		glog.Debugf("comein desk info -> %#v", info)
 	default:
 		r.SendFreeStandup()
 	}
@@ -357,7 +363,7 @@ func (r *Robot) recvFreeSit(stoc *pb.SFreeSit) {
 		return
 	}
 	switch errcode {
-	case 0:
+	case pb.OK:
 		r.seat = seat //坐下位置
 	default:
 		//if r.sits > 7 { //尝试次数过多
@@ -376,7 +382,7 @@ func (r *Robot) recvFreeBet(stoc *pb.SFreeBet) {
 		return
 	}
 	switch errcode {
-	case 0:
+	case pb.OK:
 		//if r.bits < 3 {
 		//	r.SendFreeBet()
 		//}
@@ -440,7 +446,7 @@ func (r *Robot) recvPushCurrency(stoc *pb.SPushCurrency) {
 func (r *Robot) recvEntryClassic(stoc *pb.SEnterClassicRoom) {
 	var errcode = stoc.GetError()
 	switch errcode {
-	case 0:
+	case pb.OK:
 		userinfo := stoc.GetUserinfo()
 		for _, v := range userinfo {
 			if v.GetUserid() == r.data.Userid {
@@ -461,7 +467,7 @@ func (r *Robot) recvEntryClassic(stoc *pb.SEnterClassicRoom) {
 func (r *Robot) recvClassicList(stoc *pb.SClassicList) {
 	var errcode = stoc.GetError()
 	switch errcode {
-	case 0:
+	case pb.OK:
 		r.classicId = ""
 		r.classic = stoc.GetList()
 	default:
@@ -573,7 +579,7 @@ func (r *Robot) recvPhzDraw(stoc *pb.SPushDraw) {
 func (r *Robot) recvPhzDiscard(stoc *pb.SPushDiscard) {
 	var errcode = stoc.GetError()
 	switch errcode {
-	case 0:
+	case pb.OK:
 	default:
 		glog.Errorf("discard error %d", errcode)
 		return
@@ -610,7 +616,7 @@ func (r *Robot) recvPhzOperate(stoc *pb.SOperate) {
 	bitwo := stoc.GetBitwo()
 	var errcode = stoc.GetError()
 	switch errcode {
-	case 0:
+	case pb.OK:
 	default:
 		glog.Errorf("operate error %d", errcode)
 		glog.Errorf("operate hs %v", r.cards)

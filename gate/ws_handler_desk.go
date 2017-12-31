@@ -25,7 +25,8 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.LeaveDesk:
 		arg := msg.(*pb.LeaveDesk)
 		glog.Debugf("LeaveDesk %#v", arg)
-		//TODO
+		//离开房间
+		ws.leaveRoom(arg, ctx)
 		//响应
 		//rsp := new(pb.LeftDesk)
 		//ctx.Respond(rsp)
@@ -112,6 +113,13 @@ func (ws *WSConn) HandlerDesk(msg interface{}, ctx actor.Context) {
 	}
 }
 
+//离开房间
+func (ws *WSConn) leaveRoom(arg *pb.LeaveDesk, ctx actor.Context) {
+	ws.gamePid = nil
+	ws.roomPid.Request(arg, ctx.Self())
+	ws.hallPid.Request(arg, ctx.Self())
+}
+
 //进入房间
 func (ws *WSConn) entryRoom(ctx actor.Context) {
 	if ws.gamePid == nil {
@@ -157,7 +165,7 @@ func (ws *WSConn) matchRoom(rtype uint32) *pb.MatchedDesk {
 	return response1
 }
 
-//数据中心创建房间
+//数据中心创建房间,TODO hall 中创建添加
 func (ws *WSConn) createRoom(rtype uint32) *pb.CreatedDesk {
 	msg2 := new(pb.CreateDesk)
 	switch rtype {

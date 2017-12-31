@@ -62,9 +62,10 @@ func (r *RobotServer) Send2rbs(msg interface{}) {
 
 func (r *RobotServer) runTest1() {
 	msg := &pb.RobotMsg{
-		Code: "create",
+		Code: "free",
 	}
-	go Msg2Robots(msg, 2)
+	//TODO 数量添加到配置
+	go Msg2Robots(msg, 1)
 }
 
 //机器人测试

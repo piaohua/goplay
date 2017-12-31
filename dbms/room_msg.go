@@ -48,6 +48,7 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.CloseDesk:
 		arg := msg.(*pb.CloseDesk)
 		glog.Debugf("CloseDesk %#v", arg)
+		//TODO 私人房间
 		//移除
 		delete(a.count, arg.Roomid)
 		delete(a.codes, arg.Code)

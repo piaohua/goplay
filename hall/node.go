@@ -34,6 +34,8 @@ type HallActor struct {
 	rtype map[string]uint32
 	//玩家所在桌子userid-roomid
 	router map[string]string
+	//TODO 匹配规则 rules
+	//rules map[string]string
 	//关闭通道
 	stopCh chan struct{}
 	//更新状态

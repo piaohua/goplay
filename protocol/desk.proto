@@ -7,8 +7,8 @@ import "code.proto";
 
 //匹配桌子
 message MatchDesk {
-    uint32 Rtype = 1;//类型
-    string Name = 2;
+    uint32 Rtype = 1;//桌子类型
+    string Name = 2;//节点名称
 }
 
 message MatchedDesk {

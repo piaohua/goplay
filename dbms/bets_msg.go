@@ -111,7 +111,7 @@ func (a *BetsActor) ticker(ctx actor.Context) {
 
 //钟声
 func (t *BetsActor) ding(ctx actor.Context) {
-	glog.Debugf("ding: %v", ctx.Self().String())
+	//glog.Debugf("ding: %v", ctx.Self().String())
 	switch t.timer {
 	case t.betTime:
 		//投注结束
