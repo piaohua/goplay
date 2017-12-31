@@ -125,16 +125,15 @@ func (ws *Robot) Sender(msg interface{}) {
 //时钟
 func (ws *Robot) ticker() {
 	tick := time.Tick(10 * time.Second)
-	msg := new(pb.Tick)
 	for {
 		select {
-		case <-a.stopCh:
+		case <-ws.stopCh:
 			glog.Info("ticker closed")
 			return
 		default: //防止阻塞
 		}
 		select {
-		case <-a.stopCh:
+		case <-ws.stopCh:
 			glog.Info("ticker closed")
 			return
 		case <-tick:
