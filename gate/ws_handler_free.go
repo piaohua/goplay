@@ -125,32 +125,8 @@ func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 		stoc.Error = pb.RoomNotExist
 		ws.Send(stoc)
 		return
-	} else if response1.Desk != nil {
-		ws.gamePid = response1.Desk
-		//进入房间
-		ws.entryRoom(ctx)
-		return
 	}
-	//节点不存在
-	if response1.Node == nil {
-		stoc.Error = pb.RoomNotExist
-		ws.Send(stoc)
-		return
-	}
-	//创建新房间
-	response2 := ws.createRoom(data.ROOM_FREE)
-	if response1 == nil {
-		stoc.Error = pb.RoomNotExist
-		ws.Send(stoc)
-		return
-	}
-	//新桌子
-	response3 := ws.spawnRoom(response1.Node, response2.Data)
-	if response3 == nil {
-		stoc.Error = pb.RoomNotExist
-		ws.Send(stoc)
-		return
-	}
-	ws.gamePid = response3.Desk
+	ws.gamePid = response1.Desk
+	//进入房间
 	ws.entryRoom(ctx)
 }

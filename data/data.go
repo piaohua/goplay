@@ -36,7 +36,7 @@ func NewDeskData(round, expire, rtype, ante, cost, xi,
 		Chat:    chat,
 		Xi:      xi,
 		Code:    invitecode,
-		CTime:   ctime,
+		Ctime:   ctime,
 		Minimum: min,
 		Maximum: max,
 		Score:   make(map[string]int32),
@@ -57,7 +57,7 @@ type DeskData struct {
 	Ante       uint32           `json:"ante"`        //私人房底分
 	Payment    uint32           `json:"payment"`     //付费方式1=AA or 0=房主支付
 	Cost       uint32           `json:"cost"`        //创建消耗
-	CTime      uint32           `json:"ctime"`       //创建时间
+	Ctime      uint32           `json:"ctime"`       //创建时间
 	Ltype      uint32           `json:"ltype"`       //房间等级类型
 	Minimum    uint32           `json:"minimum"`     //房间最低限制
 	Maximum    uint32           `json:"maximum"`     //房间最高限制

@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"time"
 
 	"goplay/glog"
 	"goplay/pb"
@@ -74,9 +75,37 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 //匹配房间
 func (a *HallActor) matchDesk(arg *pb.MatchDesk, ctx actor.Context) {
 	rsp := new(pb.MatchedDesk)
-	if v, ok := a.serve[arg.Name]; ok {
-		rsp.Node = v
+	//已经存在
+	if v, ok := a.desks[arg.Roomid]; ok {
+		rsp.Desk = v
+		//响应
+		ctx.Respond(rsp)
+		return
 	}
+	//新建
+	rsp.Desk = a.spawnRoom(arg, ctx)
 	//响应
 	ctx.Respond(rsp)
+}
+
+//创建新桌子
+func (a *HallActor) spawnRoom(arg *pb.MatchDesk, ctx actor.Context) *actor.PID {
+	if arg.Data == "" {
+		return nil
+	}
+	//逻辑节点存在
+	if v, ok := a.serve[arg.Name]; ok {
+		msg2 := new(pb.SpawnDesk)
+		msg2.Data = arg.Data
+		timeout := 3 * time.Second
+		res2, err2 := v.RequestFuture(msg2, timeout).Result()
+		if err2 != nil {
+			glog.Errorf("spawnRoom err: %v", err2)
+			return nil
+		}
+		response2 := res2.(*pb.SpawnedDesk)
+		glog.Debugf("response2: %#v", response2)
+		return response2.Desk
+	}
+	return nil
 }

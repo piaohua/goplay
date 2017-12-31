@@ -150,12 +150,14 @@ func (ws *WSConn) matchRoom(rtype uint32) *pb.MatchedDesk {
 	msg1 := new(pb.MatchDesk)
 	switch rtype {
 	case data.ROOM_FREE:
-		msg1.Rtype = data.ROOM_FREE
+		msg1.Rtype = rtype
 		//节点注册名称,TODO 多节点处理
 		msg1.Name = cfg.Section("game.free").Name()
+		//创建房间初始化数据
+		//msg1.Data = handler.FreeData()
 	}
-	timeout := 3 * time.Second
-	res1, err1 := ws.hallPid.RequestFuture(msg1, timeout).Result()
+	timeout := 6 * time.Second
+	res1, err1 := ws.roomPid.RequestFuture(msg1, timeout).Result()
 	if err1 != nil {
 		glog.Errorf("matchRoom err: %v", err1)
 		return nil
@@ -163,53 +165,4 @@ func (ws *WSConn) matchRoom(rtype uint32) *pb.MatchedDesk {
 	response1 := res1.(*pb.MatchedDesk)
 	glog.Debugf("response1: %#v", response1)
 	return response1
-}
-
-//数据中心创建房间,TODO hall 中创建添加
-func (ws *WSConn) createRoom(rtype uint32) *pb.CreatedDesk {
-	msg2 := new(pb.CreateDesk)
-	switch rtype {
-	case data.ROOM_FREE:
-		msg2.Data = handler.FreeData()
-	}
-	if msg2.Data == "" {
-		return nil
-	}
-	timeout := 3 * time.Second
-	res2, err2 := ws.roomPid.RequestFuture(msg2, timeout).Result()
-	if err2 != nil {
-		glog.Errorf("createRoom err: %v", err2)
-		return nil
-	}
-	response2 := res2.(*pb.CreatedDesk)
-	glog.Debugf("response2: %#v", response2)
-	if response2.Error != pb.OK {
-		glog.Error("createRoom failed")
-		return nil
-	}
-	return response2
-}
-
-//创建新桌子
-func (ws *WSConn) spawnRoom(deskNode *actor.PID, rdata string) *pb.SpawnedDesk {
-	if rdata == "" || deskNode == nil {
-		return nil
-	}
-	msg2 := new(pb.SpawnDesk)
-	msg2.Data = rdata
-	timeout := 3 * time.Second
-	res2, err2 := deskNode.RequestFuture(msg2, timeout).Result()
-	if err2 != nil {
-		glog.Errorf("spawnRoom err: %v", err2)
-		return nil
-	}
-	response2 := res2.(*pb.SpawnedDesk)
-	glog.Debugf("response2: %#v", response2)
-	if response2.Desk == nil {
-		return nil
-	}
-	if response2.Error != pb.OK {
-		return nil
-	}
-	return response2
 }

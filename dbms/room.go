@@ -26,6 +26,8 @@ type RoomActor struct {
 	codes map[string]string
 	//房间人数roomid-numbers
 	count map[string]uint32
+	//TODO 匹配规则 rules
+	//rules map[string]string
 	//唯一id生成
 	uniqueid *data.IDGen
 	//关闭通道

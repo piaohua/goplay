@@ -35,7 +35,13 @@ func (a *RoomActor) Handler(msg interface{}, ctx actor.Context) {
 		a.ding(ctx)
 	case *pb.CreateDesk:
 		arg := msg.(*pb.CreateDesk)
+		//按规则创建房间
 		a.create(arg, ctx)
+	case *pb.MatchDesk:
+		arg := msg.(*pb.MatchDesk)
+		glog.Debugf("MatchDesk: %v", arg)
+		//按规则匹配房间
+		a.matchDesk(arg, ctx)
 	case *pb.JoinDesk:
 		arg := msg.(*pb.JoinDesk)
 		glog.Debugf("JoinDesk %#v", arg)
@@ -156,21 +162,17 @@ func (a *RoomActor) create(arg *pb.CreateDesk, ctx actor.Context) {
 		rsp.Error = pb.RoomNotExist
 		ctx.Respond(rsp)
 	}
-	switch deskData.Rtype {
-	case data.ROOM_FREE:
-		//百人
-		deskData.Rid = a.uniqueid.GenID()
-		deskData.Code = a.GenCodeFree()
-	case data.ROOM_PRIVATE:
-		//私人
-		deskData.Rid = a.uniqueid.GenID()
-		deskData.Code = a.GenCode()
+	//创建
+	a.createRoom(deskData)
+	//响应登录
+	rsp.Data = handler.Desk2Data(deskData)
+	if rsp.Data == "" {
+		rsp.Error = pb.RoomNotExist
+		ctx.Respond(rsp)
 	}
 	//添加房间,TODO 如果响应超时？
 	a.rooms[deskData.Rid] = deskData
 	a.codes[deskData.Code] = deskData.Rid
-	//响应登录
-	rsp.Data = handler.Desk2Data(deskData)
 	ctx.Respond(rsp)
 }
 
@@ -192,4 +194,55 @@ func (a *RoomActor) GenCodeFree() (s string) {
 		return a.GenCode() //重复尝试,TODO:一定次数后放弃尝试
 	}
 	return
+}
+
+//匹配房间
+func (a *RoomActor) matchDesk(arg *pb.MatchDesk, ctx actor.Context) {
+	rsp := new(pb.MatchedDesk)
+	msg1 := new(pb.MatchDesk)
+	//TODO 匹配成功后查找
+	//msg1.Roomid = roomid
+	//匹配失败后新建
+	deskData := handler.NewDeskData(arg.Rtype)
+	if deskData == nil {
+		glog.Errorf("matchRoom err rtype: %d", arg.Rtype)
+		ctx.Respond(rsp)
+		return
+	}
+	//创建
+	a.createRoom(deskData)
+	msg1.Name = arg.Name
+	msg1.Data = handler.Desk2Data(deskData)
+	if msg1.Data == "" {
+		glog.Errorf("matchRoom err rtype: %d", arg.Rtype)
+		ctx.Respond(rsp)
+		return
+	}
+	timeout := 3 * time.Second
+	res1, err1 := a.hallPid.RequestFuture(msg1, timeout).Result()
+	if err1 != nil {
+		glog.Errorf("matchRoom err: %v", err1)
+		//响应
+		ctx.Respond(rsp)
+		return
+	}
+	response1 := res1.(*pb.MatchedDesk)
+	glog.Debugf("response1: %#v", response1)
+	rsp.Desk = response1.Desk
+	//响应
+	ctx.Respond(rsp)
+}
+
+//创建房间
+func (a *RoomActor) createRoom(deskData *data.DeskData) {
+	switch deskData.Rtype {
+	case data.ROOM_FREE:
+		//百人
+		deskData.Code = a.GenCodeFree()
+	case data.ROOM_PRIVATE:
+		//私人
+		deskData.Code = a.GenCode()
+	}
+	deskData.Rid = a.uniqueid.GenID()
+	deskData.Ctime = uint32(utils.Timestamp())
 }

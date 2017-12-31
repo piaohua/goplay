@@ -84,6 +84,7 @@ dbms (program)
     后台配置数据加载
     邮箱管理
     投注活动
+    桌子匹配路由
 
 login (program)
     http请求节点信息
@@ -103,7 +104,6 @@ hall (program)
     处理网关信息
     玩家节点路由
     桌子节点路由
-    桌子匹配路由
 
 game (package)
     处理业务逻辑
