@@ -71,6 +71,11 @@ func newHallActor() actor.Actor {
 	//a.gates = make(map[string]*actor.PID)
 	a.roles = make(map[string]string)
 	a.count = make(map[string]uint32)
+	//桌子
+	a.desks = make(map[string]*actor.PID)
+	a.rnums = make(map[string]uint32)
+	a.rtype = make(map[string]uint32)
+	a.router = make(map[string]string)
 	a.stopCh = make(chan struct{})
 	return a
 }

@@ -116,6 +116,7 @@ func (server *RobotServer) RunRobot(phone, code string, rtype uint32, regist boo
 	} else {
 		go robot.SendLogin() //登录
 	}
+	go robot.ticker()
 	robot.readPump()
 
 	// cleanup

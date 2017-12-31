@@ -99,6 +99,14 @@ func (c *Robot) SendVote() {
 	c.Sender(ctos)
 }
 
+// 解散
+func (c *Robot) SendPing() {
+	ctos := new(pb.CPing)
+	//ctos.Time := uint32(utils.Timestamp())
+	ctos.Time = 1
+	c.Sender(ctos)
+}
+
 //.
 
 //' 牛牛
