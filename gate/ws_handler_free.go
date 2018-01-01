@@ -7,6 +7,7 @@ import (
 	"goplay/pb"
 
 	"github.com/AsynkronIT/protoactor-go/actor"
+	"github.com/gogo/protobuf/proto"
 )
 
 //玩家百人场请求处理
@@ -54,6 +55,9 @@ func (ws *WSConn) HandlerFree(msg interface{}, ctx actor.Context) {
 	case *pb.CFreeTrend:
 		arg := msg.(*pb.CFreeTrend)
 		glog.Debugf("CFreeTrend %#v", arg)
+	case proto.Message:
+		//响应消息
+		ws.Send(msg)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
@@ -118,10 +122,10 @@ func (ws *WSConn) freeEnter(arg *pb.CEnterFreeRoom, ctx actor.Context) {
 		ws.entryRoom(ctx)
 		return
 	}
-	stoc := new(pb.SEnterFreeRoom)
 	//匹配可以进入的房间
 	response1 := ws.matchRoom(data.ROOM_FREE)
 	if response1 == nil {
+		stoc := new(pb.SEnterFreeRoom)
 		stoc.Error = pb.RoomNotExist
 		ws.Send(stoc)
 		return

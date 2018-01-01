@@ -77,6 +77,7 @@ func (r *Robot) receive(msg interface{}) {
 		r.recvPhzStatus(msg.(*pb.SPushStatus))
 	case *pb.SPubDraw:
 		r.recvPubDraw(msg.(*pb.SPubDraw))
+	case *pb.SPing:
 	default:
 		glog.Errorf("unknow message: %#v", msg)
 	}
@@ -341,6 +342,7 @@ func (r *Robot) recvDealer(stoc *pb.SPushDealer) {
 //进入
 func (r *Robot) recvEntryFree(stoc *pb.SEnterFreeRoom) {
 	var errcode = stoc.GetError()
+	glog.Errorf("comein desk info -> %d", errcode)
 	switch errcode {
 	case pb.OK:
 		if r.data.Coin >= 300000 {

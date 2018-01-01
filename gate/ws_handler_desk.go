@@ -142,6 +142,9 @@ func (ws *WSConn) entryRoom(ctx actor.Context) {
 	}
 	response1 := res1.(*pb.EnteredDesk)
 	glog.Debugf("response1: %#v", response1)
+	//进入房间数据
+	msg2 := new(pb.CEnterFreeRoom)
+	ws.gamePid.Request(msg2, ctx.Self())
 }
 
 //大厅中匹配可用房间
