@@ -19,6 +19,26 @@ import (
 	"utils"
 )
 
+//'添加金币
+//func (c *Robot) addCoin() {
+//	var coin int32
+//	if r.data.Coin < 200000 {
+//		go addCoin(r.data.Userid, 10000000)
+//	} else if r.data.Coin < 500000 {
+//		go addCoin(r.data.Userid, 5000000)
+//	} else if r.data.Coin < 1000000 {
+//		go addCoin(r.data.Userid, 15000000)
+//	}
+//	reqMsg := &pb.ReqMsg{
+//		Userid: userid,
+//		Rtype:  data.LogType9,
+//		Itemid: data.COIN,
+//		Amount: coin,
+//	}
+//}
+
+//.
+
 //' 登录
 // 发送注册请求
 func (c *Robot) SendRegist() {

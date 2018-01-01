@@ -25,3 +25,10 @@ message GetConfig
 {
     ConfigType Type = 1 ;//类型
 }
+
+//内部消息
+message Internal {
+    string Userid = 1; //路由方式
+    string Code = 2; //消息编号
+    string Message = 3; //消息内容
+}

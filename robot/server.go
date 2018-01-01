@@ -32,6 +32,7 @@ type RobotServer struct {
 
 	channel chan *pb.RobotMsg //消息通道
 
+	Name    string           //注册节点名字
 	phone   string           //注册登录账号
 	online  map[string]bool  //map[phone]状态,true=在线,
 	offline map[string]bool  //map[phone]状态,true=离线,false=登录中

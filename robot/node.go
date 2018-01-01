@@ -36,7 +36,8 @@ func (server *RobotServer) remoteRecv(name string) {
 			server.channel <- msg
 		}
 	})
-	actor.SpawnNamed(props, name)
+	nodePid, err = actor.SpawnNamed(props, name)
+	server.remoteHall()
 
 	//consume the channel just like you use to
 	go func() {
@@ -53,4 +54,17 @@ func (server *RobotServer) remoteRecv(name string) {
 			glog.Debugf("node msg -> %v", msg)
 		}
 	}()
+}
+
+func (server *RobotServer) remoteHall() {
+	//hall
+	name := cfg.Section("cookie").Key("name").Value()
+	bind := cfg.Section("hall").Key("bind").Value()
+	hallPid = actor.NewPID(bind, name)
+	//name
+	server.Name = cfg.Section("robot").Name()
+	connect := &pb.Connect{
+		Name: server.Name,
+	}
+	a.hallPid.Request(connect, nodePid)
 }

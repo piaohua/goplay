@@ -12,10 +12,11 @@ import (
 	"os"
 	"os/signal"
 	"runtime"
-	"utils"
 
 	"goplay/glog"
+	"utils"
 
+	"github.com/AsynkronIT/protoactor-go/actor"
 	ini "gopkg.in/ini.v1"
 )
 
@@ -23,6 +24,9 @@ var (
 	cfg *ini.File
 	sec *ini.Section
 	err error
+
+	nodePid *actor.PID
+	hallPid *actor.PID
 
 	rbs *RobotServer
 
