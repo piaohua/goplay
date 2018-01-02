@@ -10,6 +10,8 @@ import math "math"
 
 import strconv "strconv"
 
+import bytes "bytes"
+
 import strings "strings"
 import reflect "reflect"
 
@@ -99,9 +101,107 @@ func (m *GetConfig) GetType() ConfigType {
 	return CONFIG_OK
 }
 
+// 内部消息
+type Internal struct {
+	Code    string `protobuf:"bytes,1,opt,name=Code,proto3" json:"Code,omitempty"`
+	Userid  string `protobuf:"bytes,2,opt,name=Userid,proto3" json:"Userid,omitempty"`
+	Message string `protobuf:"bytes,3,opt,name=Message,proto3" json:"Message,omitempty"`
+}
+
+func (m *Internal) Reset()                    { *m = Internal{} }
+func (*Internal) ProtoMessage()               {}
+func (*Internal) Descriptor() ([]byte, []int) { return fileDescriptorWeb, []int{2} }
+
+func (m *Internal) GetCode() string {
+	if m != nil {
+		return m.Code
+	}
+	return ""
+}
+
+func (m *Internal) GetUserid() string {
+	if m != nil {
+		return m.Userid
+	}
+	return ""
+}
+
+func (m *Internal) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+// web请求
+type WebRequest struct {
+	Code uint32 `protobuf:"varint,1,opt,name=Code,proto3" json:"Code,omitempty"`
+	Data []byte `protobuf:"bytes,2,opt,name=Data,proto3" json:"Data,omitempty"`
+}
+
+func (m *WebRequest) Reset()                    { *m = WebRequest{} }
+func (*WebRequest) ProtoMessage()               {}
+func (*WebRequest) Descriptor() ([]byte, []int) { return fileDescriptorWeb, []int{3} }
+
+func (m *WebRequest) GetCode() uint32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *WebRequest) GetData() []byte {
+	if m != nil {
+		return m.Data
+	}
+	return nil
+}
+
+type WebResponse struct {
+	Code    uint32 `protobuf:"varint,1,opt,name=Code,proto3" json:"Code,omitempty"`
+	ErrCode int32  `protobuf:"varint,2,opt,name=ErrCode,proto3" json:"ErrCode,omitempty"`
+	ErrMsg  string `protobuf:"bytes,3,opt,name=ErrMsg,proto3" json:"ErrMsg,omitempty"`
+	Result  string `protobuf:"bytes,4,opt,name=Result,proto3" json:"Result,omitempty"`
+}
+
+func (m *WebResponse) Reset()                    { *m = WebResponse{} }
+func (*WebResponse) ProtoMessage()               {}
+func (*WebResponse) Descriptor() ([]byte, []int) { return fileDescriptorWeb, []int{4} }
+
+func (m *WebResponse) GetCode() uint32 {
+	if m != nil {
+		return m.Code
+	}
+	return 0
+}
+
+func (m *WebResponse) GetErrCode() int32 {
+	if m != nil {
+		return m.ErrCode
+	}
+	return 0
+}
+
+func (m *WebResponse) GetErrMsg() string {
+	if m != nil {
+		return m.ErrMsg
+	}
+	return ""
+}
+
+func (m *WebResponse) GetResult() string {
+	if m != nil {
+		return m.Result
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*SyncConfig)(nil), "pb.SyncConfig")
 	proto.RegisterType((*GetConfig)(nil), "pb.GetConfig")
+	proto.RegisterType((*Internal)(nil), "pb.Internal")
+	proto.RegisterType((*WebRequest)(nil), "pb.WebRequest")
+	proto.RegisterType((*WebResponse)(nil), "pb.WebResponse")
 	proto.RegisterEnum("pb.ConfigType", ConfigType_name, ConfigType_value)
 }
 func (x ConfigType) String() string {
@@ -174,6 +274,114 @@ func (this *GetConfig) Equal(that interface{}) bool {
 	}
 	return true
 }
+func (this *Internal) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*Internal)
+	if !ok {
+		that2, ok := that.(Internal)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Code != that1.Code {
+		return false
+	}
+	if this.Userid != that1.Userid {
+		return false
+	}
+	if this.Message != that1.Message {
+		return false
+	}
+	return true
+}
+func (this *WebRequest) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*WebRequest)
+	if !ok {
+		that2, ok := that.(WebRequest)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Code != that1.Code {
+		return false
+	}
+	if !bytes.Equal(this.Data, that1.Data) {
+		return false
+	}
+	return true
+}
+func (this *WebResponse) Equal(that interface{}) bool {
+	if that == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	}
+
+	that1, ok := that.(*WebResponse)
+	if !ok {
+		that2, ok := that.(WebResponse)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		if this == nil {
+			return true
+		}
+		return false
+	} else if this == nil {
+		return false
+	}
+	if this.Code != that1.Code {
+		return false
+	}
+	if this.ErrCode != that1.ErrCode {
+		return false
+	}
+	if this.ErrMsg != that1.ErrMsg {
+		return false
+	}
+	if this.Result != that1.Result {
+		return false
+	}
+	return true
+}
 func (this *SyncConfig) GoString() string {
 	if this == nil {
 		return "nil"
@@ -192,6 +400,42 @@ func (this *GetConfig) GoString() string {
 	s := make([]string, 0, 5)
 	s = append(s, "&pb.GetConfig{")
 	s = append(s, "Type: "+fmt.Sprintf("%#v", this.Type)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *Internal) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 7)
+	s = append(s, "&pb.Internal{")
+	s = append(s, "Code: "+fmt.Sprintf("%#v", this.Code)+",\n")
+	s = append(s, "Userid: "+fmt.Sprintf("%#v", this.Userid)+",\n")
+	s = append(s, "Message: "+fmt.Sprintf("%#v", this.Message)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *WebRequest) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 6)
+	s = append(s, "&pb.WebRequest{")
+	s = append(s, "Code: "+fmt.Sprintf("%#v", this.Code)+",\n")
+	s = append(s, "Data: "+fmt.Sprintf("%#v", this.Data)+",\n")
+	s = append(s, "}")
+	return strings.Join(s, "")
+}
+func (this *WebResponse) GoString() string {
+	if this == nil {
+		return "nil"
+	}
+	s := make([]string, 0, 8)
+	s = append(s, "&pb.WebResponse{")
+	s = append(s, "Code: "+fmt.Sprintf("%#v", this.Code)+",\n")
+	s = append(s, "ErrCode: "+fmt.Sprintf("%#v", this.ErrCode)+",\n")
+	s = append(s, "ErrMsg: "+fmt.Sprintf("%#v", this.ErrMsg)+",\n")
+	s = append(s, "Result: "+fmt.Sprintf("%#v", this.Result)+",\n")
 	s = append(s, "}")
 	return strings.Join(s, "")
 }
@@ -255,6 +499,111 @@ func (m *GetConfig) MarshalTo(dAtA []byte) (int, error) {
 	return i, nil
 }
 
+func (m *Internal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Internal) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if len(m.Code) > 0 {
+		dAtA[i] = 0xa
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.Code)))
+		i += copy(dAtA[i:], m.Code)
+	}
+	if len(m.Userid) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.Userid)))
+		i += copy(dAtA[i:], m.Userid)
+	}
+	if len(m.Message) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.Message)))
+		i += copy(dAtA[i:], m.Message)
+	}
+	return i, nil
+}
+
+func (m *WebRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WebRequest) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Code != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(m.Code))
+	}
+	if len(m.Data) > 0 {
+		dAtA[i] = 0x12
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.Data)))
+		i += copy(dAtA[i:], m.Data)
+	}
+	return i, nil
+}
+
+func (m *WebResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalTo(dAtA)
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *WebResponse) MarshalTo(dAtA []byte) (int, error) {
+	var i int
+	_ = i
+	var l int
+	_ = l
+	if m.Code != 0 {
+		dAtA[i] = 0x8
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(m.Code))
+	}
+	if m.ErrCode != 0 {
+		dAtA[i] = 0x10
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(m.ErrCode))
+	}
+	if len(m.ErrMsg) > 0 {
+		dAtA[i] = 0x1a
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.ErrMsg)))
+		i += copy(dAtA[i:], m.ErrMsg)
+	}
+	if len(m.Result) > 0 {
+		dAtA[i] = 0x22
+		i++
+		i = encodeVarintWeb(dAtA, i, uint64(len(m.Result)))
+		i += copy(dAtA[i:], m.Result)
+	}
+	return i, nil
+}
+
 func encodeFixed64Web(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	dAtA[offset+1] = uint8(v >> 8)
@@ -304,6 +653,57 @@ func (m *GetConfig) Size() (n int) {
 	return n
 }
 
+func (m *Internal) Size() (n int) {
+	var l int
+	_ = l
+	l = len(m.Code)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	l = len(m.Userid)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	return n
+}
+
+func (m *WebRequest) Size() (n int) {
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovWeb(uint64(m.Code))
+	}
+	l = len(m.Data)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	return n
+}
+
+func (m *WebResponse) Size() (n int) {
+	var l int
+	_ = l
+	if m.Code != 0 {
+		n += 1 + sovWeb(uint64(m.Code))
+	}
+	if m.ErrCode != 0 {
+		n += 1 + sovWeb(uint64(m.ErrCode))
+	}
+	l = len(m.ErrMsg)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	l = len(m.Result)
+	if l > 0 {
+		n += 1 + l + sovWeb(uint64(l))
+	}
+	return n
+}
+
 func sovWeb(x uint64) (n int) {
 	for {
 		n++
@@ -334,6 +734,42 @@ func (this *GetConfig) String() string {
 	}
 	s := strings.Join([]string{`&GetConfig{`,
 		`Type:` + fmt.Sprintf("%v", this.Type) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *Internal) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&Internal{`,
+		`Code:` + fmt.Sprintf("%v", this.Code) + `,`,
+		`Userid:` + fmt.Sprintf("%v", this.Userid) + `,`,
+		`Message:` + fmt.Sprintf("%v", this.Message) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *WebRequest) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&WebRequest{`,
+		`Code:` + fmt.Sprintf("%v", this.Code) + `,`,
+		`Data:` + fmt.Sprintf("%v", this.Data) + `,`,
+		`}`,
+	}, "")
+	return s
+}
+func (this *WebResponse) String() string {
+	if this == nil {
+		return "nil"
+	}
+	s := strings.Join([]string{`&WebResponse{`,
+		`Code:` + fmt.Sprintf("%v", this.Code) + `,`,
+		`ErrCode:` + fmt.Sprintf("%v", this.ErrCode) + `,`,
+		`ErrMsg:` + fmt.Sprintf("%v", this.ErrMsg) + `,`,
+		`Result:` + fmt.Sprintf("%v", this.Result) + `,`,
 		`}`,
 	}, "")
 	return s
@@ -513,6 +949,389 @@ func (m *GetConfig) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
+func (m *Internal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowWeb
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Internal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Internal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Code = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Userid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Userid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipWeb(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthWeb
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *WebRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowWeb
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WebRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WebRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= (int(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Data = append(m.Data[:0], dAtA[iNdEx:postIndex]...)
+			if m.Data == nil {
+				m.Data = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipWeb(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthWeb
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *WebResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowWeb
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= (uint64(b) & 0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: WebResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: WebResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Code", wireType)
+			}
+			m.Code = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Code |= (uint32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrCode", wireType)
+			}
+			m.ErrCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ErrCode |= (int32(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ErrMsg", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ErrMsg = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Result", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowWeb
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= (uint64(b) & 0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthWeb
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Result = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipWeb(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if skippy < 0 {
+				return ErrInvalidLengthWeb
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
 func skipWeb(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0
@@ -621,22 +1440,30 @@ var (
 func init() { proto.RegisterFile("web.proto", fileDescriptorWeb) }
 
 var fileDescriptorWeb = []byte{
-	// 271 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2c, 0x4f, 0x4d, 0xd2,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x2a, 0x48, 0x52, 0x72, 0xe1, 0xe2, 0x0a, 0xae, 0xcc,
-	0x4b, 0x76, 0xce, 0xcf, 0x4b, 0xcb, 0x4c, 0x17, 0x52, 0xe2, 0x62, 0x09, 0xa9, 0x2c, 0x48, 0x95,
-	0x60, 0x54, 0x60, 0xd4, 0xe0, 0x33, 0xe2, 0xd3, 0x2b, 0x48, 0xd2, 0x83, 0xc8, 0x80, 0x44, 0x83,
-	0xc0, 0x72, 0x42, 0x42, 0x5c, 0x2c, 0x2e, 0x89, 0x25, 0x89, 0x12, 0x4c, 0x0a, 0x8c, 0x1a, 0x9c,
-	0x41, 0x60, 0xb6, 0x92, 0x3e, 0x17, 0xa7, 0x7b, 0x6a, 0x09, 0xf1, 0x86, 0x68, 0xad, 0x64, 0xe4,
-	0xe2, 0x42, 0x08, 0x0a, 0xf1, 0x72, 0x71, 0x3a, 0xfb, 0xfb, 0xb9, 0x79, 0xba, 0xc7, 0xfb, 0x7b,
-	0x0b, 0x30, 0x08, 0xf1, 0x71, 0x71, 0x41, 0xb9, 0x4e, 0xfe, 0x11, 0x02, 0x8c, 0x48, 0x7c, 0x57,
-	0xbf, 0x30, 0x01, 0x26, 0x21, 0x21, 0x2e, 0x3e, 0x28, 0xdf, 0xc7, 0x3f, 0x24, 0xc4, 0x35, 0x28,
-	0x52, 0x80, 0x59, 0x48, 0x90, 0x8b, 0x17, 0x2a, 0xe6, 0xe7, 0x1f, 0xe2, 0xe9, 0xec, 0x2a, 0xc0,
-	0x22, 0x24, 0xc0, 0xc5, 0x03, 0x15, 0x0a, 0x08, 0xf2, 0x8c, 0x72, 0x15, 0x60, 0x15, 0xe2, 0xe7,
-	0xe2, 0x86, 0x8a, 0x04, 0x7b, 0xf8, 0x07, 0x08, 0xb0, 0x21, 0x99, 0x1c, 0xe6, 0x19, 0x20, 0xc0,
-	0x8e, 0x64, 0xb2, 0xb3, 0x8f, 0x63, 0x70, 0xb0, 0xa7, 0xb3, 0x00, 0x87, 0x93, 0xce, 0x85, 0x87,
-	0x72, 0x0c, 0x37, 0x1e, 0xca, 0x31, 0x7c, 0x78, 0x28, 0xc7, 0xd8, 0xf0, 0x48, 0x8e, 0x71, 0xc5,
-	0x23, 0x39, 0xc6, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0xf1,
-	0xc5, 0x23, 0x39, 0x86, 0x0f, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0x48, 0x62, 0x03, 0x87,
-	0xad, 0x31, 0x20, 0x00, 0x00, 0xff, 0xff, 0x16, 0x84, 0x1d, 0x42, 0x68, 0x01, 0x00, 0x00,
+	// 390 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x92, 0xcd, 0xce, 0x93, 0x40,
+	0x14, 0x86, 0x99, 0x7e, 0xf4, 0x87, 0xd3, 0x16, 0xc7, 0x59, 0x18, 0x56, 0x93, 0x86, 0x55, 0x63,
+	0x4c, 0x4d, 0xd4, 0x1b, 0xb0, 0x14, 0x2b, 0xb1, 0x2d, 0x64, 0xc0, 0xfa, 0xb3, 0x31, 0x60, 0xc7,
+	0xa6, 0xb1, 0x01, 0x64, 0x68, 0x4c, 0x77, 0x5e, 0x82, 0x97, 0xa1, 0x77, 0xe2, 0xb2, 0x4b, 0x97,
+	0x16, 0x37, 0x2e, 0x7b, 0x09, 0x06, 0x98, 0x46, 0x4c, 0x5c, 0xb8, 0x3b, 0xcf, 0x73, 0x38, 0x2f,
+	0x6f, 0x08, 0xa0, 0x7d, 0xe4, 0xd1, 0x24, 0xcd, 0x92, 0x3c, 0x21, 0xad, 0x34, 0x32, 0x67, 0x00,
+	0xfe, 0x31, 0x7e, 0x6b, 0x25, 0xf1, 0xbb, 0xdd, 0x96, 0x98, 0xa0, 0x06, 0xc7, 0x94, 0x1b, 0x68,
+	0x84, 0xc6, 0xfa, 0x03, 0x7d, 0x92, 0x46, 0x93, 0x7a, 0x53, 0x5a, 0x56, 0xed, 0x08, 0x01, 0x75,
+	0x16, 0xe6, 0xa1, 0xd1, 0x1a, 0xa1, 0xb1, 0xc6, 0xaa, 0xd9, 0xbc, 0x0f, 0xda, 0x9c, 0xe7, 0xff,
+	0x1f, 0x62, 0x7a, 0xd0, 0x73, 0xe2, 0x9c, 0x67, 0x71, 0xb8, 0x2f, 0x03, 0xad, 0x64, 0x53, 0x3f,
+	0xaf, 0xb1, 0x6a, 0x26, 0x77, 0xa0, 0xf3, 0x5c, 0xf0, 0x6c, 0xb7, 0x91, 0xaf, 0x91, 0x44, 0x0c,
+	0xe8, 0x2e, 0xb9, 0x10, 0xe1, 0x96, 0x1b, 0x37, 0xd5, 0xe2, 0x8a, 0xe6, 0x23, 0x80, 0x17, 0x3c,
+	0x62, 0xfc, 0xc3, 0x81, 0x8b, 0xfc, 0xaf, 0xcc, 0xa1, 0xcc, 0x6c, 0x16, 0x1f, 0xc8, 0xe2, 0xef,
+	0xa1, 0x5f, 0x5d, 0x89, 0x34, 0x89, 0x05, 0xff, 0xe7, 0x99, 0x01, 0x5d, 0x3b, 0xcb, 0x2a, 0x5d,
+	0x5e, 0xb6, 0xd9, 0x15, 0xcb, 0x92, 0x76, 0x96, 0x2d, 0xc5, 0x56, 0x76, 0x91, 0x54, 0x7a, 0xc6,
+	0xc5, 0x61, 0x9f, 0x1b, 0x6a, 0xed, 0x6b, 0xba, 0xfb, 0x15, 0x01, 0xfc, 0xf9, 0x12, 0x64, 0x08,
+	0x9a, 0xe5, 0xae, 0x9e, 0x38, 0xf3, 0x37, 0xee, 0x33, 0xac, 0x10, 0x1d, 0x40, 0xe2, 0xd4, 0x7d,
+	0x89, 0x51, 0x83, 0xed, 0xd5, 0x1a, 0xb7, 0x08, 0x01, 0x5d, 0xf2, 0xc2, 0x0d, 0x02, 0x9b, 0xbd,
+	0xc2, 0x37, 0xe4, 0x36, 0x0c, 0xa5, 0x5b, 0xb9, 0x81, 0x63, 0xd9, 0x58, 0x25, 0x18, 0x06, 0x52,
+	0x79, 0xcc, 0x79, 0x6d, 0xe3, 0x36, 0xb9, 0x05, 0x7d, 0x69, 0xfc, 0xa7, 0xae, 0x87, 0x3b, 0x8d,
+	0xe4, 0xb5, 0xe3, 0xe1, 0x6e, 0x23, 0xd9, 0x5a, 0x3c, 0xf6, 0x7d, 0xc7, 0xc2, 0xbd, 0xe9, 0xbd,
+	0xd3, 0x99, 0x2a, 0xdf, 0xcf, 0x54, 0xb9, 0x9c, 0x29, 0xfa, 0x54, 0x50, 0xf4, 0xa5, 0xa0, 0xe8,
+	0x5b, 0x41, 0xd1, 0xa9, 0xa0, 0xe8, 0x47, 0x41, 0xd1, 0xaf, 0x82, 0x2a, 0x97, 0x82, 0xa2, 0xcf,
+	0x3f, 0xa9, 0x12, 0x75, 0xaa, 0x1f, 0xea, 0xe1, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0xd6, 0xb2,
+	0x37, 0x79, 0x5d, 0x02, 0x00, 0x00,
 }

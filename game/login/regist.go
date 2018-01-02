@@ -1,12 +1,12 @@
 package login
 
 import (
-	"encoding/json"
-
 	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 //注册验证
@@ -62,7 +62,7 @@ func Regist(arg *pb.RoleRegist, genid *data.IDGen) (stoc *pb.RoleRegisted) {
 		stoc.Error = pb.RegistError
 		return
 	}
-	result, err := json.Marshal(user)
+	result, err := jsoniter.Marshal(user)
 	if err != nil {
 		glog.Errorf("user Marshal err %v", err)
 		stoc.Error = pb.RegistError

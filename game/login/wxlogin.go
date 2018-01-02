@@ -1,14 +1,14 @@
 package login
 
 import (
-	"encoding/json"
-
 	"api/wxapi"
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 //微信登录
@@ -27,7 +27,7 @@ func WxLogin(ctos *pb.WxLogin, user *data.User,
 		user.Photo = photo
 		user.Sex = sex
 		user.Atype = atype
-		result, err := json.Marshal(user)
+		result, err := jsoniter.Marshal(user)
 		if err != nil {
 			glog.Errorf("user Marshal err %v", err)
 			stoc.Error = pb.GetWechatUserInfoFail
@@ -41,7 +41,7 @@ func WxLogin(ctos *pb.WxLogin, user *data.User,
 	user.GetByWechat()
 	if user.Userid != "" {
 		//登录
-		result, err := json.Marshal(user)
+		result, err := jsoniter.Marshal(user)
 		if err != nil {
 			glog.Errorf("user Marshal err %v", err)
 			stoc.Error = pb.GetWechatUserInfoFail
@@ -64,7 +64,7 @@ func WxLogin(ctos *pb.WxLogin, user *data.User,
 		stoc.Error = pb.GetWechatUserInfoFail
 		return
 	}
-	result, err := json.Marshal(user)
+	result, err := jsoniter.Marshal(user)
 	if err != nil {
 		glog.Errorf("user Marshal err %v", err)
 		stoc.Error = pb.GetWechatUserInfoFail

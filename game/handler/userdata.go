@@ -64,7 +64,7 @@ func GetNotice(atype uint32) (stoc *pb.SNotice) {
 		body := &pb.Notice{
 			Rtype:   uint32(v.Rtype),
 			Acttype: uint32(v.Acttype),
-			Content: v.Content,
+			Content: []byte(v.Content),
 		}
 		stoc.List = append(stoc.List, body)
 	}

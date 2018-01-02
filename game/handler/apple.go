@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"encoding/json"
-
 	"api/apple"
 	"goplay/data"
 	"goplay/game/config"
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 func AppleOrder(ctos *pb.CApplePay, p *data.User) (stoc *pb.SApplePay,
@@ -41,7 +41,7 @@ func AppleOrder(ctos *pb.CApplePay, p *data.User) (stoc *pb.SApplePay,
 			return
 		}
 	}
-	trade1, err := json.Marshal(tradeRecord)
+	trade1, err := jsoniter.Marshal(tradeRecord)
 	if err != nil {
 		glog.Errorf("tradeRecord Marshal err %v", err)
 		stoc.Error = pb.AppleOrderFail
@@ -79,7 +79,7 @@ func tradeVerify(product_id string, tradeRecord *data.TradeRecord,
 func AppleVerify(arg *pb.ApplePay) (stoc *pb.ApplePaid) {
 	stoc = new(pb.ApplePaid)
 	tradeRecord := new(data.TradeRecord)
-	err := json.Unmarshal([]byte(arg.Trade), tradeRecord)
+	err := jsoniter.Unmarshal([]byte(arg.Trade), tradeRecord)
 	if err != nil {
 		glog.Errorf("tradeRecord Marshal err %v", err)
 		stoc.Result = false

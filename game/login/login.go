@@ -1,12 +1,12 @@
 package login
 
 import (
-	"encoding/json"
-
 	"goplay/data"
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 //登录验证
@@ -41,7 +41,7 @@ func Login(ctos *pb.RoleLogin, user *data.User) (stoc *pb.RoleLogined) {
 	if stoc.Error != pb.OK {
 		return
 	}
-	result, err := json.Marshal(user)
+	result, err := jsoniter.Marshal(user)
 	if err != nil {
 		glog.Errorf("user Marshal err %v", err)
 		stoc.Error = pb.LoginError

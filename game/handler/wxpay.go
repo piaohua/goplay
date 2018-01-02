@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"math"
 	"strconv"
@@ -12,6 +11,8 @@ import (
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
+
+	jsoniter "github.com/json-iterator/go"
 )
 
 //微信支付查询
@@ -65,7 +66,7 @@ func WxOrder(ctos *pb.CWxpayOrder, p *data.User,
 	}
 	//payReqStr := wxpay.ToXmlString(retMap)
 	//stoc.Payreq = payReqStr
-	trade1, err := json.Marshal(t)
+	trade1, err := jsoniter.Marshal(t)
 	if err != nil {
 		glog.Errorf("tradeRecord Marshal err %v", err)
 		stoc.Error = pb.PayOrderFail

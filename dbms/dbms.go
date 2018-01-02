@@ -10,6 +10,7 @@ import (
 	"goplay/game/config"
 	"goplay/glog"
 
+	jsoniter "github.com/json-iterator/go"
 	ini "gopkg.in/ini.v1"
 )
 
@@ -17,6 +18,8 @@ var (
 	cfg *ini.File
 	sec *ini.Section
 	err error
+
+	json = jsoniter.ConfigCompatibleWithStandardLibrary
 )
 
 func main() {

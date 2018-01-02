@@ -224,7 +224,6 @@
 		ServeStop
 		ServeStoped
 		ServeClose
-		Internal
 		GetNode
 		GotNode
 		Tick
@@ -321,6 +320,9 @@
 		ZiRoomInfo
 		SyncConfig
 		GetConfig
+		Internal
+		WebRequest
+		WebResponse
 */
 package pb
 

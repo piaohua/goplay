@@ -11,6 +11,7 @@ import (
 	"goplay/game/config"
 	"goplay/glog"
 
+	jsoniter "github.com/json-iterator/go"
 	ini "gopkg.in/ini.v1"
 )
 
@@ -22,6 +23,8 @@ var (
 	aesEnc *utils.AesEncrypt
 
 	node = flag.String("node", "", "If non-empty, start with this node")
+
+	json = jsoniter.ConfigCompatibleWithStandardLibrary
 )
 
 func main() {
