@@ -28,22 +28,45 @@ message GetConfig
 
 //内部消息
 message Internal {
-    string Code = 1; //消息编号
+    uint32 Code = 1; //消息编号
     string Userid = 2; //路由方式
-    string Message = 3; //消息内容
+    bytes Data = 3; //消息内容
+}
+
+enum WebCode {
+    Change   = 0; //货币变更
+    Online   = 1; //在线状态
+    Notice   = 2; //公告
+    Build    = 3; //绑定
+    Give     = 4; //赠送钻石
+    SetHands = 5; //设置牌
+    GetHands = 6; //获取牌
+    Shop     = 7; //商贸城
+    SetEnv   = 8; //设置变量
+    GetEnv   = 9; //获取变量
+    DelEnv   =10; //删除变量
+    Prize    =11; //发布抽奖
+    Box      =12; //发布宝箱
+    Room     =13; //房间数据
+    Classic  =14; //经典
+    Vip      =15; //Vip
+    Dan      =16; //段
+    Task     =17; //任务
+    Betting  =18; //疯狂投注
+    Lottery  =19; //全民刮奖
 }
 
 //web请求
 message WebRequest
 {
-	uint32 Code = 1; //协议号
-	bytes  Data = 2; //数据
+	WebCode Code = 1; //协议号
+	bytes Data = 2; //数据
 }
 
 message WebResponse
 {
-	uint32 Code    = 1; //协议号
-	int32  ErrCode = 2; //错误码
-	string ErrMsg  = 3; //错误信息
-	string Result  = 4; //正常时返回信息
+	WebCode Code = 1; //协议号
+	int32 ErrCode = 2; //错误码
+	string ErrMsg = 3; //错误信息
+	string Result = 4; //正常时返回信息
 }
