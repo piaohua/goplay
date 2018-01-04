@@ -34,7 +34,7 @@ message Internal {
 }
 
 enum WebCode {
-    Change   = 0; //货币变更
+    ReqMsg   = 0; //正常
     Online   = 1; //在线状态
     Notice   = 2; //公告
     Build    = 3; //绑定
@@ -54,6 +54,7 @@ enum WebCode {
     Task     =17; //任务
     Betting  =18; //疯狂投注
     Lottery  =19; //全民刮奖
+    Change   =20; //货币变更
 }
 
 //web请求

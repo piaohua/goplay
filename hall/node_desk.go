@@ -67,6 +67,11 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 				v.Tell(arg)
 			}
 		}
+	case *pb.WebRequest:
+		arg := msg.(*pb.WebRequest)
+		rsp = new(pb.WebResponse)
+		a.HandlerWeb(arg, rsp, ctx)
+		ctx.Respond(rsp)
 	default:
 		glog.Errorf("unknown message %v", msg)
 	}
