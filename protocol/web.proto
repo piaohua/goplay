@@ -34,27 +34,27 @@ message Internal {
 }
 
 enum WebCode {
-    ReqMsg   = 0; //正常
-    Online   = 1; //在线状态
-    Notice   = 2; //公告
-    Build    = 3; //绑定
-    Give     = 4; //赠送钻石
-    SetHands = 5; //设置牌
-    GetHands = 6; //获取牌
-    Shop     = 7; //商贸城
-    SetEnv   = 8; //设置变量
-    GetEnv   = 9; //获取变量
-    DelEnv   =10; //删除变量
-    Prize    =11; //发布抽奖
-    Box      =12; //发布宝箱
-    Room     =13; //房间数据
-    Classic  =14; //经典
-    Vip      =15; //Vip
-    Dan      =16; //段
-    Task     =17; //任务
-    Betting  =18; //疯狂投注
-    Lottery  =19; //全民刮奖
-    Change   =20; //货币变更
+    WebReqMsg   = 0; //正常
+    WebOnline   = 1; //在线状态
+    WebNotice   = 2; //公告
+    WebBuild    = 3; //绑定
+    WebGive     = 4; //赠送钻石
+    WebSetHands = 5; //设置牌
+    WebGetHands = 6; //获取牌
+    WebShop     = 7; //商贸城
+    WebSetEnv   = 8; //设置变量
+    WebGetEnv   = 9; //获取变量
+    WebDelEnv   =10; //删除变量
+    WebPrize    =11; //发布抽奖
+    WebBox      =12; //发布宝箱
+    WebRoom     =13; //房间数据
+    WebClassic  =14; //经典
+    WebVip      =15; //Vip
+    WebDan      =16; //段
+    WebTask     =17; //任务
+    WebBetting  =18; //疯狂投注
+    WebLottery  =19; //全民刮奖
+    WebChange   =20; //货币变更
 }
 
 //web请求

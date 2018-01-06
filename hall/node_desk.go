@@ -70,6 +70,7 @@ func (a *HallActor) HandlerDesk(msg interface{}, ctx actor.Context) {
 	case *pb.WebRequest:
 		arg := msg.(*pb.WebRequest)
 		rsp = new(pb.WebResponse)
+		rsp.Code = arg.Code
 		a.HandlerWeb(arg, rsp, ctx)
 		ctx.Respond(rsp)
 	default:

@@ -3,8 +3,7 @@ package main
 import (
 	"time"
 
-	"goplay/data"
-	"goplay/game/config"
+	"goplay/game/handler"
 	"goplay/glog"
 	"goplay/pb"
 
@@ -63,6 +62,7 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.GetConfig:
 		arg := msg.(*pb.GetConfig)
 		glog.Infof("GetConfig %#v", arg)
+		ctx.Respond(handler.GetSyncConfig(arg.Type))
 	default:
 		if a.logger == nil {
 			glog.Errorf("unknown message %v", msg)
@@ -147,19 +147,6 @@ func (a *DBMSActor) handlerStop(ctx actor.Context) {
 	}
 }
 
-//打包配置
-func (a *DBMSActor) syncConfigMsg(ctype pb.ConfigType,
-	d interface{}) interface{} {
-	msg := new(pb.SyncConfig)
-	msg.Type = ctype
-	result, err := json.Marshal(d)
-	if err != nil {
-		glog.Errorf("syncConfig Marshal err %v, data %#v", err, d)
-	}
-	msg.Data = string(result)
-	return msg
-}
-
 //同步配置
 func (a *DBMSActor) syncConfig(key string) {
 	if _, ok := a.gates[key]; !ok {
@@ -167,29 +154,12 @@ func (a *DBMSActor) syncConfig(key string) {
 		return
 	}
 	pid := a.gates[key]
-	msg1 := a.syncConfigMsg(pb.CONFIG_BOX, config.GetBoxs())
-	pid.Tell(msg1)
-	msg2 := a.syncConfigMsg(pb.CONFIG_ENV, config.GetEnvs())
-	pid.Tell(msg2)
-	msg3 := a.syncConfigMsg(pb.CONFIG_LOTTERY, config.GetLotterys())
-	pid.Tell(msg3)
-	msg4 := a.syncConfigMsg(pb.CONFIG_NOTICE, config.GetNotices(data.NOTICE_TYPE1))
-	pid.Tell(msg4)
-	msg5 := a.syncConfigMsg(pb.CONFIG_PRIZE, config.GetPrizes())
-	pid.Tell(msg5)
-	msg6 := a.syncConfigMsg(pb.CONFIG_SHOP, config.GetShops2())
-	pid.Tell(msg6)
-	msg7 := a.syncConfigMsg(pb.CONFIG_VIP, config.GetVips())
-	pid.Tell(msg7)
-	msg8 := a.syncConfigMsg(pb.CONFIG_CLASSIC, config.GetClassics())
-	pid.Tell(msg8)
-}
-
-//同步配置
-func (a *DBMSActor) getConfig(arg *pb.GetConfig, ctx actor.Context) {
-	switch arg.Type {
-	case pb.CONFIG_ENV:
-		msg2 := a.syncConfigMsg(pb.CONFIG_ENV, config.GetEnvs())
-		ctx.Respond(msg2)
-	}
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_BOX))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_ENV))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_LOTTERY))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_NOTICE))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_PRIZE))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_SHOP))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_VIP))
+	pid.Tell(handler.GetSyncConfig(pb.CONFIG_CLASSIC))
 }

@@ -3,8 +3,6 @@ package main
 import (
 	"time"
 
-	"goplay/data"
-	"goplay/game/config"
 	"goplay/game/handler"
 	"goplay/glog"
 	"goplay/pb"
@@ -87,7 +85,7 @@ func (a *GateActor) Handler(msg interface{}, ctx actor.Context) {
 	case *pb.SyncConfig:
 		//同步配置
 		arg := msg.(*pb.SyncConfig)
-		a.syncConfig(arg)
+		handler.SyncConfig(arg)
 	case *pb.SPushNewBetting,
 		*pb.SPushJackpot:
 		for _, v := range a.roles {
@@ -221,93 +219,5 @@ func (a *GateActor) handlerStop(ctx actor.Context) {
 	}
 	if a.hallPid != nil {
 		a.hallPid.Request(msg, ctx.Self())
-	}
-}
-
-//同步配置
-func (a *GateActor) syncConfig(arg *pb.SyncConfig) {
-	switch arg.Type {
-	case pb.CONFIG_BOX: //宝箱
-		b := make([]data.Box, 0)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddBox(v)
-		}
-	case pb.CONFIG_ENV: //变量
-		b := make(map[string]int32)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for k, v := range b {
-			config.SetEnv2(k, v)
-		}
-	case pb.CONFIG_LOTTERY: //全民刮奖
-		b := make(map[uint32]uint32)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for k, v := range b {
-			config.SetLottery(k, v)
-		}
-	case pb.CONFIG_NOTICE: //公告
-		b := make([]data.Notice, 0)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddNotice(v)
-		}
-	case pb.CONFIG_PRIZE: //抽奖
-		b := make([]data.Prize, 0)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddPrize(v)
-		}
-	case pb.CONFIG_SHOP: //商城
-		b := make(map[string]data.Shop)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddShop(v)
-		}
-	case pb.CONFIG_VIP: //VIP
-		b := make(map[int]data.Vip)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddVip(v)
-		}
-	case pb.CONFIG_CLASSIC: //经典
-		b := make(map[string]data.Classic)
-		err = json.Unmarshal([]byte(arg.Data), &b)
-		if err != nil {
-			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
-			return
-		}
-		for _, v := range b {
-			config.AddClassic(v)
-		}
-	default:
-		glog.Errorf("syncConfig unknown type %d", arg.Type)
 	}
 }

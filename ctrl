@@ -19,7 +19,7 @@ workDir=$(cd `dirname $0`; pwd)
 
 cd $workDir
 
-GOPATH=$(cd ../../../"$(dirname "$0")"; pwd)
+GOPATH=$(cd ../../"$(dirname "$0")"; pwd)
 
 SUI_SRC_DIR="${GOPATH}/src/${appName}"
 
