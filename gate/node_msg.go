@@ -206,14 +206,12 @@ func (a *GateActor) handlerStop(ctx actor.Context) {
 	glog.Debugf("handlerStop: %s", a.Name)
 	//关闭
 	a.closeTick()
-	//msg := new(pb.ServeClose)
-	//for k, v := range a.roles {
-	//	glog.Debugf("Stop role: %s", k)
-	//	v.Tell(msg)
-	//}
-	//TODO 关闭消息
-	//for k, v := range a.roles {
-	//}
+	//关闭消息
+	msg := new(pb.ServeClose)
+	for k, v := range a.roles {
+		glog.Debugf("Stop role: %s", k)
+		v.Tell(msg)
+	}
 	//断开处理
 	msg := &pb.Disconnect{
 		Name: a.Name,
