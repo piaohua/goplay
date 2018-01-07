@@ -9,12 +9,14 @@ import (
 	jsoniter "github.com/json-iterator/go"
 )
 
+//TODO 单条配置修改同步
+
 //同步配置
 func SyncConfig(arg *pb.SyncConfig) {
 	switch arg.Type {
 	case pb.CONFIG_BOX: //宝箱
 		b := make([]data.Box, 0)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -24,7 +26,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_ENV: //变量
 		b := make(map[string]int32)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -34,7 +36,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_LOTTERY: //全民刮奖
 		b := make(map[uint32]uint32)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -44,7 +46,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_NOTICE: //公告
 		b := make([]data.Notice, 0)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -54,7 +56,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_PRIZE: //抽奖
 		b := make([]data.Prize, 0)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -64,7 +66,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_SHOP: //商城
 		b := make(map[string]data.Shop)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -74,7 +76,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_VIP: //VIP
 		b := make(map[int]data.Vip)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -84,7 +86,7 @@ func SyncConfig(arg *pb.SyncConfig) {
 		}
 	case pb.CONFIG_CLASSIC: //经典
 		b := make(map[string]data.Classic)
-		err := jsoniter.Unmarshal([]byte(arg.Data), &b)
+		err := jsoniter.Unmarshal(arg.Data, &b)
 		if err != nil {
 			glog.Errorf("syncConfig Unmarshal err %v, data %#v", err, arg.Data)
 			return
@@ -106,7 +108,7 @@ func syncConfigMsg(ctype pb.ConfigType,
 	if err != nil {
 		glog.Errorf("syncConfig Marshal err %v, data %#v", err, d)
 	}
-	msg.Data = string(result)
+	msg.Data = result
 	return msg
 }
 
@@ -132,4 +134,81 @@ func GetSyncConfig(ctype pb.ConfigType) interface{} {
 	default:
 	}
 	return nil
+}
+
+//同步配置
+func UpdateSyncConfig(ctype pb.ConfigType, msg []byte) (err error) {
+	switch ctype {
+	case pb.CONFIG_BOX: //宝箱
+		b := new(data.Box)
+		err = jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddBox(v)
+	case pb.CONFIG_ENV: //变量
+		b := make(map[string]int32)
+		err := jsoniter.Unmarshal(msg, &b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		for k, v := range b {
+			config.SetEnv2(k, v)
+		}
+	case pb.CONFIG_LOTTERY: //全民刮奖
+		b := make(map[uint32]uint32)
+		err := jsoniter.Unmarshal(msg, &b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		for k, v := range b {
+			config.SetLottery(k, v)
+		}
+	case pb.CONFIG_NOTICE: //公告
+		b := new(data.Notice)
+		err := jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddNotice(b)
+	case pb.CONFIG_PRIZE: //抽奖
+		b := new(data.Prize)
+		err := jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddPrize(b)
+	case pb.CONFIG_SHOP: //商城
+		b := new(data.Shop)
+		err := jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddShop(b)
+	case pb.CONFIG_VIP: //VIP
+		b := new(data.Vip)
+		err := jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddVip(b)
+	case pb.CONFIG_CLASSIC: //经典
+		b := new(data.Classic)
+		err := jsoniter.Unmarshal(msg, b)
+		if err != nil {
+			glog.Errorf("update syncConfig Unmarshal err %v", err)
+			return
+		}
+		config.AddClassic(b)
+	default:
+		glog.Errorf("syncConfig unknown type %d", ctype)
+	}
+	return
 }

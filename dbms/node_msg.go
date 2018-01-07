@@ -63,6 +63,10 @@ func (a *DBMSActor) Handler(msg interface{}, ctx actor.Context) {
 		arg := msg.(*pb.GetConfig)
 		glog.Infof("GetConfig %#v", arg)
 		ctx.Respond(handler.GetSyncConfig(arg.Type))
+	case *pb.SyncConfig:
+		//同步配置
+		arg := msg.(*pb.SyncConfig)
+		handler.SyncConfig(arg)
 	default:
 		if a.logger == nil {
 			glog.Errorf("unknown message %v", msg)

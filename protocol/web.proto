@@ -17,7 +17,7 @@ enum ConfigType {
 message SyncConfig
 {
     ConfigType Type = 1 ;//类型
-    string Data = 2 ;//数据
+    bytes Data = 2 ;//数据
 }
 
 // 主动获取数据
@@ -26,12 +26,12 @@ message GetConfig
     ConfigType Type = 1 ;//类型
 }
 
-//内部消息
-message Internal {
-    uint32 Code = 1; //消息编号
-    string Userid = 2; //路由方式
-    bytes Data = 3; //消息内容
-}
+////内部消息
+//message Internal {
+//    uint32 Code = 1; //消息编号
+//    string Userid = 2; //路由方式
+//    bytes Data = 3; //消息内容
+//}
 
 enum WebCode {
     WebReqMsg   = 0; //正常
@@ -69,5 +69,5 @@ message WebResponse
 	WebCode Code = 1; //协议号
 	int32 ErrCode = 2; //错误码
 	string ErrMsg = 3; //错误信息
-	string Result = 4; //正常时返回信息
+	bytes Result = 4; //正常时返回信息
 }

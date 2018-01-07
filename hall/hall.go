@@ -6,6 +6,7 @@ import (
 	"runtime"
 	"time"
 
+	"goplay/game/config"
 	"goplay/glog"
 
 	jsoniter "github.com/json-iterator/go"
@@ -34,6 +35,8 @@ func main() {
 	bind := cfg.Section("hall").Key("bind").Value()
 	name := cfg.Section("cookie").Key("name").Value()
 	NewRemote(bind, name)
+	//初始化
+	config.Init2Game()
 	signalListen()
 	//关闭服务
 	Stop()
