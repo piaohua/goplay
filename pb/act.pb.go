@@ -320,7 +320,6 @@
 		ZiRoomInfo
 		SyncConfig
 		GetConfig
-		Internal
 		WebRequest
 		WebResponse
 */
