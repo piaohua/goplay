@@ -7,21 +7,21 @@ import (
 )
 
 type Items struct {
-	Rtype  int    `bson:"rtype"`  //类型,1钻石,2金币
-	Number uint32 `bson:"number"` //数量
+	Rtype  int    `bson:"rtype" json:"rtype"`   //类型,1钻石,2金币
+	Number uint32 `bson:"number" json:"number"` //数量
 }
 
 //TODO 发一份给所有人的邮件
 //TODO 离线邮件
 type Mail struct {
-	Id         string    `bson:"_id"`        //邮件id
-	From       string    `bson:"from"`       //发件人
-	To         string    `bson:"to"`         //收件人id
-	Attachment []Items   `bson:"attachment"` //附件
-	Status     int       `bson:"status"`     //状态0未读,1已读,2已领取,3已经过期,4已经删除
-	Content    string    `bson:"content"`    //内容
-	Etime      time.Time `bson:"etime"`      //过期时间
-	Ctime      time.Time `bson:"ctime"`      //创建时间
+	Id         string    `bson:"_id" json:"id"`                //邮件id
+	From       string    `bson:"from" json:"from"`             //发件人
+	To         string    `bson:"to" json:"to"`                 //收件人id
+	Attachment []Items   `bson:"attachment" json:"attachment"` //附件
+	Status     int       `bson:"status" json:"status"`         //状态0未读,1已读,2已领取,3已经过期,4已经删除
+	Content    string    `bson:"content" json:"content"`       //内容
+	Etime      time.Time `bson:"etime" json:"etime"`           //过期时间
+	Ctime      time.Time `bson:"ctime" json:"ctime"`           //创建时间
 }
 
 func (this *Mail) Get() {

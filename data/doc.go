@@ -12,3 +12,6 @@ package data
 //gomodifytags -file doc.go -struct Vip -add-tags json -w
 //gomodifytags -file doc.go -struct Prize -add-tags json -w
 //gomodifytags -file doc.go -struct TradeRecord -add-tags json -w
+//gomodifytags -file agency.go -struct Agency -add-tags json -w
+//gomodifytags -file doc.go -struct Mail -add-tags json -w
+//gomodifytags -file doc.go -struct TaskList -add-tags json -w

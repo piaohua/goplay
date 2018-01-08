@@ -48,16 +48,16 @@ end 截止时间
 // 6 帝王杯
 
 type DanList struct {
-	Id     string    `bson:"_id"`    //序号
-	Name   string    `bson:"name"`   //名称
-	Dan    int       `bson:"dan"`    //段0-6
-	Ante   uint32    `bson:"ante"`   //隐藏底分
-	Number uint32    `bson:"number"` //预计局数
-	Coin   uint32    `bson:"coin"`   //最低限制金币
-	Di     uint32    `bson:"di"`     //房间底分
-	Level  []Stars   `bson:"level"`  //星级,积分
-	Ctime  time.Time `bson:"ctime"`  //创建时间
-	Del    int       `bson:"-"`      //是否移除
+	Id     string    `bson:"_id" json:"id"`        //序号
+	Name   string    `bson:"name" json:"name"`     //名称
+	Dan    int       `bson:"dan" json:"dan"`       //段0-6
+	Ante   uint32    `bson:"ante" json:"ante"`     //隐藏底分
+	Number uint32    `bson:"number" json:"number"` //预计局数
+	Coin   uint32    `bson:"coin" json:"coin"`     //最低限制金币
+	Di     uint32    `bson:"di" json:"di"`         //房间底分
+	Level  []Stars   `bson:"level" json:"level"`   //星级,积分
+	Ctime  time.Time `bson:"ctime" json:"ctime"`   //创建时间
+	Del    int       `bson:"-" json:"del"`         //是否移除
 }
 
 type Stars struct {
@@ -83,12 +83,12 @@ type DanLevel struct {
 
 //任务列表
 type TaskList struct {
-	Id      string    `bson:"_id"`     //任务序号
-	Name    string    `bson:"name"`    //任务名称
-	Diamond uint32    `bson:"diamond"` //钻石奖励
-	Coin    uint32    `bson:"coin"`    //金币奖励
-	Ctime   time.Time `bson:"ctime"`   //创建时间
-	Del     int       `bson:"-"`       //是否移除
+	Id      string    `bson:"_id" json:"id"`          //任务序号
+	Name    string    `bson:"name" json:"name"`       //任务名称
+	Diamond uint32    `bson:"diamond" json:"diamond"` //钻石奖励
+	Coin    uint32    `bson:"coin" json:"coin"`       //金币奖励
+	Ctime   time.Time `bson:"ctime" json:"ctime"`     //创建时间
+	Del     int       `bson:"-" json:"del"`           //是否移除
 }
 
 func GetTaskList() []TaskList {
@@ -99,9 +99,9 @@ func GetTaskList() []TaskList {
 
 //当前赛季
 type Season struct {
-	Start     uint32 `bson:"start"`     //开始时间(时间截)
-	End       uint32 `bson:"end"`       //结束时间(时间截)
-	Remaining uint32 `bson:"remaining"` //剩余时间(秒)
+	Start     uint32 `bson:"start" json:"start"`         //开始时间(时间截)
+	End       uint32 `bson:"end" json:"end"`             //结束时间(时间截)
+	Remaining uint32 `bson:"remaining" json:"remaining"` //剩余时间(秒)
 }
 
 func (this *Season) Get() {
@@ -121,8 +121,8 @@ func (this *Season) Delete() bool {
 //个人任务列表
 //TODO record
 type DanTask struct {
-	Userid string         `bson:"_id"`  //玩家ID
-	List   map[string]int `bson:"list"` //任务列表map[taskid]status
+	Userid string         `bson:"_id" json:"userid"` //玩家ID
+	List   map[string]int `bson:"list" json:"list"`  //任务列表map[taskid]status
 	//Taskid string `bson:"taskid"` //任务序号
 	//Status int    `bson:"status"` //状态0未达成,1可领取,2已领取
 	//TODO 按赛季处理
@@ -146,13 +146,13 @@ func SaveDanTask(list map[string]*DanTask) {
 //排行榜
 //TODO record
 type DanRanking struct {
-	Userid   string `bson:"_id"`      //玩家ID
-	Photo    string `bson:"photo"`    //玩家头像
-	Nickname string `bson:"nickname"` //玩家昵称
-	Rank     uint32 `bson:"rank"`     //排名
-	Dan      int    `bson:"dan"`      //玩家段位
-	Stars    int    `bson:"stars"`    //玩家星级
-	Points   int32  `bson:"points"`   //玩家积分
+	Userid   string `bson:"_id" json:"userid"`        //玩家ID
+	Photo    string `bson:"photo" json:"photo"`       //玩家头像
+	Nickname string `bson:"nickname" json:"nickname"` //玩家昵称
+	Rank     uint32 `bson:"rank" json:"rank"`         //排名
+	Dan      int    `bson:"dan" json:"dan"`           //玩家段位
+	Stars    int    `bson:"stars" json:"stars"`       //玩家星级
+	Points   int32  `bson:"points" json:"points"`     //玩家积分
 }
 
 func GetDanRanking() []DanRanking {
@@ -175,16 +175,16 @@ func SaveDanRanking(list []DanRanking) {
 //个人战绩
 //TODO record
 type DanCombat struct {
-	Userid   string `bson:"_id"`       // 用户id
-	Dan      int    `bson:"dan"`       // 段
-	Stars    int    `bson:"stars"`     // 星
-	Points   int32  `bson:"points"`    // 积分
-	Number   uint32 `bson:"number"`    // 总局数
-	Wins     uint32 `bson:"wins"`      // 胜利数
-	Rank     uint32 `bson:"rank"`      // 当前排名
-	TopDan   int    `bson:"top_dan"`   // 最高段位
-	TopRank  uint32 `bson:"top_rank"`  // 最高排名
-	CurIndex int    `bson:"cur_index"` // 最高排名
+	Userid   string `bson:"_id" json:"userid"`          // 用户id
+	Dan      int    `bson:"dan" json:"dan"`             // 段
+	Stars    int    `bson:"stars" json:"stars"`         // 星
+	Points   int32  `bson:"points" json:"points"`       // 积分
+	Number   uint32 `bson:"number" json:"number"`       // 总局数
+	Wins     uint32 `bson:"wins" json:"wins"`           // 胜利数
+	Rank     uint32 `bson:"rank" json:"rank"`           // 当前排名
+	TopDan   int    `bson:"top_dan" json:"top_dan"`     // 最高段位
+	TopRank  uint32 `bson:"top_rank" json:"top_rank"`   // 最高排名
+	CurIndex int    `bson:"cur_index" json:"cur_index"` // 最高排名
 	//TODO 按赛季处理
 	//Start     uint32 `bson:"start"`     //开始时间(时间截)
 }
