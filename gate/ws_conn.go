@@ -130,13 +130,16 @@ func (ws *WSConn) readPump() {
 			if length > 0 && msgbuf.Len() >= length {
 				//fmt.Printf("Client messge: %s\n", string(msgbuf.Next(length)))
 				//包序验证
-				ws.index++
-				ws.index = ws.index % 256
 				//fmt.Printf("Message index error: %d, %d\n", index, ws.index)
 				if ws.index != index {
 					//fmt.Printf("Message index error: %d, %d\n", index, ws.index)
 					glog.Errorf("Message index error: %d, %d\n", index, ws.index)
 					//return
+				}
+				if ws.index >= 255 {
+					ws.index = 0
+				} else {
+					ws.index += 1
 				}
 				//路由
 				ws.Router(proto, msgbuf.Next(length))

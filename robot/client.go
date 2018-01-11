@@ -185,8 +185,6 @@ func (ws *Robot) readPump() {
 			if length > 0 && msgbuf.Len() >= length {
 				//fmt.Printf("Client messge: %s\n", string(msgbuf.Next(length)))
 				//包序验证
-				ws.index++
-				ws.index = ws.index % 256
 				//fmt.Printf("Message index error: %d, %d\n", index, ws.index)
 				if ws.index != index {
 					glog.Errorf("Message index error: %d, %d\n", index, ws.index)
@@ -241,6 +239,11 @@ func (ws *Robot) write(mt int, msg interface{}) error {
 			return err
 		}
 		message = pack(code, body, ws.index)
+		if ws.index >= 255 {
+			ws.index = 0
+		} else {
+			ws.index += 1
+		}
 	}
 	if uint32(len(message)) > ws.maxMsgLen {
 		glog.Errorf("write msg too long -> %d", len(message))
