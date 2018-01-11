@@ -274,7 +274,7 @@ func (c *Robot) SendChat() {
 	}
 	content := chat[utils.RandInt32N(int32(len(chat)))]
 	ctos := &pb.CChatText{
-		Content: content,
+		Content: []byte(content),
 	}
 	utils.Sleep(3)
 	c.Sender(ctos)

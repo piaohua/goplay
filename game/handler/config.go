@@ -140,16 +140,16 @@ func GetSyncConfig(ctype pb.ConfigType) interface{} {
 func UpdateSyncConfig(ctype pb.ConfigType, msg []byte) (err error) {
 	switch ctype {
 	case pb.CONFIG_BOX: //宝箱
-		b := new(data.Box)
-		err = jsoniter.Unmarshal(msg, b)
+		b := data.Box{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
 		}
-		config.AddBox(v)
+		config.AddBox(b)
 	case pb.CONFIG_ENV: //变量
 		b := make(map[string]int32)
-		err := jsoniter.Unmarshal(msg, &b)
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
@@ -159,7 +159,7 @@ func UpdateSyncConfig(ctype pb.ConfigType, msg []byte) (err error) {
 		}
 	case pb.CONFIG_LOTTERY: //全民刮奖
 		b := make(map[uint32]uint32)
-		err := jsoniter.Unmarshal(msg, &b)
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
@@ -168,40 +168,40 @@ func UpdateSyncConfig(ctype pb.ConfigType, msg []byte) (err error) {
 			config.SetLottery(k, v)
 		}
 	case pb.CONFIG_NOTICE: //公告
-		b := new(data.Notice)
-		err := jsoniter.Unmarshal(msg, b)
+		b := data.Notice{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
 		}
 		config.AddNotice(b)
 	case pb.CONFIG_PRIZE: //抽奖
-		b := new(data.Prize)
-		err := jsoniter.Unmarshal(msg, b)
+		b := data.Prize{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
 		}
 		config.AddPrize(b)
 	case pb.CONFIG_SHOP: //商城
-		b := new(data.Shop)
-		err := jsoniter.Unmarshal(msg, b)
+		b := data.Shop{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
 		}
 		config.AddShop(b)
 	case pb.CONFIG_VIP: //VIP
-		b := new(data.Vip)
-		err := jsoniter.Unmarshal(msg, b)
+		b := data.Vip{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return
 		}
 		config.AddVip(b)
 	case pb.CONFIG_CLASSIC: //经典
-		b := new(data.Classic)
-		err := jsoniter.Unmarshal(msg, b)
+		b := data.Classic{}
+		err = jsoniter.Unmarshal(msg, &b)
 		if err != nil {
 			glog.Errorf("update syncConfig Unmarshal err %v", err)
 			return

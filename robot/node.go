@@ -66,5 +66,5 @@ func (server *RobotServer) remoteHall() {
 	connect := &pb.Connect{
 		Name: server.Name,
 	}
-	a.hallPid.Request(connect, nodePid)
+	hallPid.Request(connect, nodePid)
 }

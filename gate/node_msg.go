@@ -205,10 +205,10 @@ func (a *GateActor) handlerStop(ctx actor.Context) {
 	//关闭
 	a.closeTick()
 	//关闭消息
-	msg := new(pb.ServeClose)
+	msg1 := new(pb.ServeClose)
 	for k, v := range a.roles {
 		glog.Debugf("Stop role: %s", k)
-		v.Tell(msg)
+		v.Tell(msg1)
 	}
 	//断开处理
 	msg := &pb.Disconnect{
