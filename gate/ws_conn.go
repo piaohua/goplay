@@ -156,20 +156,17 @@ func (ws *WSConn) writePump() {
 	tick := time.Tick(pingPeriod)
 	for {
 		select {
-		case <-tick:
-			err := ws.write(websocket.PingMessage, []byte{})
-			if err != nil {
-				return
-			}
-		default:
-		}
-		select {
 		case msg, ok := <-ws.msgCh:
 			if !ok {
 				ws.write(websocket.CloseMessage, []byte{})
 				return
 			}
 			err := ws.write(websocket.TextMessage, msg)
+			if err != nil {
+				return
+			}
+		case <-tick:
+			err := ws.write(websocket.PingMessage, []byte{})
 			if err != nil {
 				return
 			}
