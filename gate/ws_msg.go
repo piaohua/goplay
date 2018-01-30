@@ -29,6 +29,11 @@ func (ws *WSConn) Send(msg interface{}) {
 	select {
 	case <-ws.stopCh:
 		return
+	default:
+	}
+	select {
+	case <-ws.stopCh:
+		return
 	case ws.msgCh <- msg:
 	}
 }
