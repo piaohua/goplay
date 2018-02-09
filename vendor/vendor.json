@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "50J+ClsLONoc78uu+sDrdJ6IWPA=",
+			"path": "github.com/json-iterator/go",
+			"revision": "96fcb84835b0447f3de9d7addb313c5487071533",
+			"revisionTime": "2017-12-23T02:52:17Z"
+		}
+	],
+	"rootPath": "goplay"
+}
