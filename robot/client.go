@@ -26,6 +26,9 @@ const (
 	waitForLogin   = 5 * time.Second  // 连接建立后5秒内没有收到登陆请求,断开socket
 )
 
+//通道关闭信号
+type closeFlag int
+
 type WebsocketConnSet map[*websocket.Conn]struct{}
 
 // 机器人连接数据
@@ -83,10 +86,10 @@ func (ws *Robot) Close() {
 	case <-ws.stopCh:
 		return
 	default:
+		//关闭消息通道
+		ws.Sender(closeFlag(1))
 		//停止发送消息
 		close(ws.stopCh)
-		//关闭消息通道
-		close(ws.msgCh)
 		//关闭连接
 		ws.conn.Close()
 		//Logout message
@@ -230,6 +233,8 @@ func (ws *Robot) writePump() {
 func (ws *Robot) write(mt int, msg interface{}) error {
 	var message []byte
 	switch msg.(type) {
+	case closeFlag:
+		return errors.New("msg channel closed")
 	case []byte:
 		message = msg.([]byte)
 	default:

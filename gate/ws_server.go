@@ -67,7 +67,6 @@ func (handler *WSHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	wsConn.readPump()
 
 	// cleanup
-	wsConn.Close()
 	handler.mutexConns.Lock()
 	delete(handler.conns, conn)
 	handler.mutexConns.Unlock()

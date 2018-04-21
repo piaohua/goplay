@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"strings"
 	"time"
 
@@ -20,6 +21,9 @@ const (
 	maxMessageSize = 1024             // Maximum message size allowed from peer.
 	waitForLogin   = 20 * time.Second // 连接建立后5秒内没有收到登陆请求,断开socket
 )
+
+//通道关闭信号
+type closeFlag int
 
 type WebsocketConnSet map[*websocket.Conn]struct{}
 
@@ -77,10 +81,10 @@ func (ws *WSConn) Close() {
 	case <-ws.stopCh:
 		return
 	default:
+		//关闭消息通道
+		ws.Sender(closeFlag(1))
 		//停止发送消息
 		close(ws.stopCh)
-		//关闭消息通道
-		close(ws.msgCh)
 		//关闭连接
 		ws.conn.Close()
 	}
@@ -178,6 +182,8 @@ func (ws *WSConn) writePump() {
 func (ws *WSConn) write(mt int, msg interface{}) error {
 	var message []byte
 	switch msg.(type) {
+	case closeFlag:
+		return errors.New("msg channel closed")
 	case []byte:
 		message = msg.([]byte)
 	default:
