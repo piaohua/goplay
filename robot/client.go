@@ -208,14 +208,6 @@ func (ws *Robot) writePump() {
 	tick := time.Tick(pingPeriod)
 	for {
 		select {
-		case <-tick:
-			err := ws.write(websocket.PingMessage, []byte{})
-			if err != nil {
-				return
-			}
-		default:
-		}
-		select {
 		case message, ok := <-ws.msgCh:
 			if !ok {
 				ws.write(websocket.CloseMessage, []byte{})
@@ -223,6 +215,11 @@ func (ws *Robot) writePump() {
 			}
 			err := ws.write(websocket.TextMessage, message)
 			if err != nil {
+				return
+			}
+		case <-tick:
+			ws.conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err := ws.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
 		}
