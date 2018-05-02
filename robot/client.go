@@ -88,8 +88,6 @@ func (ws *Robot) Close() {
 	default:
 		//关闭消息通道
 		ws.Sender(closeFlag(1))
-		//停止发送消息
-		close(ws.stopCh)
 		//关闭连接
 		ws.conn.Close()
 		//Logout message
@@ -215,11 +213,15 @@ func (ws *Robot) writePump() {
 			}
 			err := ws.write(websocket.TextMessage, message)
 			if err != nil {
+				//停止发送消息
+				close(ws.stopCh)
 				return
 			}
 		case <-tick:
 			ws.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if err := ws.conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+				//停止发送消息
+				close(ws.stopCh)
 				return
 			}
 		}

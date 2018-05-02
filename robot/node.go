@@ -8,6 +8,8 @@
 package main
 
 import (
+	"errors"
+
 	"goplay/glog"
 	"goplay/pb"
 	"utils"
@@ -28,13 +30,12 @@ func (server *RobotServer) NewRemote(bind, name string) {
 //接收远程消息
 func (server *RobotServer) remoteRecv(name string) {
 	//create the channel
-	server.channel = make(chan *pb.RobotMsg, 100) //protos中定义
+	server.channel = make(chan interface{}, 100) //protos中定义
+	server.closeCh = make(chan struct{})
 
 	//create an actor receiving messages and pushing them onto the channel
 	props := actor.FromFunc(func(context actor.Context) {
-		if msg, ok := context.Message().(*pb.RobotMsg); ok {
-			server.channel <- msg
-		}
+		server.remoteSend(context.Message())
 	})
 	nodePid, err = actor.SpawnNamed(props, name)
 	server.remoteHall()
@@ -42,18 +43,56 @@ func (server *RobotServer) remoteRecv(name string) {
 	//consume the channel just like you use to
 	go func() {
 		for msg := range server.channel {
-			//分配机器人
-			for msg.Num > 0 {
-				go func(code, phone string, rtype uint32) {
-					server.RunRobot(code, phone, rtype, false)
-				}(msg.Code, server.phone, msg.Rtype)
-				//TODO msg.Rtype
-				server.phone = utils.StringAdd(server.phone)
-				msg.Num--
+			err := server.remoteHandler(msg)
+			if err != nil {
+				//停止发送消息
+				close(server.closeCh)
+				break
 			}
-			glog.Debugf("node msg -> %v", msg)
 		}
 	}()
+}
+
+func (server *RobotServer) remoteSend(message interface{}) {
+	if server.channel == nil {
+		glog.Errorf("server channel closed %#v", message)
+		return
+	}
+	if len(server.channel) == cap(server.channel) {
+		glog.Errorf("send msg channel full -> %d", len(server.channel))
+		return
+	}
+	select {
+	case <-server.closeCh:
+		return
+	default:
+	}
+	select {
+	case <-server.closeCh:
+		return
+	case server.channel <- message:
+	}
+}
+
+//处理
+func (server *RobotServer) remoteHandler(message interface{}) error {
+	switch message.(type) {
+	case *pb.RobotMsg:
+		msg := message.(*pb.RobotMsg)
+		//分配机器人
+		for msg.Num > 0 {
+			go func(code, phone string, rtype uint32) {
+				server.RunRobot(code, phone, rtype, false)
+			}(msg.Code, server.phone, msg.Rtype)
+			//TODO msg.Rtype
+			server.phone = utils.StringAdd(server.phone)
+			msg.Num--
+		}
+		glog.Debugf("node msg -> %#v", msg)
+	case closeFlag:
+		return errors.New("msg channel closed")
+	}
+	return nil
 }
 
 func (server *RobotServer) remoteHall() {

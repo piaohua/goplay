@@ -52,6 +52,19 @@ func ReLogined(phone, code string, rtype uint32) {
 
 //发送消息
 func (r *RobotServer) Send2rbs(msg interface{}) {
+	if r.msgCh == nil {
+		glog.Errorf("server msg channel closed %#v", msg)
+		return
+	}
+	if len(r.msgCh) == cap(r.msgCh) {
+		glog.Errorf("send msg channel full -> %d", len(r.msgCh))
+		return
+	}
+	select {
+	case <-r.stopCh:
+		return
+	default:
+	}
 	select {
 	case <-r.stopCh:
 		return
@@ -189,6 +202,10 @@ func (r *RobotServer) run() {
 					delete(r.online, msg.Phone)
 					r.offline[msg.Phone] = true
 				}
+			case closeFlag:
+				//停止发送消息
+				close(r.stopCh)
+				return
 			}
 		case <-tick:
 			//逻辑处理
