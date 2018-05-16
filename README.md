@@ -138,7 +138,6 @@ game (package)
     hall
 
 ## Note:
-
-    As goplay is not actively maintained please use one of the following instead
-    [goplays](https://github.com/piaohua/goplays)
-    [gohappy](https://github.com/piaohua/gohappy)
+As goplay is not actively maintained please use one of the following instead<br>
+[goplays](https://github.com/piaohua/goplays)<br>
+[gohappy](https://github.com/piaohua/gohappy)
